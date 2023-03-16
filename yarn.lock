@@ -14,6 +14,11 @@
   resolved "https://registry.yarnpkg.com/@ag-grid-community/core/-/core-29.1.0.tgz#5cf672f67ff3cf2efcb77d4d809dda7852967d9c"
   integrity sha512-l68/3whSJ4ql2yvgx5FlT7V8op35z7+htx9PZ6VyzIPgnNVXSv5XuIU7JCzqobRwPOXSeyjRfH2Q4/tZrYVvmw==
 
+"@ag-grid-community/core@~28.1.0":
+  version "28.1.1"
+  resolved "https://registry.yarnpkg.com/@ag-grid-community/core/-/core-28.1.1.tgz#b0454ee818dd960d68b3bdd2bfaa80516f054dfe"
+  integrity sha512-0Mrvg1lERglcFd4oQijxvGpECnx1ZX1L/fPlmfxYPGAFMJzIKxfXtF1tL2h20QrntTZSHuDnm3aWkTFB1ybp2A==
+
 "@ag-grid-community/react@^29.1.0":
   version "29.1.0"
   resolved "https://registry.yarnpkg.com/@ag-grid-community/react/-/react-29.1.0.tgz#3ea7d5e6b6eb66101e7945d43361a608e7fda44e"
@@ -25,6 +30,13 @@
   version "29.1.0"
   resolved "https://registry.yarnpkg.com/@ag-grid-community/styles/-/styles-29.1.0.tgz#f08dfd944542581eb8567137d887d90c7a84bb50"
   integrity sha512-xgi7r05oeFiH8bKalIq6h4N1vjah9pq4Lwli+WeYJ0oo5iw/zxrJPvTNUEwXqg9hUhsIc8gQ2/LWajh25eeQJg==
+
+"@ag-grid-enterprise/core@~28.1.1":
+  version "28.1.1"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/core/-/core-28.1.1.tgz#734091acd7114cdd79371dade46459eb9d6518c0"
+  integrity sha512-klHrh4M7sSBLD+xrRNb+r6tT5uqtgNaHbB7XneormdpU/V+U1A77DcaKTCXzcxjeF3XE6RRfCEAqwWNGbFOy+Q==
+  dependencies:
+    "@ag-grid-community/core" "~28.1.0"
 
 "@ampproject/remapping@^2.2.0":
   version "2.2.0"
@@ -1296,6 +1308,13 @@
     kleur "^4.1.5"
     ora "^6.1.2"
     vite "^4.0.0"
+
+"@equinor/fusion-framework-module-ag-grid@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@equinor/fusion-framework-module-ag-grid/-/fusion-framework-module-ag-grid-3.0.0.tgz#42c41ad74e6fbd997bcd21cab8730be7f4061cef"
+  integrity sha512-6FHLIe4mTPrP8Pn5yLGQKhiu2Nod7qzh1Tx8rHRHMCoHQ8KgTA7LGQ1y1r0X9r3uNnC5qzom4ycOnxcgd4Jcwg==
+  dependencies:
+    "@ag-grid-enterprise/core" "~28.1.1"
 
 "@equinor/fusion-framework-module-app@^4.0.6":
   version "4.0.6"

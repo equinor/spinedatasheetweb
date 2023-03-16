@@ -3,8 +3,6 @@ import { useModuleCurrentContext } from '@equinor/fusion-framework-react-module-
 import AppRouter from './Router';
 
 export const App = () => {
-    const { currentContext } = useModuleCurrentContext();
-    console.log(currentContext)
     return (
         <StrictMode>
             <h1>React Router App</h1>

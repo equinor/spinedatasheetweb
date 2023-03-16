@@ -48,6 +48,7 @@
     "@equinor/fusion": "^3.4.3",
     "@equinor/fusion-components": "^2.9.0",
     "@equinor/fusion-framework-cli": "5.0.0",
+    "@equinor/fusion-framework-module-ag-grid": "^3.0.0",
     "@equinor/fusion-framework-module-navigation": "^1.0.5",
     "@equinor/fusion-framework-react-app": "^3.0.11",
     "@equinor/fusion-framework-react-module-context": "^4.0.2",
