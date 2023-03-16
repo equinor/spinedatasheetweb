@@ -9,6 +9,7 @@ import { useState } from "react"
 import JIP33Table from "../Components/JIP33Table/JIP33Table"
 import { accessoriesRowData } from "../Components/JIP33Table/RowData/AccessoriesRowData"
 import { performanceRowData } from "../Components/JIP33Table/RowData/PerformanceRowData"
+import { Link } from "react-router-dom"
 
 const WrapperTabs = styled.div`
     width: 100%;
@@ -32,6 +33,8 @@ function JIP33TabView({
 
     return (
         <>
+            <Link to={"/"}>Home</Link>
+
             <WrapperTabs>
                 <Typography variant="h3">JIP33 table</Typography>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
