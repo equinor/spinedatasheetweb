@@ -5,6 +5,7 @@ node_modules/
 .pnp.js
 /coverage
 /build
+yarn-error.log
 
 # Editors
 .vscode
