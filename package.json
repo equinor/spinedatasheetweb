@@ -1,6 +1,6 @@
 {
   "name": "spinedatasheet",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Spine Data Sheet",
   "main": "src/index.tsx",
   "scripts": {
@@ -17,7 +17,7 @@
   "license": "ISC",
   "manifest": {
     "name": "Spine Data Sheet",
-    "shortName": "Spine Data Sheet",
+    "shortName": "spinedatasheet",
     "description": "Web-application for Spine Data Sheet",
     "type": "standalone",
     "admins": [
