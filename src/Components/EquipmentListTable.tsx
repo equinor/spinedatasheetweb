@@ -60,7 +60,7 @@ function EquipmentListTable({ tags }: Props) {
     return (
         <div
             className="ag-theme-alpine ag-theme-datasheetTable"
-            style={{ flex: "1 1 auto", marginTop: 20, width: "1700px" }}
+            style={{ flex: "1 1 auto", marginTop: 20, width: "100%" }}
         >
             <AgGridReact<Datasheet>
                 rowData={tags}
