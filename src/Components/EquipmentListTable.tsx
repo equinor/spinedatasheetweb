@@ -70,7 +70,7 @@ function EquipmentListTable({ tags }: Props) {
     return (
         <div
             className="ag-theme-alpine ag-theme-datasheetTable"
-            style={{ flex: "1 1 auto", marginTop: 20, width: "1700px" }}
+            style={{ flex: "1 1 auto", width: "100%", padding: "20px" }}
         >
             <AgGridReact<Datasheet>
                 rowData={tags}
@@ -84,6 +84,7 @@ function EquipmentListTable({ tags }: Props) {
                 headerHeight={48}
                 rowHeight={35}
                 modules={[ClientSideRowModelModule]}
+
             />
         </div>
     )
