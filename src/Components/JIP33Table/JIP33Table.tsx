@@ -86,7 +86,7 @@ function JIP33Table({
 
     return (
         <>
-            <div className="ag-theme-alpine ag-theme-datasheetTable" style={{ flex: "1 1 auto", marginTop: 20, width: "90%" }}>
+            <div className="ag-theme-alpine ag-theme-datasheetTable" style={{ flex: "1 1 auto", padding: "20px", width: "100%" }}>
                 <AgGridReact
                     rowData={rowData}
                     columnDefs={columns}
