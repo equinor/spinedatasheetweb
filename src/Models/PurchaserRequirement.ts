@@ -50,37 +50,37 @@ export class PurchaserRequirement implements Components.Schemas.PurchaserRequire
     normalOperatingTemperature?: number; // int32
     normalOperatingPressure?: number; // int32
     normalOperatingLiquidViscosity?: number; // int32
-    maximumOperatingVolumetricFlow?: number; // int32
-    maximumOperatingVelocity?: number; // int32
-    maximumOperatingTemperature?: number; // int32
-    maximumOperatingPressure?: number; // double
-    maximumOperatingLiquidViscosity?: number; // double
-    maximumRecoverablePressureDrop?: number; // double
-    maximumUnrecoverablePressureLoss?: number; // double
+    maximumOperatingVolumetricFlow?: string | null; // int32
+    maximumOperatingVelocity?: string | null; // int32
+    maximumOperatingTemperature?: string | null; // int32
+    maximumOperatingPressure?: string | null; // double
+    maximumOperatingLiquidViscosity?: string | null; // double
+    maximumRecoverablePressureDrop?: string | null; // double
+    maximumUnrecoverablePressureLoss?: string | null; // double
     bodyMaterial?: string | null;
     transmitterMounting?: string | null;
-    transmitterDisplay?: boolean;
+    transmitterDisplay?: string | null;
     transmitterConnectingCableLength?: number; // double
-    supplyVoltage?: number; // double
+    supplyVoltage?: string | null; // double
     externalPowerVoltage?: number; // double
     cableEntry?: string | null;
     cableTermination?: string | null;
     communicationProtocol?: string | null;
     protocolVersion?: string | null;
     failSafeDirection?: string | null;
-    calibrationBespoke?: boolean;
+    calibrationBespoke?: string | null;
     measurementRangeMinimum?: number; // double
     measurementRangeMaximum?: number; // double
     spanAndZeroAdjustment?: string | null;
-    accuracy?: number; // double
+    accuracy?: string | null; // double
     repeatability?: number; // double
     stepResponse?: number; // double
     longTermDrift?: number; // double
-    longTermStability?: number; // double
-    vibration?: boolean;
-    weatherEnclosure?: boolean;
-    electricalSurgeProtector?: boolean;
-    sunshade?: boolean;
+    longTermStability?: string | null; // double
+    vibration?: string | null;
+    weatherEnclosure?: string | null;
+    electricalSurgeProtector?: string | null;
+    sunshade?: string | null;
     
     constructor(init?: Partial<PurchaserRequirement>) {
         Object.assign(this, init);

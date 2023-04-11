@@ -13,7 +13,7 @@ export class SupplierOfferedProduct implements Components.Schemas.SupplierOffere
     explosionHazardClassification?: string | null;
     explosionGroup?: string | null;
     temperatureClass?: string | null;
-    maximumUnrecoverablePressureLoss?: number; // double
+    maximumUnrecoverablePressureLoss?: string | null; // double
     bodyElementSensorManufacturerModelNumber?: string | null;
     bodyMaterial?: string | null;
     flangeMaterial?: string | null;
@@ -29,37 +29,37 @@ export class SupplierOfferedProduct implements Components.Schemas.SupplierOffere
     bodySize?: number; // double
     endConnectionSize?: number; // double
     endConnectionFlangeType?: string | null;
-    endConnectionFlangeRating?: number; // double
+    endConnectionFlangeRating?: string | null; // double
     transmitterModelNumber?: string | null;
     transmitterEnclosureMaterial?: string | null;
     transmitterMounting?: string | null;
-    transmitterDisplay?: boolean;
-    transmitterConnectingCables?: number; // int32
+    transmitterDisplay?: string | null;
+    transmitterConnectingCables?: string | null; // int32
     transmitterConnectingCableLength?: number; // double
     transmitterConnectingCableQuantity?: number; // int32
-    supplyVoltage?: number; // double
-    externalPowerVoltage?: number; // double
-    isolatedOutputs?: boolean;
+    supplyVoltage?: string | null; // double
+    externalPowerVoltage?: string | null; // double
+    isolatedOutputs?: string | null;
     cableEntry?: string | null;
     cableTermination?: string | null;
     communicationProtocol?: string | null;
     protocolVersion?: string | null;
     failSafeDirection?: string | null;
-    calibrationBespoke?: boolean;
+    calibrationBespoke?: string | null;
     measurementRangeMinimum?: number; // double
     measurementRangeMaximum?: number; // double
     spanAndZeroAdjustment?: string | null;
     lowerRangeLimit?: number; // double
     upperRangeLimit?: number; // double
-    accuracy?: number; // double
+    accuracy?: string | null; // double
     repeatability?: number; // double
     stepResponse?: number; // double
     longTermDrift?: number; // double
-    longTermStability?: number; // double
-    vibration?: boolean;
-    weatherEnclosure?: boolean;
-    electricalSurgeProtector?: boolean;
-    sunshade?: boolean;
+    longTermStability?: string | null; // double
+    vibration?: string | null;
+    weatherEnclosure?: string | null;
+    electricalSurgeProtector?: string | null;
+    sunshade?: string | null;
 
     constructor(init?: Partial<SupplierOfferedProduct>) {
         Object.assign(this, init);
