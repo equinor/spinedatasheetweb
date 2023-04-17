@@ -14,12 +14,12 @@ function JIP33Table({
 }: Props) {
     useAgGridStyles()
 
-    const red = "#e6b8b7"
-    const lightBlue = "#b7dee8"
-    const grey = "#bfbfbf"
-    const lightGreen = "#d8e4bc"
-    const green = "#92d050"
-    const lightOrange = "#fcd5b4"
+    const red = "white" //"#e6b8b7"
+    const lightBlue = "white" //"#b7dee8"
+    const grey = "white" // "#bfbfbf"
+    const lightGreen = "white" // "#d8e4bc"
+    const green = "white" //"#92d050"
+    const lightOrange = "white" // "#fcd5b4"
     const white = "white"
 
     const defaultColDef = useMemo<ColDef>(() => ({
