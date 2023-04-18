@@ -1,0 +1,38 @@
+export const preservationAndStorageRowData = [
+    {
+        refClause: "",
+        description: "Storage conditions:",
+        purchaserReq: "input data",
+        purchaserReqUOM: "",
+        supplierOfferedVal: "input data",
+        supplierOfferedValUOM: "",
+        additionalNotes: "",
+    },
+    {
+        refClause: "",
+        description: "  Storage duration:",
+        purchaserReq: "input data",
+        purchaserReqUOM: "month(s)",
+        supplierOfferedVal: "input data",
+        supplierOfferedValUOM: "month(s)",
+        additionalNotes: "",
+    },
+    {
+        refClause: "",
+        description: "  Motor nameplate 'Oil mist lubricated':",
+        purchaserReq: "not required",
+        purchaserReqUOM: "",
+        supplierOfferedVal: "select",
+        supplierOfferedValUOM: "",
+        additionalNotes: "",
+    },
+    {
+        refClause: "",
+        description: "  Motor temporary tag 'Oil mist ready, do not run without oil':",
+        purchaserReq: "not required",
+        purchaserReqUOM: "",
+        supplierOfferedVal: "select",
+        supplierOfferedValUOM: "",
+        additionalNotes: "",
+    },
+]
