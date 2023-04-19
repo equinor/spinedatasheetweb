@@ -32,7 +32,7 @@ function EquipmentListView() {
     const [error, setError] = useState<boolean>(false)
 
     const { projectId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
+    const currentProject = useCurrentContext();
 
     useEffect(() => {
         (async () => {
