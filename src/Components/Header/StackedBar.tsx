@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import ProgressBar from "./ProgressBar";
-import { Typography } from "@equinor/eds-core-react";
+import React, { useState, useEffect } from "react"
+import styled from "styled-components"
+import ProgressBar from "./ProgressBar"
+import { Typography } from "@equinor/eds-core-react"
 
 interface StackedBarProps {
     data: {
-        title: string;
-        percentage: number;
-        count: number;
-        barColor: string;
+        title: string
+        percentage: number
+        count: number
+        barColor: string
     }[];
 }
 
@@ -79,4 +79,4 @@ const StackedBar: React.FC<StackedBarProps> = ({ data }) => {
     );
 };
 
-export default StackedBar;
+export default StackedBar

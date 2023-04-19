@@ -1,13 +1,13 @@
-import { Progress, Tabs } from "@equinor/eds-core-react";
-import { useCurrentContext } from "@equinor/fusion";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import styled from "styled-components";
-import { GetDatasheetService } from "../api/DatasheetService";
-import EquipmentListTable from "../Components/EquipmentListTable";
-import { Datasheet } from "../Models/Datasheet";
-import TagComparisonTable from "../Components/TagComparisonTable/TagComparisonTable";
-import Header from "../Components/Header/Header";
+import { Progress, Tabs } from "@equinor/eds-core-react"
+import { useCurrentContext } from "@equinor/fusion"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
+import { GetDatasheetService } from "../api/DatasheetService"
+import EquipmentListTable from "../Components/EquipmentListTable"
+import { Datasheet } from "../Models/Datasheet"
+import TagComparisonTable from "../Components/TagComparisonTable/TagComparisonTable"
+import Header from "../Components/Header/Header"
 
 const Wrapper = styled.div`
     width: 100%;
@@ -18,23 +18,20 @@ const Wrapper = styled.div`
     padding: 20px 0;
 `;
 
-const { Panel } = Tabs;
-const { List, Tab, Panels } = Tabs;
-
+const { Panel } = Tabs
+const { List, Tab, Panels } = Tabs
 const StyledTabPanel = styled(Panel)`
     padding-top: 0;
-    border-top: 1px solid LightGray;
+    border-top: 1px solid LightGray
 `;
 
 function EquipmentListView() {
-    const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(0)
+    const [tags, setTags] = useState<Datasheet[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
 
-    const [tags, setTags] = useState<Datasheet[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
-
-    const { projectId } = useParams<Record<string, string | undefined>>();
-
+    const { projectId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext();
 
     useEffect(() => {
@@ -105,4 +102,4 @@ function EquipmentListView() {
         </Wrapper>
     );
 }
-export default EquipmentListView;
+export default EquipmentListView
