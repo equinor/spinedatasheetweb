@@ -3,8 +3,8 @@ import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { AgGridReact } from "ag-grid-react"
 import { ColDef } from "ag-grid-enterprise"
 import "ag-grid-enterprise"
-import { Datasheet } from '../../Models/Datasheet';
-import { comparisonGeneralColumnDefs } from './GeneralColumnDefs';
+import { Datasheet } from '../../Models/Datasheet'
+import { comparisonGeneralColumnDefs } from './GeneralColumnDefs'
 
 interface Props {
     tags: Datasheet[],

@@ -1,13 +1,13 @@
 // ProgressBar.tsx
-import React, { useRef, useState } from "react";
-import styled from "styled-components";
-import { Popover, Typography } from "@equinor/eds-core-react";
+import React, { useRef, useState } from "react"
+import styled from "styled-components"
+import { Popover, Typography } from "@equinor/eds-core-react"
 
 interface ProgressBarProps {
-    percentage: number;
-    barColor: string;
-    title: string;
-    count: number;
+    percentage: number
+    barColor: string
+    title: string
+    count: number
 }
 
 const FilledBar = styled.div<{ barColor: string; percentage: number }>`
@@ -78,4 +78,4 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     );
 };
 
-export default ProgressBar;
+export default ProgressBar

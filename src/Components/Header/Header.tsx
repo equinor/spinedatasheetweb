@@ -1,6 +1,6 @@
-import React, { FC } from "react";
-import styled from "styled-components";
-import StackedBar from "./StackedBar";
+import React, { FC } from "react"
+import styled from "styled-components"
+import StackedBar from "./StackedBar"
 
 const WrapperColumn = styled.div`
     width: 100%;
@@ -44,4 +44,4 @@ const Header: FC = () => {
     );
 };
 
-export default Header;
+export default Header

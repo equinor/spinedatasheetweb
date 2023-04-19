@@ -1,8 +1,8 @@
-import { FC } from "react";
-import { Route, Routes } from "react-router-dom";
-import JIP33TabView from "./Views/JIP33TabView";
-import EquipmentListView from "./Views/EquipmentListView";
-import TagComparisonView from "./Views/TagComparisonView";
+import { FC } from "react"
+import { Route, Routes } from "react-router-dom"
+import JIP33TabView from "./Views/JIP33TabView"
+import EquipmentListView from "./Views/EquipmentListView"
+import TagComparisonView from "./Views/TagComparisonView"
 
 const AppRouter: FC = () => (
     <>
