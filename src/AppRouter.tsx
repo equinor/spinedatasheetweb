@@ -3,11 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import JIP33TabView from "./Views/JIP33TabView";
 import EquipmentListView from "./Views/EquipmentListView";
 import TagComparisonView from "./Views/TagComparisonView";
-import Header from "./Components/Header/Header";
 
 const AppRouter: FC = () => (
     <>
-        <Header />
         <Routes>
             <Route path="/" element={<EquipmentListView />} />
             <Route path="/comparison" element={<TagComparisonView />} />
