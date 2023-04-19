@@ -20,7 +20,7 @@ const FilledBar = styled.div<{ barColor: string; percentage: number }>`
         transform: scale(1.1);
         cursor: pointer;
     }
-`;
+`
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
     percentage,
@@ -28,19 +28,19 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     title,
     count,
 }) => {
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-    const anchorRef = useRef<HTMLDivElement>(null);
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const anchorRef = useRef<HTMLDivElement>(null)
 
-    const openPopover = () => setIsOpen(true);
-    const closePopover = () => setIsOpen(false);
+    const openPopover = () => setIsOpen(true)
+    const closePopover = () => setIsOpen(false)
 
     const handleHover = () => {
-        openPopover();
-    };
+        openPopover()
+    }
 
     const handleClose = () => {
-        closePopover();
-    };
+        closePopover()
+    }
 
     return (
         <>
@@ -75,7 +75,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
             </Popover>
         </>
-    );
-};
+    )
+}
 
 export default ProgressBar

@@ -12,7 +12,7 @@ function getData() {
             name: 'Not Covered',
             count: 280,
         },
-    ];
+    ]
 }
 
 const data = getData()

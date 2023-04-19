@@ -16,14 +16,14 @@ const Wrapper = styled.div`
     align-items: center;
     flex-direction: column;
     padding: 20px 0;
-`;
+`
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 const StyledTabPanel = styled(Panel)`
     padding-top: 0;
-    border-top: 1px solid LightGray
-`;
+    border-top: 1px solid LightGray;
+`
 
 function EquipmentListView() {
     const [activeTab, setActiveTab] = useState(0)
@@ -32,37 +32,37 @@ function EquipmentListView() {
     const [error, setError] = useState<boolean>(false)
 
     const { projectId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext();
+    const currentProject = useCurrentContext()
 
     useEffect(() => {
         (async () => {
-            setError(false);
-            setIsLoading(false);
+            setError(false)
+            setIsLoading(false)
             if (currentProject !== null && currentProject.externalId !== null) {
                 try {
-                    setIsLoading(true);
+                    setIsLoading(true)
                     const datasheets: Datasheet[] = await (
                         await GetDatasheetService()
-                    ).getDatasheets();
-                    setTags(datasheets);
-                    setIsLoading(false);
+                    ).getDatasheets()
+                    setTags(datasheets)
+                    setIsLoading(false)
                 } catch {
-                    console.error("Error loading tags");
-                    setError(true);
+                    console.error("Error loading tags")
+                    setError(true)
                 }
             }
-        })();
-    }, [currentProject, projectId]);
+        })()
+    }, [currentProject, projectId])
 
     if (
         currentProject === null &&
         (projectId === null || projectId === undefined)
     ) {
-        return <div>No project selected</div>;
+        return <div>No project selected</div>
     }
 
     if (error) {
-        return <div>Error loading tags</div>;
+        return <div>Error loading tags</div>
     }
 
     if (isLoading) {
@@ -71,11 +71,11 @@ function EquipmentListView() {
                 <Progress.Circular size={16} color="primary" />
                 <div>Loading tags...</div>
             </>
-        );
+        )
     }
 
     if (tags.length === 0) {
-        return <div>No tags found for this project</div>;
+        return <div>No tags found for this project</div>
     }
 
     return (
@@ -100,6 +100,6 @@ function EquipmentListView() {
                 </Panels>
             </Tabs>
         </Wrapper>
-    );
+    )
 }
 export default EquipmentListView

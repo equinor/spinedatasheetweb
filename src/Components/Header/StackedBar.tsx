@@ -9,7 +9,7 @@ interface StackedBarProps {
         percentage: number
         count: number
         barColor: string
-    }[];
+    }[]
 }
 
 const Wrapper = styled.div`
@@ -23,7 +23,7 @@ const Wrapper = styled.div`
         opacity: 0.5
 
     }
-`;
+`
 
 const StackedBarContainer = styled.div`
     width: 200px;
@@ -36,12 +36,12 @@ const StackedBarContainer = styled.div`
     background-color: rgb(235 235 235);
     overflow: hidden;
     margin-top: 5px;
-`;
+`
 
 
 
 const StackedBar: React.FC<StackedBarProps> = ({ data }) => {
-    const [totalPercentage, setTotalPercentage] = useState<number>(0);
+    const [totalPercentage, setTotalPercentage] = useState<number>(0)
 
     useEffect(() => {
         // find percentage of all data items except the one with the title Not reviewed
@@ -49,11 +49,11 @@ const StackedBar: React.FC<StackedBarProps> = ({ data }) => {
             data
                 .filter((item) => item.title !== "Not reviewed")
                 .reduce((acc, item) => acc + item.percentage, 0)
-        );
-    }, [data, totalPercentage]);
+        )
+    }, [data, totalPercentage])
 
     if (totalPercentage > 100)
-        return <div>Error: input total % is greater than 100</div>;
+        return <div>Error: input total % is greater than 100</div>
 
     return (
         <Wrapper>
@@ -76,7 +76,7 @@ const StackedBar: React.FC<StackedBarProps> = ({ data }) => {
 
         </Wrapper>
 
-    );
-};
+    )
+}
 
 export default StackedBar

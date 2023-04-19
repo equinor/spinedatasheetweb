@@ -8,7 +8,7 @@ const WrapperColumn = styled.div`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-`;
+`
 const Header: FC = () => {
     return (
         <WrapperColumn>
@@ -41,7 +41,7 @@ const Header: FC = () => {
                 ]}
             />
         </WrapperColumn>
-    );
-};
+    )
+}
 
 export default Header
