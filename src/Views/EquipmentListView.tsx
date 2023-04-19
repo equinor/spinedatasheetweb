@@ -7,6 +7,7 @@ import { GetDatasheetService } from "../api/DatasheetService";
 import EquipmentListTable from "../Components/EquipmentListTable";
 import { Datasheet } from "../Models/Datasheet";
 import TagComparisonTable from "../Components/TagComparisonTable/TagComparisonTable";
+import Header from "../Components/Header/Header";
 
 const Wrapper = styled.div`
     width: 100%;
@@ -82,6 +83,7 @@ function EquipmentListView() {
 
     return (
         <Wrapper>
+            <Header />
             <Tabs
                 style={{ width: "100%" }}
                 activeTab={activeTab}
