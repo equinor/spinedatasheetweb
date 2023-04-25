@@ -33,12 +33,10 @@ const TopBar = styled.div`
     border-bottom: 1px solid LightGray;
     z-index: 100;
     padding-top: 20px;
-    // position: sticky;
-    // top: 0;
 `
 
 const Body = styled.div`
-    height: 92%; //92
+    height: 92%;
 `
 
 function JIP33ElectricTabView({
