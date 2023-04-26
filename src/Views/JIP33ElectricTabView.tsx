@@ -26,7 +26,7 @@ import { testingAndInspectionRowData } from "../Components/JIP33Table/RowData/El
 import { preservationAndStorageRowData } from "../Components/JIP33Table/RowData/Electric/PreservationAndStorageRowData"
 import { documentationRowData } from "../Components/JIP33Table/RowData/Electric/DocumentationRowData"
 import { informationRowData } from "../Components/JIP33Table/RowData/Electric/InformationRowData"
-import SideMenu from "../Components/SideMenu"
+import SideMenu from "../Components/JIP33WithSideMenu"
 
 const TopBar = styled.div`
     padding-top: 0;

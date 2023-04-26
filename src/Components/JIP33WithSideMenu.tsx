@@ -75,7 +75,7 @@ interface Props {
 
 }
 
-const SideMenu: React.FC<Props> = ({ sideMenuList, rowDataList }) => {
+const JIP33WithSideMenu: React.FC<Props> = ({ sideMenuList, rowDataList }) => {
     const [activeTab, setActiveTab] = useState(0)
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
     const backgroundColor = "rgba(0, 112, 121, 0.1)"
@@ -108,4 +108,4 @@ const SideMenu: React.FC<Props> = ({ sideMenuList, rowDataList }) => {
     )
 }
 
-export default SideMenu
+export default JIP33WithSideMenu
