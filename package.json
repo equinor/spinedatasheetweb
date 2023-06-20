@@ -84,7 +84,7 @@
   },
   "devDependencies": {
     "@equinor/fusion-cli": "3.0.0-beta.39",
-    "@types/react": "^17.0.38",
+    "@types/react": "^17.0.60",
     "@types/react-modal": "^3.13.1",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
