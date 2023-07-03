@@ -1,15 +1,15 @@
 import { useMemo } from "react"
-import { AgGridReact } from '@ag-grid-community/react';
-import { Link } from "react-router-dom"
+import { AgGridReact } from "@ag-grid-community/react"
 import { tokens } from "@equinor/eds-tokens"
-import { Datasheet } from "../Models/Datasheet"
-import { Icon } from '@equinor/eds-core-react'
-import { tag } from '@equinor/eds-icons'
+import { TagData } from "../Models/TagData"
+import { Icon } from "@equinor/eds-core-react"
+import { tag } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { ColDef } from "@ag-grid-community/core";
+import { ColDef } from "@ag-grid-community/core"
+import { Link, useLocation } from "react-router-dom"
 
 interface Props {
-    tags: Datasheet[],
+    tags: TagData[],
 }
 
 const TagIcon = styled(Icon)`
@@ -19,28 +19,40 @@ const TagIcon = styled(Icon)`
 `
 
 function EquipmentListTable({ tags }: Props) {
+    const location = useLocation()
+
     const defaultColDef = useMemo<ColDef>(() => ({
         sortable: true,
-        filter: true,
+        filter: "agMultiColumnFilter",
         resizable: true,
         editable: false,
     }), [])
 
     const typeOfJIP33 = (params: any) => {
-        const dicipline = params.data.dicipline
-        if (dicipline === "Mechanical") {
+        const discipline = params.data.discipline
+        if (discipline === "Mechanical") {
             return "JIP33Mechanical"
         }
-        if (dicipline === "Electrical") {
+        if (discipline === "Electrical") {
             return "JIP33Electrical"
         }
         return "JIP33Instrument"
     }
 
+    const getTagLink = (params: any) => {
+        const lastChar = location.pathname.charAt(location.pathname.length - 1)
+        if (lastChar === "/") {
+            const result = ({ ...location, pathname: `${location.pathname}${typeOfJIP33(params)}/${params.data.id}` })
+            return result
+        }
+        const result = ({ ...location, pathname: `${location.pathname}/${typeOfJIP33(params)}/${params.data.id}` })
+        return result
+    }
+
     const linkToDocument = (params: any) => {
         return (
             <Link
-                to={`${typeOfJIP33(params)}/${params.data.id}`}
+                to={getTagLink(params)}
                 style={{ color: tokens.colors.text.static_icons__default.rgba }}
             >
                 <TagIcon data={tag} color={'green'} size={18} />
@@ -58,7 +70,7 @@ function EquipmentListTable({ tags }: Props) {
                 { field: "description", headerName: "Description", flex: 1, minWidth: 100 },
                 { field: "category", headerName: "Category" },
                 { field: "area", headerName: "Area", flex: 1, maxWidth: 100, minWidth: 80 },
-                { field: "dicipline", headerName: "Dicipline" },
+                { field: "discipline", headerName: "Discipline" },
             ]
 
         },
@@ -90,6 +102,8 @@ function EquipmentListTable({ tags }: Props) {
                 suppressMovableColumns
                 headerHeight={48}
                 rowHeight={35}
+                enableRangeSelection
+                suppressCopySingleCellRanges
             />
         </div>
     )
