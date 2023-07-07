@@ -75,8 +75,9 @@ interface Props {
     rowDataList: object[][]
     customTabList?: string[]
     reviewComments?: ReviewComment[]
-    setReviewSideSheetOpen?: Dispatch<SetStateAction<boolean>> | undefined,
-    setCurrentProperty?: Dispatch<SetStateAction<string>> | undefined,
+    setReviewSideSheetOpen?: Dispatch<SetStateAction<boolean>> | undefined
+    setCurrentProperty?: Dispatch<SetStateAction<string>> | undefined
+    setWidth?: (width: number) => void
 }
 
 const JIP33WithSideMenu: React.FC<Props> = ({
@@ -86,6 +87,7 @@ const JIP33WithSideMenu: React.FC<Props> = ({
     reviewComments,
     setCurrentProperty,
     setReviewSideSheetOpen,
+    setWidth,
 }) => {
     const [activeTab, setActiveTab] = useState(0)
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
@@ -108,12 +110,24 @@ const JIP33WithSideMenu: React.FC<Props> = ({
                                 <Item
                                     key={sideMenuName}
                                     style={{
-                                        backgroundColor: activeTab === index ? backgroundColor : "",
-                                        borderStyle: sideMenuBorder(sideMenuName),
+                                        backgroundColor:
+                                            activeTab === index
+                                                ? backgroundColor
+                                                : "",
+                                        borderStyle:
+                                            sideMenuBorder(sideMenuName),
                                     }}
                                     onClick={() => setActiveTab(index)}
                                 >
-                                    <LinkWithoutStyle color={activeTab === index ? selectedColor : ""}>{sideMenuName}</LinkWithoutStyle>
+                                    <LinkWithoutStyle
+                                        color={
+                                            activeTab === index
+                                                ? selectedColor
+                                                : ""
+                                        }
+                                    >
+                                        {sideMenuName}
+                                    </LinkWithoutStyle>
                                 </Item>
                             ))}
                         </MenuItems>
@@ -126,6 +140,7 @@ const JIP33WithSideMenu: React.FC<Props> = ({
                             reviewComments={reviewComments}
                             setCurrentProperty={setCurrentProperty}
                             setReviewSideSheetOpen={setReviewSideSheetOpen}
+                            setWidth={setWidth}
                         />
                     </StyledTabPanel>
                 </MainView>
