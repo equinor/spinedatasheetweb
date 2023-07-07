@@ -87,7 +87,7 @@ function JIP33InstrumentTabView({}) {
     }
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             setError(false)
             setIsLoading(false)
             if (tagId !== null && tagId !== undefined) {
@@ -212,6 +212,7 @@ function JIP33InstrumentTabView({}) {
                                     setCurrentProperty={setCurrentProperty}
                                     setReviewSideSheetOpen={setOpen}
                                     setWidth={setSheetWidth}
+                                    width={sheetWidth}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel sheetWidth={sheetWidth}>
@@ -223,6 +224,7 @@ function JIP33InstrumentTabView({}) {
                                     setCurrentProperty={setCurrentProperty}
                                     setReviewSideSheetOpen={setOpen}
                                     setWidth={setSheetWidth}
+                                    width={sheetWidth}
                                 />
                             </StyledTabPanel>
                         </Panels>

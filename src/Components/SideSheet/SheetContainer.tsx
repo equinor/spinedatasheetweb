@@ -15,9 +15,6 @@ const SheetContent = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: sticky;
-    top: 0px;
-    right: 0px;
     background-color: #f7f7f7;
 `
 
@@ -111,7 +108,7 @@ const SheetContainer: React.FC<Props> = ({
     
     return (
         <Resizable
-            style={{ position: "absolute", right: 0, top: 0, height: "100%" }}
+            style={{ position: "sticky", right: 0, top: 0, height: "100%" }}
             defaultSize={{
                 width: width,
                 height: "100%",

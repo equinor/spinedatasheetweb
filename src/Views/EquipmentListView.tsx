@@ -49,7 +49,7 @@ function EquipmentListView() {
     }, [currentProject])
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             if (externalId !== undefined) {
                 setError(false)
                 setIsLoading(false)
