@@ -13,6 +13,7 @@ interface Props {
     setReviewSideSheetOpen?: Dispatch<SetStateAction<boolean>> | undefined
     setCurrentProperty?: Dispatch<SetStateAction<string>> | undefined
     setWidth?: (width: number) => void
+    width?: number
 }
 
 function JIP33Table({
@@ -21,7 +22,7 @@ function JIP33Table({
     setReviewSideSheetOpen,
     setCurrentProperty,
     setWidth,
-
+    width,
 }: Props) {
     useAgGridStyles()
 
@@ -97,7 +98,12 @@ function JIP33Table({
                     data={comment_chat}
                     onClick={() => {
                         setReviewSideSheetOpen(true)
-                        setWidth !== undefined && setWidth(600)
+                        if (width && setWidth) {
+                            setWidth(width)
+                        } else if (setWidth) {
+                            setWidth(600)
+                        }
+
                         setCurrentProperty(params.data)
                     }}
                     color="#007079"
@@ -113,7 +119,11 @@ function JIP33Table({
                     data={comment}
                     onClick={() => {
                         setReviewSideSheetOpen(true)
-                        setWidth !== undefined && setWidth(600)
+                        if (width && setWidth) {
+                            setWidth(width)
+                        } else if (setWidth) {
+                            setWidth(600)
+                        }
                         setCurrentProperty(params.data)
                     }}
                     color="#007079"
