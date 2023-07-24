@@ -1,9 +1,6 @@
 const webpack = require('webpack');
 
 let isProduction = false;
-if (process.env.BUILD_MODE && process.env.BUILD_MODE === 'production') {
-  isProduction = true;
-}
 if (process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
   isProduction = true;
 }
