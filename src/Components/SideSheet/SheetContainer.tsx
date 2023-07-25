@@ -118,7 +118,12 @@ const SheetContainer: React.FC<Props> = ({
 
     return (
         <Resizable
-            style={{ position: "absolute", right: 0, top: 0, height: "100%" }}
+            style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                height: "100%",
+            }}
             defaultSize={{
                 width: width,
                 height: "100%",

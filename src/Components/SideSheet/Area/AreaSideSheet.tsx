@@ -1,8 +1,7 @@
 import React, { FC } from "react"
-import { Typography } from "@equinor/eds-core-react"
+import { Typography, Table } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { ViewContext } from "../../../Context/ViewContext"
-import { Table } from "@equinor/eds-core-react"
 
 const Container = styled.div`
     display: flex;
@@ -58,14 +57,12 @@ const AreaCard: FC = () => {
             <Card>
                 <Typography variant="h6">AREA CONDITIONS</Typography>
                 <InfoTable>
-                    {Object.keys(dummyData).map((key) => {
-                        return (
-                            <Table.Row key={key}>
-                                <Table.Cell>{key}</Table.Cell>
-                                <Table.Cell>{dummyData[key]}</Table.Cell>
-                            </Table.Row>
-                        )
-                    })}
+                    {Object.keys(dummyData).map((key) => (
+                        <Table.Row key={key}>
+                            <Table.Cell>{key}</Table.Cell>
+                            <Table.Cell>{dummyData[key]}</Table.Cell>
+                        </Table.Row>
+                    ))}
                 </InfoTable>
             </Card>
         </Container>

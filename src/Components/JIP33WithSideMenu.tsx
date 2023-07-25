@@ -67,7 +67,7 @@ const Item = styled.li`
 const StyledTabPanel = styled.div`
     padding-top: 0;
     border-bottom: 1px solid LightGray;
-    flexWrap: "wrap";
+    flexwrap: "wrap";
     height: 100%;
 `
 
@@ -95,8 +95,6 @@ const JIP33WithSideMenu: React.FC<Props> = ({
     const [activeTab, setActiveTab] = useState(0)
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
     const backgroundColor = "rgba(0, 112, 121, 0.1)"
-
-
     const firstCustomTabIndex = sideMenuList.findIndex((menuName) =>
         customTabList?.includes(menuName)
     )
