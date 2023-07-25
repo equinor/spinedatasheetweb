@@ -67,7 +67,8 @@ const Item = styled.li`
 const StyledTabPanel = styled.div`
     padding-top: 0;
     border-bottom: 1px solid LightGray;
-    flexWrap: "wrap"
+    flexWrap: "wrap";
+    height: 100%;
 `
 
 interface Props {
@@ -95,11 +96,27 @@ const JIP33WithSideMenu: React.FC<Props> = ({
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
     const backgroundColor = "rgba(0, 112, 121, 0.1)"
 
+
+    const firstCustomTabIndex = sideMenuList.findIndex((menuName) =>
+        customTabList?.includes(menuName)
+    )
+
+    const sideMenuInsetShadow = (index: number) => {
+        if (index === firstCustomTabIndex) {
+            return {
+                boxShadow: "inset 0px 5px 5px -3px rgba(0, 0, 0, 0.2)",
+            }
+        }
+        return {}
+    }
+
     const sideMenuBorder = (sideMenuName: string) => {
         if (customTabList && customTabList.includes(sideMenuName)) {
-            return "outset"
+            return {
+                borderLeft: "4px solid #ff105f",
+            }
         }
-        return "none"
+        return {}
     }
 
     return (
@@ -116,8 +133,8 @@ const JIP33WithSideMenu: React.FC<Props> = ({
                                             activeTab === index
                                                 ? backgroundColor
                                                 : "",
-                                        borderStyle:
-                                            sideMenuBorder(sideMenuName),
+                                        ...sideMenuBorder(sideMenuName),
+                                        ...sideMenuInsetShadow(index),
                                     }}
                                     onClick={() => setActiveTab(index)}
                                 >
