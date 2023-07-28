@@ -29,7 +29,6 @@ const SheetBody = styled(Tabs.Panels)`
 `
 
 const TabsContainer = styled(Tabs)`
-    z-index: 1;
     flex: 1;
     display: flex;
     flex-direction: column;
