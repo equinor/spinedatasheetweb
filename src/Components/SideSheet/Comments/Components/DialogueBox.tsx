@@ -29,24 +29,38 @@ interface DialogueBoxProps {
     setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>
 }
 
-const handleDelete = async (id: string | undefined) => {
-    if (id !== undefined) {
+const deleteComment = async (
+    comment: ReviewComment,
+    reviewComments: ReviewComment[],
+    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
+) => {
+    if (comment.id) {
         try {
             const service = await GetCommentService()
-            await service.deleteComment(id)
+            await service.deleteComment(comment.id)
+            const newReviewComments = reviewComments.filter((c) => (c.id !== comment.id))
+            setReviewComments(newReviewComments)
         } catch (error) {
             console.log(`Error deleting comment: ${error}`)
         }
     }
 }
 
-const handleUpdateComment = async (newCommentText: string, comment: ReviewComment) => {
+const updateComment = async (
+    newCommentText: string,
+    comment: ReviewComment,
+    reviewComments: ReviewComment[],
+    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
+) => {
     if (newCommentText && comment.id) {
         try {
             const commentService = await GetCommentService()
-            const newComment = comment
+            const newComment = { ...comment }
             newComment.text = newCommentText
-            await commentService.updateComment(comment.id, newComment)
+            const updatedComment = await commentService.updateComment(comment.id, newComment)
+            const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : updatedComment))
+            setReviewComments(newReviewComments)
+            console.log(updatedComment)
         } catch (error) {
             console.log(`Error updating comment: ${error}`)
         }
@@ -62,7 +76,7 @@ const renderComment = (
 ) => {
     const [editedComment, setEditedComment] = useState(comment.text || "")
 
-    const handleEdit = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const editComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setEditedComment(e.target.value)
     }
 
@@ -70,9 +84,8 @@ const renderComment = (
         setUpdateMode(false)
     }
 
-    const handleSave = () => {
-        handleUpdateComment(editedComment, comment)
-        setReviewComments(reviewComments)
+    const saveComment = () => {
+        updateComment(editedComment, comment, reviewComments, setReviewComments)
         cancelEdit()
     }
 
@@ -81,10 +94,10 @@ const renderComment = (
             <div>
                 <textarea
                     value={editedComment}
-                    onChange={handleEdit}
+                    onChange={editComment}
                 />
                 <br />
-                <Button variant="contained" onClick={handleSave}>Save</Button>
+                <Button variant="contained" onClick={saveComment}>Save</Button>
                 <Button variant="contained" onClick={cancelEdit}>Cancel</Button>
             </div>
         )
@@ -112,7 +125,7 @@ const DialogueBox: FC<DialogueBoxProps> = ({
                 >
                     <Icon data={edit} size={16} color="#007079" />
                 </Button>
-                <Button variant="ghost_icon" onClick={(e: any) => handleDelete(comment.id)} title="Delete">
+                <Button variant="ghost_icon" onClick={(e: any) => deleteComment(comment, reviewComments, setReviewComments)} title="Delete">
                     <Icon data={delete_to_trash} size={16} color="#007079" />
                 </Button>
             </Message>
