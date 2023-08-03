@@ -60,9 +60,8 @@ const updateComment = async (
             const updatedComment = await commentService.updateComment(comment.id, newComment)
             const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : updatedComment))
             setReviewComments(newReviewComments)
-            console.log(updatedComment)
         } catch (error) {
-            console.log(`Error updating comment: ${error}`)
+            console.error(`Error updating comment: ${error}`)
         }
     }
 }
