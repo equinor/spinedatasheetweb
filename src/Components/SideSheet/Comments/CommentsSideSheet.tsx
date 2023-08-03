@@ -1,5 +1,5 @@
 import React, {
- Dispatch, SetStateAction, useContext, useState,
+    Dispatch, SetStateAction, useContext, useState,
 } from "react"
 import { useParams } from "react-router-dom"
 import { useCurrentUser } from "@equinor/fusion"
