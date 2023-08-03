@@ -1,4 +1,6 @@
-import React, { FC, useState } from "react"
+import React, {
+    Dispatch, FC, SetStateAction, useState,
+} from "react"
 import styled from "styled-components"
 import { Button, Icon } from "@equinor/eds-core-react"
 import { delete_to_trash, edit } from "@equinor/eds-icons"
@@ -23,6 +25,8 @@ const Message = styled.div``
 interface DialogueBoxProps {
     comment: ReviewComment
     formattedDate: string
+    reviewComments: ReviewComment[]
+    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>
 }
 
 const handleDelete = async (id: string | undefined) => {
@@ -40,20 +44,22 @@ const handleUpdateComment = async (newCommentText: string, comment: ReviewCommen
     if (newCommentText && comment.id) {
         try {
             const commentService = await GetCommentService()
-            // Update the comment object with the edited text
-            // eslint-disable-next-line no-param-reassign
-            comment.text = newCommentText
-            // Call the commentService.updateComment method with the updated comment object
-            await commentService.updateComment(comment.id, comment)
-            // eslint-disable-next-line no-param-reassign
-            comment = await commentService.getComment(comment.id)
+            const newComment = comment
+            newComment.text = newCommentText
+            await commentService.updateComment(comment.id, newComment)
         } catch (error) {
             console.log(`Error updating comment: ${error}`)
         }
     }
 }
 
-const renderComment = (comment: ReviewComment, isUpdateMode: boolean, setUpdateMode: any) => {
+const renderComment = (
+    comment: ReviewComment,
+    isUpdateMode: boolean,
+    setUpdateMode: any,
+    reviewComments: ReviewComment[],
+    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
+) => {
     const [editedComment, setEditedComment] = useState(comment.text || "")
 
     const handleEdit = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -66,6 +72,7 @@ const renderComment = (comment: ReviewComment, isUpdateMode: boolean, setUpdateM
 
     const handleSave = () => {
         handleUpdateComment(editedComment, comment)
+        setReviewComments(reviewComments)
         cancelEdit()
     }
 
@@ -85,7 +92,9 @@ const renderComment = (comment: ReviewComment, isUpdateMode: boolean, setUpdateM
     return <p>{comment.text}</p>
 }
 
-const DialogueBox: FC<DialogueBoxProps> = ({ comment, formattedDate }) => {
+const DialogueBox: FC<DialogueBoxProps> = ({
+    comment, formattedDate, reviewComments, setReviewComments,
+}) => {
     const [isUpdateMode, setUpdateMode] = useState(false)
 
     return (
@@ -95,7 +104,7 @@ const DialogueBox: FC<DialogueBoxProps> = ({ comment, formattedDate }) => {
                 <p>{formattedDate}</p>
             </Header>
             <Message>
-                {renderComment(comment, isUpdateMode, setUpdateMode)}
+                {renderComment(comment, isUpdateMode, setUpdateMode, reviewComments, setReviewComments)}
                 <Button
                     variant="ghost_icon"
                     onClick={() => setUpdateMode((prevMode) => !prevMode)}

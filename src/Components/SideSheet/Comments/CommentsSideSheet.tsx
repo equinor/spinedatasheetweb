@@ -56,7 +56,7 @@ const CommentsSideSheet: React.FC<CommentsSideSheetProps> = ({
                 hour12: false,
             })
             return (
-                <DialogueBox comment={comment} formattedDate={formattedDate} />
+                <DialogueBox comment={comment} formattedDate={formattedDate} reviewComments={reviewComments} setReviewComments={setReviewComments} />
             )
         })
 
