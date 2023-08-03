@@ -256,6 +256,7 @@ function JIP33InstrumentTabView({ }) {
                 onClose={onCloseReviewSideSheet}
                 isOpen={open}
                 currentProperty={currentProperty}
+                setCurrentProperty={setCurrentProperty}
                 reviewComments={reviewComments}
                 setReviewComments={setReviewComments}
                 tag={activeTagData}

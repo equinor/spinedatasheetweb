@@ -103,7 +103,7 @@ function JIP33Table({
                         } else if (setWidth) {
                             setWidth(620)
                         }
-
+                        console.log("setting property to ", params.data)
                         setCurrentProperty(params.data)
                     }}
                     color="#007079"
@@ -124,6 +124,7 @@ function JIP33Table({
                         } else if (setWidth) {
                             setWidth(620)
                         }
+                        console.log("setting property to ", params.data)
                         setCurrentProperty(params.data)
                     }}
                     color="#007079"

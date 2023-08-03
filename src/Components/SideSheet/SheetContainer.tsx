@@ -10,7 +10,7 @@ import { Resizable } from "re-resizable"
 import { TagData } from "../../Models/TagData"
 import { ReviewComment } from "../../Models/ReviewComment"
 import InfoStrip from "./Components/InfoStrip"
-import CommentsSideSheet from "./Comments/CommentsSideSheet"
+import CommentsSideSheet from "./Comments/CommentSideSheet"
 import AreaSideSheet from "./Area/AreaSideSheet"
 import ChangeLogSideSheet from "./ChangeLog/ChangeLogSideSheet"
 import EquipmentSideSheet from "./Equipment/EquipmentSideSheet"
@@ -87,6 +87,7 @@ type Props = {
     isOpen: boolean
     onClose: () => void
     currentProperty: any
+    setCurrentProperty: Dispatch<SetStateAction<any>>
     reviewComments: ReviewComment[]
     setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>
     tag: TagData
@@ -99,6 +100,7 @@ const SheetContainer: React.FC<Props> = ({
     isOpen,
     reviewComments,
     currentProperty,
+    setCurrentProperty,
     setReviewComments,
     tag,
     width,
@@ -197,6 +199,7 @@ const SheetContainer: React.FC<Props> = ({
                                 <CommentsSideSheet
                                     reviewComments={reviewComments}
                                     currentProperty={currentProperty.property}
+                                    setCurrentProperty={setCurrentProperty}
                                     setReviewComments={setReviewComments}
                                 />
                             )}
