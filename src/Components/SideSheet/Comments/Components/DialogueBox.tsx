@@ -41,7 +41,7 @@ const deleteComment = async (
             const newReviewComments = reviewComments.filter((c) => (c.id !== comment.id))
             setReviewComments(newReviewComments)
         } catch (error) {
-            console.log(`Error deleting comment: ${error}`)
+            console.error(`Error deleting comment: ${error}`)
         }
     }
 }
