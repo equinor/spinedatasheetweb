@@ -1,4 +1,6 @@
-import { Icon, Tabs, Typography } from "@equinor/eds-core-react"
+import {
+ Icon, Tabs, Typography, Button,
+} from "@equinor/eds-core-react"
 import styled from "styled-components"
 import React, {
     useCallback, useContext, useEffect, useState,
@@ -84,6 +86,12 @@ function JIP33InstrumentTabView({ }) {
     const onCloseReviewSideSheet = useCallback(() => {
         setOpen(false)
         setSheetWidth(0)
+    }, [setOpen])
+
+    const onOpenReviewSideSheet = useCallback(() => {
+        setOpen(true)
+        setSheetWidth(620)
+        setCurrentProperty("")
     }, [setOpen])
 
     const getCommentsForTagReview = async (id: string) => {
@@ -217,6 +225,9 @@ function JIP33InstrumentTabView({ }) {
                             color="#007079"
                         />
                     </Typography>
+                    <Button onClick={() => onOpenReviewSideSheet()}>
+                        Open sidesheet
+                    </Button>
                 </TopBar>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
