@@ -54,7 +54,12 @@ const CommentView: React.FC<CommentViewProps> = ({
                 hour12: false,
             })
             return (
-                <DialogueBox comment={comment} formattedDate={formattedDate} reviewComments={reviewComments} setReviewComments={setReviewComments} />
+                <DialogueBox
+                    comment={comment}
+                    formattedDate={formattedDate}
+                    reviewComments={reviewComments}
+                    setReviewComments={setReviewComments}
+                />
             )
         })
 
