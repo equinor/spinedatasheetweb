@@ -2,7 +2,7 @@ import React, {
     Dispatch, FC, SetStateAction, useState,
 } from "react"
 import styled from "styled-components"
-import { Button, Icon } from "@equinor/eds-core-react"
+import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { delete_to_trash, edit } from "@equinor/eds-icons"
 import { useCurrentUser } from "@equinor/fusion"
 import { GetCommentService } from "../../../../api/CommentService"
@@ -21,6 +21,14 @@ const Header = styled.div`
     font-size: 12px;
     color: #6a6a6a;
 `
+
+const EditedText = styled(Typography)`
+  font-size: smaller;
+  font-weight: bold;
+  font-style: italic;
+  color: #6a6a6a;
+`
+
 const Message = styled.div``
 
 interface DialogueBoxProps {
@@ -115,12 +123,13 @@ const renderComment = (
     }
     return (
         <>
-            <p>
+            <Typography>
                 {comment.text}
-            </p>
-            <p style={{ fontSize: "smaller", fontWeight: "bold", fontStyle: "italic" }}>
-                {comment.isEdited ? `Last Edited ${formatDate(comment.lastEdited)}` : ""}
-            </p>
+            </Typography>
+            <br />
+            <EditedText>
+                {comment.isEdited ? `Last Edited ${formatDate(comment.modifiedDate)}` : ""}
+            </EditedText>
         </>
     )
 }
@@ -134,8 +143,8 @@ const DialogueBox: FC<DialogueBoxProps> = ({
     return (
         <Container key={comment.id}>
             <Header>
-                <p>{comment.commenterName}</p>
-                <p>{formattedDate}</p>
+                <Typography>{comment.commenterName}</Typography>
+                <Typography>{formattedDate}</Typography>
             </Header>
             <Message>
                 {renderComment(comment, isUpdateMode, setUpdateMode, reviewComments, setReviewComments)}
@@ -156,10 +165,8 @@ const DialogueBox: FC<DialogueBoxProps> = ({
                     >
                         <Icon data={delete_to_trash} size={16} color="#007079" />
                     </Button>
-
                 </>
             </Message>
-
         </Container>
     )
 }
