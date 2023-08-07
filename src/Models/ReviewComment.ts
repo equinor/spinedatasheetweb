@@ -7,6 +7,8 @@ export class ReviewComment implements Components.Schemas.CommentDto {
     modifiedDate?: string; // date-time
     userId?: string; // uuid
     commenterName?: string | null;
+    lastEdited?: string | null; // date-time
+    isEdited?: boolean;
     text?: string | null;
     property?: string | null;
     commentLevel?: Components.Schemas.CommentLevel /* int32 */;

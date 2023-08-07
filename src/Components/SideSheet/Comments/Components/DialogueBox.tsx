@@ -4,6 +4,7 @@ import React, {
 import styled from "styled-components"
 import { Button, Icon } from "@equinor/eds-core-react"
 import { delete_to_trash, edit } from "@equinor/eds-icons"
+import { useCurrentUser } from "@equinor/fusion"
 import { GetCommentService } from "../../../../api/CommentService"
 import { ReviewComment } from "../../../../Models/ReviewComment"
 
@@ -88,6 +89,17 @@ const renderComment = (
         cancelEdit()
     }
 
+    const formatDate = (dateString: string | null | undefined) => {
+        const options: Intl.DateTimeFormatOptions = {
+            day: "numeric",
+            month: "long",
+            hour: "numeric",
+            minute: "numeric",
+            timeZoneName: "short",
+        }
+        return dateString ? new Date(dateString).toLocaleDateString("no-NO", options) : ""
+    }
+
     if (isUpdateMode) {
         return (
             <div>
@@ -101,13 +113,23 @@ const renderComment = (
             </div>
         )
     }
-    return <p>{comment.text}</p>
+    return (
+        <>
+            <p>
+                {comment.text}
+            </p>
+            <p style={{ fontSize: "smaller", fontWeight: "bold", fontStyle: "italic" }}>
+                {comment.isEdited ? `Last Edited ${formatDate(comment.lastEdited)}` : ""}
+            </p>
+        </>
+    )
 }
 
 const DialogueBox: FC<DialogueBoxProps> = ({
     comment, formattedDate, reviewComments, setReviewComments,
 }) => {
     const [isUpdateMode, setUpdateMode] = useState(false)
+    const currentUser: any = useCurrentUser()
 
     return (
         <Container key={comment.id}>
@@ -117,16 +139,25 @@ const DialogueBox: FC<DialogueBoxProps> = ({
             </Header>
             <Message>
                 {renderComment(comment, isUpdateMode, setUpdateMode, reviewComments, setReviewComments)}
-                <Button
-                    variant="ghost_icon"
-                    onClick={() => setUpdateMode((prevMode) => !prevMode)}
-                    title="Edit comment"
-                >
-                    <Icon data={edit} size={16} color="#007079" />
-                </Button>
-                <Button variant="ghost_icon" onClick={(e: any) => deleteComment(comment, reviewComments, setReviewComments)} title="Delete">
-                    <Icon data={delete_to_trash} size={16} color="#007079" />
-                </Button>
+                <>
+                    <Button
+                        style={{ display: currentUser?._info.localAccountId === comment.userId ? "all" : "none" }}
+                        variant="ghost_icon"
+                        onClick={() => setUpdateMode((prevMode) => !prevMode)}
+                        title="Edit comment"
+                    >
+                        <Icon data={edit} size={16} color="#007079" />
+                    </Button>
+                    <Button
+                        style={{ display: currentUser?._info.localAccountId === comment.userId ? "all" : "none" }}
+                        variant="ghost_icon"
+                        onClick={(e: any) => deleteComment(comment, reviewComments, setReviewComments)}
+                        title="Delete"
+                    >
+                        <Icon data={delete_to_trash} size={16} color="#007079" />
+                    </Button>
+
+                </>
             </Message>
 
         </Container>
