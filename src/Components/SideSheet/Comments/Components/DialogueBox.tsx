@@ -148,24 +148,25 @@ const DialogueBox: FC<DialogueBoxProps> = ({
             </Header>
             <Message>
                 {renderComment(comment, isUpdateMode, setUpdateMode, reviewComments, setReviewComments)}
-                <>
-                    <Button
-                        style={{ display: currentUser?._info.localAccountId === comment.userId ? "all" : "none" }}
-                        variant="ghost_icon"
-                        onClick={() => setUpdateMode((prevMode) => !prevMode)}
-                        title="Edit comment"
-                    >
-                        <Icon data={edit} size={16} color="#007079" />
-                    </Button>
-                    <Button
-                        style={{ display: currentUser?._info.localAccountId === comment.userId ? "all" : "none" }}
-                        variant="ghost_icon"
-                        onClick={(e: any) => deleteComment(comment, reviewComments, setReviewComments)}
-                        title="Delete"
-                    >
-                        <Icon data={delete_to_trash} size={16} color="#007079" />
-                    </Button>
-                </>
+                {currentUser?._info.localAccountId === comment.userId
+                    && (
+                        <>
+                            <Button
+                                variant="ghost_icon"
+                                onClick={() => setUpdateMode((prevMode) => !prevMode)}
+                                title="Edit comment"
+                            >
+                                <Icon data={edit} size={16} color="#007079" />
+                            </Button>
+                            <Button
+                                variant="ghost_icon"
+                                onClick={(e: any) => deleteComment(comment, reviewComments, setReviewComments)}
+                                title="Delete"
+                            >
+                                <Icon data={delete_to_trash} size={16} color="#007079" />
+                            </Button>
+                        </>
+                    )}
             </Message>
         </Container>
     )
