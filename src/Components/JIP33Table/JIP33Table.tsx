@@ -1,5 +1,5 @@
 import React, {
- Dispatch, SetStateAction, useMemo, useContext,
+  Dispatch, SetStateAction, useMemo, useContext,
 } from "react"
 import { ColDef } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
@@ -29,6 +29,9 @@ function JIP33Table({
 }: Props) {
     const { setActiveSheetTab } = useContext(ViewContext)
     const styles = useStyles()
+
+    const { activeTagData } = useContext(ViewContext)
+    const [reviewOpen, setReviewOpen] = useState<boolean>(false)
 
     const red = "white" // "#e6b8b7"
     const lightBlue = "white" // "#b7dee8"
@@ -103,6 +106,13 @@ function JIP33Table({
     }
 
     const commentIcon = (params: any) => {
+        if (activeTagData?.review === undefined || activeTagData?.review?.id === undefined) {
+            setReviewOpen(true)
+            return null
+        }
+
+        setReviewOpen(false)
+
         const commentsExist = reviewComments?.some(
             (c) => c.property === params.data.property,
         )
@@ -176,27 +186,34 @@ function JIP33Table({
     ]
 
     return (
-        <div className={styles.root} style={{ height: "100%" }}>
-            <div
-                className="ag-theme-alpine ag-theme-datasheetTable"
-                style={{ flex: "1 1 auto", width: "100%", height: "100%" }}
-            >
-                <AgGridReact
-                    rowData={rowData}
-                    columnDefs={columns}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="normal"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    suppressMovableColumns
-                    headerHeight={48}
-                    rowHeight={35}
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
+        <>
+            {reviewOpen && (
+                <EquipmentListReview
+                    tagInReview={activeTagData?.id}
                 />
+            )}
+            <div className={styles.root} style={{ height: "100%" }}>
+                <div
+                    className="ag-theme-alpine ag-theme-datasheetTable"
+                    style={{ flex: "1 1 auto", width: "100%", height: "100%" }}
+                >
+                    <AgGridReact
+                        rowData={rowData}
+                        columnDefs={columns}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="normal"
+                        enableCellChangeFlash
+                        rowSelection="multiple"
+                        suppressMovableColumns
+                        headerHeight={48}
+                        rowHeight={35}
+                        enableRangeSelection
+                        suppressCopySingleCellRanges
+                    />
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
