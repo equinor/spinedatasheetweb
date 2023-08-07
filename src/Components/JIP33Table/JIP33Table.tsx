@@ -1,4 +1,6 @@
-import React, { Dispatch, SetStateAction, useMemo } from "react"
+import React, {
+ Dispatch, SetStateAction, useMemo, useContext,
+} from "react"
 import { ColDef } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -6,6 +8,7 @@ import { Icon } from "@equinor/eds-core-react"
 import { comment, comment_chat } from "@equinor/eds-icons"
 import { ReviewComment } from "../../Models/ReviewComment"
 import { ColorLegendEnum } from "./JIP33ColorLegendEnums"
+import { ViewContext } from "../../Context/ViewContext"
 
 interface Props {
     rowData: object[]
@@ -24,6 +27,7 @@ function JIP33Table({
     setWidth,
     width,
 }: Props) {
+    const { setActiveSheetTab } = useContext(ViewContext)
     const styles = useStyles()
 
     const red = "white" // "#e6b8b7"
@@ -43,6 +47,20 @@ function JIP33Table({
         }),
         [],
     )
+
+         const openConversationOnSheet = (paramsData: React.SetStateAction<string>) => {
+        if (setReviewSideSheetOpen && setCurrentProperty) {
+            setReviewSideSheetOpen(true)
+
+            if (width && setWidth) {
+                setWidth(width)
+            } else if (setWidth) {
+                setWidth(620)
+            }
+            setCurrentProperty(paramsData)
+            setActiveSheetTab(4)
+        }
+    }
 
     const reqColor = (colorParam: any, remainingColor: string) => {
         if (colorParam === ColorLegendEnum.SelectPurComDropDown) {
@@ -96,16 +114,7 @@ function JIP33Table({
             return (
                 <Icon
                     data={comment_chat}
-                    onClick={() => {
-                        setReviewSideSheetOpen(true)
-                        if (width && setWidth) {
-                            setWidth(width)
-                        } else if (setWidth) {
-                            setWidth(620)
-                        }
-                        console.log("setting property to ", params.data)
-                        setCurrentProperty(params.data)
-                    }}
+                    onClick={() => openConversationOnSheet(params.data)}
                     color="#007079"
                 />
             )
@@ -117,16 +126,7 @@ function JIP33Table({
             return (
                 <Icon
                     data={comment}
-                    onClick={() => {
-                        setReviewSideSheetOpen(true)
-                        if (width && setWidth) {
-                            setWidth(width)
-                        } else if (setWidth) {
-                            setWidth(620)
-                        }
-                        console.log("setting property to ", params.data)
-                        setCurrentProperty(params.data)
-                    }}
+                    onClick={() => openConversationOnSheet(params.data)}
                     color="#007079"
                 />
             )
