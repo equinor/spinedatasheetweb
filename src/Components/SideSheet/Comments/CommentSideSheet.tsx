@@ -17,21 +17,31 @@ type Props = {
   setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>;
 };
 
+const Overview = styled.div`
+    padding: 15px;
+`
 const Container = styled.div`
-  padding: 15px;
+    height: 100%;
+    width: 100%;
 `
 
 const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
 `
 
 const ButtonRow = styled.div`
-  margin-bottom: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
 `
 
+const TopButton = styled(Button)`
+    margin-left: 5px;
+    `
 const CommentSideSheet: FC<Props> = ({
   currentProperty,
   setCurrentProperty,
@@ -77,49 +87,48 @@ const CommentSideSheet: FC<Props> = ({
 
   return (
       <Container>
-          <Header>
-              <TabsTitle>Activity</TabsTitle>
-              <ButtonRow>
-                  <Tooltip title="Search">
-                      <Button variant="ghost_icon">
-                          <Icon data={search} />
-                      </Button>
-                  </Tooltip>
-                  <Tooltip title="Filter">
-                      <Button variant="ghost_icon">
-                          <Icon data={filter_alt} />
-                      </Button>
-                  </Tooltip>
-              </ButtonRow>
-          </Header>
-          <LocalNavigation
-              buttons={Navigationbuttons}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-          />
-          {
-              <div>
-                  {dummyConversations[activeTab].map((conversation) => (
-                      <ConversationCard
-                          key={conversation.title} // Add a key prop for each rendered element
-                          title={conversation.title}
-                          tagInfo={conversation.tagInfo}
-                      />
-          ))}
-              </div>
-      }
-      </Container>
-  )
-}
-
-export default CommentSideSheet
-
-/*
-currentProperty !== undefined && currentProperty !== null ? (
+          {currentProperty && currentProperty !== "" ? (
               <CommentView
                   currentProperty={currentProperty}
                   reviewComments={reviewComments}
                   setReviewComments={setReviewComments}
               />
       ) : (
-*/
+          <>
+              <Overview>
+                  <Header>
+                      <TabsTitle>Comments</TabsTitle>
+                      <ButtonRow>
+                          <TopButton variant="outlined"> Add Comment on tag </TopButton>
+                          <Tooltip title="Search">
+                              <TopButton variant="ghost_icon">
+                                  <Icon data={search} />
+                              </TopButton>
+                          </Tooltip>
+                          <Tooltip title="Filter">
+                              <TopButton variant="ghost_icon">
+                                  <Icon data={filter_alt} />
+                              </TopButton>
+                          </Tooltip>
+                      </ButtonRow>
+                  </Header>
+                  <LocalNavigation
+                      buttons={Navigationbuttons}
+                      activeTab={activeTab}
+                      setActiveTab={setActiveTab}
+                  />
+              </Overview>
+              {dummyConversations[activeTab].map((conversation) => (
+                  <ConversationCard
+                      key={conversation.title} // Add a key prop for each rendered element
+                      title={conversation.title}
+                      tagInfo={conversation.tagInfo}
+                  />
+          ))}
+          </>
+        )}
+      </Container>
+  )
+}
+
+export default CommentSideSheet

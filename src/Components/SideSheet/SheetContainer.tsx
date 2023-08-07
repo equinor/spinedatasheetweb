@@ -1,5 +1,5 @@
 import React, {
- useState, Dispatch, SetStateAction,
+ useState, Dispatch, SetStateAction, useEffect,
 } from "react"
 import {
  Icon, Tabs, Typography, Button,
@@ -113,9 +113,7 @@ const SheetContainer: React.FC<Props> = ({
         setActiveTab(index)
     }
 
-    if (!currentProperty || !isOpen) {
-        return null
-    }
+    if (!isOpen) return null
 
     const placeholder = (
         <div style={{ height: "100%", width: "100%" }}>
