@@ -1,5 +1,5 @@
 import {
- Button, Dialog, Typography, Radio,
+ Button, Dialog, Typography, Radio,
 } from "@equinor/eds-core-react"
 import React, {
     ChangeEvent,
