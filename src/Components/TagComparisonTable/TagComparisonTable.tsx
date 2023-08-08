@@ -1,10 +1,27 @@
-import { ColDef } from "@ag-grid-community/core"
+import { ColDef, SideBarDef } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import React, { useMemo } from "react"
+import React, {
+ useCallback, useMemo, useRef, useState,
+} from "react"
+import { Button, Icon } from "@equinor/eds-core-react"
+import { view_column } from "@equinor/eds-icons"
+import { styled } from "styled-components"
+import TextInput from "@equinor/fusion-react-textinput"
 import { InstrumentTagData } from "../../Models/InstrumentTagData"
 import { comparisonGeneralColumnDefs } from "./GeneralColumnDefs"
 import { comparisonTR3111ColumnDefs } from "./TR3111ColumnDefs"
+import { comparisonTagsColumnDefs } from "./TagsColumnDefs."
+
+const FilterBar = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+
+    margin-right: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+`
 
 interface Props {
     tags: InstrumentTagData[]
@@ -12,6 +29,9 @@ interface Props {
 
 function TagComparisonTable({ tags }: Props) {
     const styles = useStyles()
+    const gridRef = useRef<AgGridReact>(null)
+    const [columnSideBarIsOpen, setColumnSideBarIsOpen] = useState<boolean>(false)
+    const toggleColumnSideBar = () => setColumnSideBarIsOpen(!columnSideBarIsOpen)
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -23,32 +43,90 @@ function TagComparisonTable({ tags }: Props) {
         [],
     )
 
-    const newColumns = comparisonTR3111ColumnDefs().concat(...comparisonGeneralColumnDefs())
+    const newColumns = comparisonTagsColumnDefs().concat(...comparisonTR3111ColumnDefs(), ...comparisonGeneralColumnDefs())
 
     const tagRows = tags.map((tag) => ({ ...tag.instrumentPurchaserRequirement, ...tag, tagNumber: tag.tagNo }))
 
+    const columnSideBar = useMemo<
+        SideBarDef | string | string[] | boolean | null
+    >(() => ({
+        toolPanels: [
+            {
+                id: "columns",
+                labelDefault: "Columns",
+                labelKey: "columns",
+                iconKey: "columns",
+                toolPanel: "agColumnsToolPanel",
+                toolPanelParams: {
+                    suppressRowGroups: true,
+                    suppressValues: true,
+                    suppressPivots: true,
+                    suppressPivotMode: true,
+                    suppressColumnSelectAll: true,
+                    suppressColumnExpandAll: true,
+                },
+            },
+        ],
+        defaultToolPanel: "columns",
+    }), [])
+
+    const onFilterTextBoxChanged = useCallback(() => {
+        gridRef.current?.api.setQuickFilter(
+          (document.getElementById("filter-text-box") as HTMLInputElement).value,
+        )
+    }, [])
+
+    const toggleSideBar = () => {
+        if (columnSideBarIsOpen) {
+            return columnSideBar
+        }
+        return undefined
+    }
+
     return (
-        <div className={styles.root}>
-            <div
-                className="ag-theme-alpine"
-                style={{ flex: "1 1 auto", width: "100%" }}
-            >
-                <AgGridReact
-                    rowData={tagRows}
-                    columnDefs={newColumns}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    suppressMovableColumns
-                    headerHeight={48}
-                    rowHeight={35}
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
+        <>
+            <FilterBar style={{ gap: 10 }}>
+                <TextInput
+                    icon="search"
+                    size={30}
+                    dense
+                    type="text"
+                    id="filter-text-box"
+                    placeholder="Search all properties"
+                    onInput={onFilterTextBoxChanged}
                 />
+                <Button
+                    variant={columnSideBarIsOpen ? "contained" : "outlined"}
+                    onClick={toggleColumnSideBar}
+                >
+                    <Icon data={view_column} color={columnSideBarIsOpen ? "white" : "#007079"} />
+                    Columns
+                </Button>
+            </FilterBar>
+            <div className={styles.root}>
+                <div
+                    className="ag-theme-alpine-fusion"
+                    style={{ flex: "1 1 auto", width: "100%" }}
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={tagRows}
+                        columnDefs={newColumns}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        enableCellChangeFlash
+                        rowSelection="multiple"
+                        suppressMovableColumns
+                        headerHeight={48}
+                        rowHeight={35}
+                        enableRangeSelection
+                        suppressCopySingleCellRanges
+                        sideBar={toggleSideBar()}
+                    />
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 
