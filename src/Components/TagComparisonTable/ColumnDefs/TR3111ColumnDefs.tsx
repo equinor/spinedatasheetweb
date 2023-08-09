@@ -1,5 +1,5 @@
 import { ColDef, ColGroupDef } from "@ag-grid-community/core"
-import { TagData } from "../../Models/TagData"
+import { TagData } from "../../../Models/TagData"
 
 function getPropertyName<T>(property: keyof T): keyof T {
     return property

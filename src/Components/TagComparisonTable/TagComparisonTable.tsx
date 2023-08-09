@@ -2,16 +2,17 @@ import { ColDef, SideBarDef } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import React, {
- useCallback, useMemo, useRef, useState,
+    useCallback, useMemo, useRef, useState,
 } from "react"
 import { Button, Icon } from "@equinor/eds-core-react"
 import { view_column } from "@equinor/eds-icons"
 import { styled } from "styled-components"
 import TextInput from "@equinor/fusion-react-textinput"
 import { InstrumentTagData } from "../../Models/InstrumentTagData"
-import { comparisonGeneralColumnDefs } from "./GeneralColumnDefs"
-import { comparisonTR3111ColumnDefs } from "./TR3111ColumnDefs"
-import { comparisonTagsColumnDefs } from "./TagsColumnDefs."
+import { comparisonGeneralColumnDefs } from "./ColumnDefs/GeneralColumnDefs"
+import { comparisonTR3111ColumnDefs } from "./ColumnDefs/TR3111ColumnDefs"
+import { comparisonTagsColumnDefs } from "./ColumnDefs/TagsColumnDefs."
+import { comparisonEquipmentConditionsColumnDefs } from "./ColumnDefs/EquipmentConditionColumnDefs"
 
 const FilterBar = styled.div`
     display: flex;
@@ -43,7 +44,11 @@ function TagComparisonTable({ tags }: Props) {
         [],
     )
 
-    const newColumns = comparisonTagsColumnDefs().concat(...comparisonTR3111ColumnDefs(), ...comparisonGeneralColumnDefs())
+    const newColumns = [...comparisonTagsColumnDefs(),
+        ...comparisonTR3111ColumnDefs(),
+        ...comparisonGeneralColumnDefs(),
+        ...comparisonEquipmentConditionsColumnDefs(),
+    ]
 
     const tagRows = tags.map((tag) => ({ ...tag.instrumentPurchaserRequirement, ...tag, tagNumber: tag.tagNo }))
 
@@ -72,7 +77,7 @@ function TagComparisonTable({ tags }: Props) {
 
     const onFilterTextBoxChanged = useCallback(() => {
         gridRef.current?.api.setQuickFilter(
-          (document.getElementById("filter-text-box") as HTMLInputElement).value,
+            (document.getElementById("filter-text-box") as HTMLInputElement).value,
         )
     }, [])
 
