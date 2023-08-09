@@ -1,9 +1,6 @@
-import { ColDef, ColGroupDef } from "@ag-grid-community/core"
+import { ColGroupDef } from "@ag-grid-community/core"
 import { TagData } from "../../../Models/TagData"
-
-function getPropertyName<T>(property: keyof T): keyof T {
-    return property
-}
+import { getPropertyName } from "../../../utils/common"
 
 export const comparisonTR3111ColumnDefs = (): ColGroupDef[] => [
     {
