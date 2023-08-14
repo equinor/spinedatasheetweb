@@ -1,4 +1,6 @@
-import React, { Dispatch, SetStateAction, useMemo } from "react"
+import React, {
+  Dispatch, SetStateAction, useMemo, useContext, useState,
+} from "react"
 import { ColDef } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -6,6 +8,8 @@ import { Icon } from "@equinor/eds-core-react"
 import { comment, comment_chat } from "@equinor/eds-icons"
 import { ReviewComment } from "../../Models/ReviewComment"
 import { ColorLegendEnum } from "./JIP33ColorLegendEnums"
+import { ViewContext } from "../../Context/ViewContext"
+import EquipmentListReview from "../../Components/EquipmentListView/EquipmentListReview"
 
 interface Props {
     rowData: object[]
@@ -24,7 +28,11 @@ function JIP33Table({
     setWidth,
     width,
 }: Props) {
+    const { setActiveSheetTab } = useContext(ViewContext)
     const styles = useStyles()
+
+    const { activeTagData } = useContext(ViewContext)
+    const [reviewOpen, setReviewOpen] = useState<boolean>(false)
 
     const red = "white" // "#e6b8b7"
     const lightBlue = "white" // "#b7dee8"
@@ -43,6 +51,20 @@ function JIP33Table({
         }),
         [],
     )
+
+         const openConversationOnSheet = (paramsData: React.SetStateAction<string>) => {
+        if (setReviewSideSheetOpen && setCurrentProperty) {
+            setReviewSideSheetOpen(true)
+
+            if (width && setWidth) {
+                setWidth(width)
+            } else if (setWidth) {
+                setWidth(620)
+            }
+            setCurrentProperty(paramsData)
+            setActiveSheetTab(4)
+        }
+    }
 
     const reqColor = (colorParam: any, remainingColor: string) => {
         if (colorParam === ColorLegendEnum.SelectPurComDropDown) {
@@ -85,6 +107,13 @@ function JIP33Table({
     }
 
     const commentIcon = (params: any) => {
+        if (activeTagData?.review === undefined || activeTagData?.review?.id === undefined) {
+            setReviewOpen(true)
+            return null
+        }
+
+        setReviewOpen(false)
+
         const commentsExist = reviewComments?.some(
             (c) => c.property === params.data.property,
         )
@@ -96,16 +125,7 @@ function JIP33Table({
             return (
                 <Icon
                     data={comment_chat}
-                    onClick={() => {
-                        setReviewSideSheetOpen(true)
-                        if (width && setWidth) {
-                            setWidth(width)
-                        } else if (setWidth) {
-                            setWidth(620)
-                        }
-
-                        setCurrentProperty(params.data)
-                    }}
+                    onClick={() => openConversationOnSheet(params.data)}
                     color="#007079"
                 />
             )
@@ -117,15 +137,7 @@ function JIP33Table({
             return (
                 <Icon
                     data={comment}
-                    onClick={() => {
-                        setReviewSideSheetOpen(true)
-                        if (width && setWidth) {
-                            setWidth(width)
-                        } else if (setWidth) {
-                            setWidth(620)
-                        }
-                        setCurrentProperty(params.data)
-                    }}
+                    onClick={() => openConversationOnSheet(params.data)}
                     color="#007079"
                 />
             )
@@ -175,27 +187,35 @@ function JIP33Table({
     ]
 
     return (
-        <div className={styles.root} style={{ height: "100%" }}>
-            <div
-                className="ag-theme-alpine ag-theme-datasheetTable"
-                style={{ flex: "1 1 auto", width: "100%", height: "100%" }}
-            >
-                <AgGridReact
-                    rowData={rowData}
-                    columnDefs={columns}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="normal"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    suppressMovableColumns
-                    headerHeight={48}
-                    rowHeight={35}
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
-                />
+        <>
+            {/* <EquipmentListReview
+                isOpen={reviewOpen}
+                setIsOpen={setReviewOpen}
+                tagInReview={activeTagData?.id}
+            /> */}
+
+            <div className={styles.root} style={{ height: "100%" }}>
+                <div
+                    className="ag-theme-alpine ag-theme-datasheetTable"
+                    style={{ flex: "1 1 auto", width: "100%", height: "100%" }}
+                >
+                    <AgGridReact
+                        rowData={rowData}
+                        columnDefs={columns}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="normal"
+                        enableCellChangeFlash
+                        rowSelection="multiple"
+                        suppressMovableColumns
+                        headerHeight={48}
+                        rowHeight={35}
+                        enableRangeSelection
+                        suppressCopySingleCellRanges
+                    />
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

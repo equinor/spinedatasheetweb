@@ -1,6 +1,5 @@
 import { ReviewComment } from "../Models/ReviewComment"
 import { BaseService } from "./BaseService"
-
 import { config, GetToken, LoginAccessTokenKey } from "./config"
 
 class CommentService extends BaseService {
@@ -38,11 +37,6 @@ class CommentService extends BaseService {
         return result
     }
 }
-
-export const CaseService = new CommentService({
-    ...config.CommentService,
-    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
-})
 
 export async function GetCommentService() {
     return new CommentService({
