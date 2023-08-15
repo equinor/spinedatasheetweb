@@ -51,26 +51,6 @@ const deleteComment = async (
     }
 }
 
-export const updateComment = async (
-    newCommentText: string,
-    comment: ReviewComment,
-    reviewComments: ReviewComment[],
-    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
-) => {
-    if (newCommentText && comment.id) {
-        try {
-            const commentService = await GetCommentService()
-            const newComment = { ...comment }
-            newComment.text = newCommentText
-            const updatedComment = await commentService.updateComment(comment.id, newComment)
-            const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : updatedComment))
-            setReviewComments(newReviewComments)
-        } catch (error) {
-            console.error(`Error updating comment: ${error}`)
-        }
-    }
-}
-
 const DialogueBox: FC<DialogueBoxProps> = ({
     comment, formattedDate, reviewComments, setReviewComments,
 }) => {
