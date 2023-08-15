@@ -90,7 +90,7 @@ const RenderComment: FC<RenderCommentProps> = ({
         )
     }
     return (
-        <>
+        <div>
             <Typography>
                 {comment.text}
             </Typography>
@@ -98,7 +98,7 @@ const RenderComment: FC<RenderCommentProps> = ({
             <EditedText>
                 {comment.isEdited ? `Edited ${formatDate(comment.modifiedDate)}` : ""}
             </EditedText>
-        </>
+        </div>
     )
 }
 
