@@ -2,7 +2,9 @@ import React, {
     Dispatch, FC, SetStateAction, useState,
 } from "react"
 import styled from "styled-components"
-import { Button, Icon, Typography } from "@equinor/eds-core-react"
+import {
+    Button, Input, Icon, Typography,
+} from "@equinor/eds-core-react"
 import { delete_to_trash, edit } from "@equinor/eds-icons"
 import { useCurrentUser } from "@equinor/fusion"
 import { GetCommentService } from "../../../../api/CommentService"
@@ -23,10 +25,14 @@ const Header = styled.div`
 `
 
 const EditedText = styled(Typography)`
-  font-size: smaller;
-  font-weight: bold;
-  font-style: italic;
-  color: #6a6a6a;
+    font-size: smaller;
+    font-weight: bold;
+    font-style: italic;
+    color: #6a6a6a;
+`
+
+const SubmitEditButton = styled(Button)`
+    margin-right: 15px;
 `
 
 const Message = styled.div``
@@ -111,13 +117,15 @@ const renderComment = (
     if (isUpdateMode) {
         return (
             <div>
-                <textarea
+                <Input
+                    as="textarea"
+                    type="text"
                     value={editedComment}
                     onChange={editComment}
                 />
                 <br />
-                <Button variant="contained" onClick={saveComment}>Save</Button>
-                <Button variant="contained" onClick={cancelEdit}>Cancel</Button>
+                <SubmitEditButton variant="ghost" onClick={cancelEdit}>Cancel</SubmitEditButton>
+                <SubmitEditButton variant="contained" onClick={saveComment}>Save</SubmitEditButton>
             </div>
         )
     }
@@ -128,7 +136,7 @@ const renderComment = (
             </Typography>
             <br />
             <EditedText>
-                {comment.isEdited ? `Last Edited ${formatDate(comment.modifiedDate)}` : ""}
+                {comment.isEdited ? `Edited ${formatDate(comment.modifiedDate)}` : ""}
             </EditedText>
         </>
     )
@@ -149,7 +157,7 @@ const DialogueBox: FC<DialogueBoxProps> = ({
             <Message>
                 {renderComment(comment, isUpdateMode, setUpdateMode, reviewComments, setReviewComments)}
                 {currentUser?._info.localAccountId === comment.userId
-                    && (
+                    && !isUpdateMode && (
                         <>
                             <Button
                                 variant="ghost_icon"
