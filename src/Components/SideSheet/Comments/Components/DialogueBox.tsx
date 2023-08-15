@@ -3,12 +3,13 @@ import React, {
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Input, Icon, Typography,
+    Button, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { delete_to_trash, edit } from "@equinor/eds-icons"
 import { useCurrentUser } from "@equinor/fusion"
 import { GetCommentService } from "../../../../api/CommentService"
 import { ReviewComment } from "../../../../Models/ReviewComment"
+import RenderComment from "./RenderComment"
 
 const Container = styled.div`
     margin: 15px;
@@ -22,17 +23,6 @@ const Header = styled.div`
     justify-content: space-between;
     font-size: 12px;
     color: #6a6a6a;
-`
-
-const EditedText = styled(Typography)`
-    font-size: smaller;
-    font-weight: bold;
-    font-style: italic;
-    color: #6a6a6a;
-`
-
-const SubmitEditButton = styled(Button)`
-    margin-right: 15px;
 `
 
 const Message = styled.div``
@@ -61,7 +51,7 @@ const deleteComment = async (
     }
 }
 
-const updateComment = async (
+export const updateComment = async (
     newCommentText: string,
     comment: ReviewComment,
     reviewComments: ReviewComment[],
@@ -81,67 +71,6 @@ const updateComment = async (
     }
 }
 
-const renderComment = (
-    comment: ReviewComment,
-    isUpdateMode: boolean,
-    setUpdateMode: any,
-    reviewComments: ReviewComment[],
-    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
-) => {
-    const [editedComment, setEditedComment] = useState(comment.text || "")
-
-    const editComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setEditedComment(e.target.value)
-    }
-
-    const cancelEdit = () => {
-        setUpdateMode(false)
-    }
-
-    const saveComment = () => {
-        updateComment(editedComment, comment, reviewComments, setReviewComments)
-        cancelEdit()
-    }
-
-    const formatDate = (dateString: string | null | undefined) => {
-        const options: Intl.DateTimeFormatOptions = {
-            day: "numeric",
-            month: "long",
-            hour: "numeric",
-            minute: "numeric",
-            timeZoneName: "short",
-        }
-        return dateString ? new Date(dateString).toLocaleDateString("no-NO", options) : ""
-    }
-
-    if (isUpdateMode) {
-        return (
-            <div>
-                <Input
-                    as="textarea"
-                    type="text"
-                    value={editedComment}
-                    onChange={editComment}
-                />
-                <br />
-                <SubmitEditButton variant="ghost" onClick={cancelEdit}>Cancel</SubmitEditButton>
-                <SubmitEditButton variant="contained" onClick={saveComment}>Save</SubmitEditButton>
-            </div>
-        )
-    }
-    return (
-        <>
-            <Typography>
-                {comment.text}
-            </Typography>
-            <br />
-            <EditedText>
-                {comment.isEdited ? `Edited ${formatDate(comment.modifiedDate)}` : ""}
-            </EditedText>
-        </>
-    )
-}
-
 const DialogueBox: FC<DialogueBoxProps> = ({
     comment, formattedDate, reviewComments, setReviewComments,
 }) => {
@@ -155,7 +84,13 @@ const DialogueBox: FC<DialogueBoxProps> = ({
                 <Typography>{formattedDate}</Typography>
             </Header>
             <Message>
-                {renderComment(comment, isUpdateMode, setUpdateMode, reviewComments, setReviewComments)}
+                <RenderComment
+                    comment={comment}
+                    isUpdateMode={isUpdateMode}
+                    setUpdateMode={setUpdateMode}
+                    reviewComments={reviewComments}
+                    setReviewComments={setReviewComments}
+                />
                 {currentUser?._info.localAccountId === comment.userId
                     && !isUpdateMode && (
                         <>
