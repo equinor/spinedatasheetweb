@@ -28,17 +28,6 @@ interface RenderCommentProps {
     isCurrentUser: boolean
 }
 
-const formatDate = (dateString: string | null | undefined) => {
-    const options: Intl.DateTimeFormatOptions = {
-        day: "numeric",
-        month: "long",
-        hour: "numeric",
-        minute: "numeric",
-        timeZoneName: "short",
-    }
-    return dateString ? new Date(dateString).toLocaleDateString("no-NO", options) : ""
-}
-
 const updateComment = async (
     softDelete: boolean,
     newCommentText: string,
@@ -57,28 +46,6 @@ const updateComment = async (
             setReviewComments(newReviewComments)
         } catch (error) {
             console.error(`Error updating comment: ${error}`)
-        }
-    }
-}
-
-const deleteComment = async (
-    softDelete: boolean,
-    comment: ReviewComment,
-    reviewComments: ReviewComment[],
-    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
-) => {
-    if (comment.id && comment.text) {
-        if (softDelete) {
-            updateComment(true, comment.text, comment, reviewComments, setReviewComments)
-        } else {
-            try {
-                const service = await GetCommentService()
-                await service.deleteComment(comment.id)
-                const newReviewComments = reviewComments.filter((c) => (c.id !== comment.id))
-                setReviewComments(newReviewComments)
-            } catch (error) {
-                console.error(`Error deleting comment: ${error}`)
-            }
         }
     }
 }
@@ -167,7 +134,7 @@ const RenderComment: FC<RenderCommentProps> = ({
                     </Button>
                     <Button
                         variant="ghost_icon"
-                        onClick={() => deleteComment(true, comment, reviewComments, setReviewComments)}
+                        onClick={() => updateComment(true, comment.text ?? "", comment, reviewComments, setReviewComments)}
                         title="Delete"
                     >
                         <Icon data={delete_to_trash} size={16} color="#007079" />
