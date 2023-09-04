@@ -29,7 +29,6 @@ interface RenderCommentProps {
 }
 
 const updateComment = async (
-    softDelete: boolean,
     newCommentText: string,
     comment: ReviewComment,
     reviewComments: ReviewComment[],
@@ -40,12 +39,28 @@ const updateComment = async (
             const commentService = await GetCommentService()
             const newComment = { ...comment }
             newComment.text = newCommentText
-            newComment.softDeleted = softDelete
             const updatedComment = await commentService.updateComment(comment.id, newComment)
             const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : updatedComment))
             setReviewComments(newReviewComments)
         } catch (error) {
             console.error(`Error updating comment: ${error}`)
+        }
+    }
+}
+
+const deleteComment = async (
+    comment: ReviewComment,
+    reviewComments: ReviewComment[],
+    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>,
+) => {
+    if (comment.id) {
+        try {
+            const service = await GetCommentService()
+            const deletedComment = await service.deleteComment(comment.id)
+            const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : deletedComment))
+            setReviewComments(newReviewComments)
+        } catch (error) {
+            console.error(`Error deleting comment: ${error}`)
         }
     }
 }
@@ -59,7 +74,7 @@ const RenderComment: FC<RenderCommentProps> = ({
     const editComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setEditedComment(e.target.value)
     const cancelEdit = () => setUpdateMode(false)
     const saveComment = () => {
-        updateComment(false, editedComment, comment, reviewComments, setReviewComments)
+        updateComment(editedComment, comment, reviewComments, setReviewComments)
         cancelEdit()
     }
 
@@ -134,7 +149,7 @@ const RenderComment: FC<RenderCommentProps> = ({
                     </Button>
                     <Button
                         variant="ghost_icon"
-                        onClick={() => updateComment(true, comment.text ?? "", comment, reviewComments, setReviewComments)}
+                        onClick={() => deleteComment(comment, reviewComments, setReviewComments)}
                         title="Delete"
                     >
                         <Icon data={delete_to_trash} size={16} color="#007079" />
