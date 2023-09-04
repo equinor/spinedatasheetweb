@@ -52,6 +52,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({
             isEdited: boolean | undefined;
             id: string;
             softDeleted: boolean | undefined
+            modifiedDate?: string;
         }[];
     };
 
@@ -76,12 +77,20 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({
                         createdDate: comment.createdDate,
                     },
                     messages: [{
-                        text: comment.text || undefined, isEdited: comment.isEdited, id: comment.id || "", softDeleted: comment.softDeleted,
+                        text: comment.text || undefined,
+                        isEdited: comment.isEdited,
+                        id: comment.id || "",
+                        modifiedDate: comment.modifiedDate,
+                        softDeleted: comment.softDeleted,
                     }],
                 })
             } else {
                 clusters[clusters.length - 1].messages.push({
-                    text: comment.text || undefined, isEdited: comment.isEdited, id: comment.id || "", softDeleted: comment.softDeleted,
+                    text: comment.text || undefined,
+                    isEdited: comment.isEdited,
+                    id: comment.id || "",
+                    modifiedDate: comment.modifiedDate,
+                    softDeleted: comment.softDeleted,
                 })
             }
         })
@@ -102,16 +111,28 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({
                         </TimeStamp>
                     </Header>
                     <div>
-                        {cluster.messages.map((message, messageIndex) => (
-                            <MessageBox
-                                key={`${cluster.userId}-${index}-${messageIndex}`}
-                                isCurrentUser={isCurrentUser(cluster.userId)}
-                                messageObject={message}
-                                reviewComments={reviewComments}
-                                setReviewComments={setReviewComments}
-                                userId={cluster.userId}
-                            />
-                        ))}
+                        {cluster.messages.map((message, messageIndex) => {
+                            console.log(message)
+                            return (
+                                <>
+                                    {message.isEdited && (
+                                        <Typography variant="meta">
+                                            Edited
+                                            {" "}
+                                            {formatDate(message.modifiedDate || "")}
+                                        </Typography>
+                                    )}
+                                    <MessageBox
+                                        key={`${cluster.userId}-${index}-${messageIndex}`}
+                                        isCurrentUser={isCurrentUser(cluster.userId)}
+                                        messageObject={message}
+                                        reviewComments={reviewComments}
+                                        setReviewComments={setReviewComments}
+                                        userId={cluster.userId}
+                                    />
+                                </>
+                            )
+                        })}
                     </div>
                 </Container>
             ))}
