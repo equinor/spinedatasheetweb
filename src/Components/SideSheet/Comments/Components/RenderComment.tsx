@@ -56,9 +56,15 @@ const deleteComment = async (
     if (comment.id) {
         try {
             const service = await GetCommentService()
-            const deletedComment = await service.deleteComment(comment.id)
-            const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : deletedComment))
-            setReviewComments(newReviewComments)
+            const newComment = { ...reviewComments.find((c) => c.id === comment.id) }
+            const response = await service.deleteComment(comment.id)
+            if (response === 204) {
+                newComment.softDeleted = true
+                const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : newComment))
+                setReviewComments(newReviewComments)
+            } else {
+                throw new Error(`delete failed with status code '${response}'`)
+            }
         } catch (error) {
             console.error(`Error deleting comment: ${error}`)
         }
@@ -128,7 +134,9 @@ const RenderComment: FC<RenderCommentProps> = ({
                 onBlur={handleClose}
                 onMouseOut={handleClose}
             >
-                {comment.text}
+                {
+                    comment.softDeleted ? "Message deleted by user" : comment.text
+                }
             </CommentText>
             <Popover
                 anchorEl={anchorRef.current}
