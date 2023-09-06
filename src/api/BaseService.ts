@@ -32,7 +32,7 @@ export class BaseService {
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
-        const { data, headers } = await this.client.request({
+        const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
             withCredentials: options?.credentials === "include",
