@@ -56,9 +56,9 @@ const deleteComment = async (
     if (comment.id) {
         try {
             const service = await GetCommentService()
-            const newComment = { ...reviewComments.find((c) => c.id === comment.id) }
             const response = await service.deleteComment(comment.id)
             if (response === 204) {
+                const newComment = { ...reviewComments.find((c) => c.id === comment.id) }
                 newComment.softDeleted = true
                 const newReviewComments = reviewComments.map((c) => (c.id !== comment.id ? c : newComment))
                 setReviewComments(newReviewComments)
