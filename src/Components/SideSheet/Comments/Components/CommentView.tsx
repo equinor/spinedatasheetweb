@@ -142,11 +142,8 @@ const CommentView: React.FC<CommentViewProps> = ({
     const addMessage = async () => {
         const message = { ...newMessage }
         const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
-        console.log("processedString: ", processedString)
-        console.log("mentions: ", mentions)
-        
+        console.log("mentions: ", mentions) // to be used for tagging users in the future
         message.text = processedString
-        console.log("processed message: ", message)
         try {
             const service = await GetConversationService()
             const savedMessage = await service.addMessage(activeTagData?.review?.id ?? "", activeConversation?.id ?? "", message)
