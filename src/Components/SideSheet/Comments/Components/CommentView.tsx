@@ -1,14 +1,11 @@
 import React, {
-    Dispatch,
-    SetStateAction,
     useContext,
     useEffect,
     useState,
 } from "react"
-import { useCurrentUser } from "@equinor/fusion"
 import styled from "styled-components"
-import { GetCommentService } from "../../../../api/CommentService"
-import { ReviewComment } from "../../../../Models/ReviewComment"
+import { GetConversationService } from "../../../../api/ConversationService"
+import { Message } from "../../../../Models/Message"
 import InputController from "./InputController"
 import { ViewContext } from "../../../../Context/ViewContext"
 import ClusteredMessages from "./ClusteredMessages"
@@ -31,7 +28,7 @@ const Container = styled.div`
     align-items: center;
 `
 
-const Conversation = styled.div`
+const ConversationDiv = styled.div`
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -41,23 +38,28 @@ const Conversation = styled.div`
 
 type CommentViewProps = {
     currentProperty: string
-    reviewComments: ReviewComment[]
-    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>
 }
 
 const CommentView: React.FC<CommentViewProps> = ({
     currentProperty,
-    reviewComments,
-    setReviewComments,
 }) => {
-    const [newReviewComment, setNewReviewComment] = useState<ReviewComment>()
+    const [newMessage, setNewMessage] = useState<Message>()
+    const [taggedUsers, setTaggedUsers] = useState<string[]>([])
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
-    const [taggedUsers, setTaggedUsers] = useState<string[]>([])
-    const { activeTagData } = useContext(ViewContext)
-    const currentUser: any = useCurrentUser()
+    const {
+        activeTagData,
+        conversations,
+        setConversations,
+        activeConversation,
+        setActiveConversation,
+    } = useContext(ViewContext)
 
-        const dummyData = [
+    const getConversationForProperty = (property: string) => (
+        conversations.find((conversation) => conversation.property?.toUpperCase() === property.toUpperCase())
+    )
+
+    const dummyData = [
         {
             id: "1",
             displayName: "Henrik Hansen",
@@ -84,82 +86,123 @@ const CommentView: React.FC<CommentViewProps> = ({
         },
     ]
 
-    const getCommentsForProperty = (property: string) => (
-        reviewComments.filter((comment) => comment.property === property)
-    )
+    useEffect(() => {
+        (async () => {
+            try {
+                const currentConversationId = getConversationForProperty(currentProperty)?.id
+
+                if (currentConversationId) {
+                    const currentConversation = await (await GetConversationService()).getMessagesForConversation(
+                        activeTagData?.review?.id ?? "",
+                        currentConversationId,
+                    )
+                    setActiveConversation(currentConversation)
+                } else {
+                    setActiveConversation(undefined)
+                }
+            } catch (error) {
+                console.error("Error getting messages for conversation: ", error)
+            }
+        })()
+    }, [currentProperty])
 
     const handleTagSelected = (displayName: string, userId: string) => {
-        const commentText = newReviewComment?.text || ""
+        const commentText = newMessage?.text ?? ""
         const lastAtPos = commentText.lastIndexOf("@")
         const beforeAt = commentText.substring(0, lastAtPos)
         const afterAt = commentText.substring(lastAtPos + 1).replace(/^\S+/, "") // Removes the word right after the "@"
 
         const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>&nbsp;${afterAt}`
-        setNewReviewComment({ ...newReviewComment, text: newCommentText })
+        const message = { ...newMessage }
+        message.text = newCommentText
+        setNewMessage(message)
         setShowTagDropDown(false)
         setSearchTerm("")
     }
 
-    const handleSubmit = async () => {
-        const { processedString, mentions } = processMessageInput(newReviewComment?.text || "")
-
-        console.log("these people were mentioned: ", mentions)
-        const comment = { ...newReviewComment, text: processedString }
-        console.log("Comment: ", comment)
-        comment.tagDataReviewId = activeTagData?.review?.id
-        comment.commentLevel = 0
-        comment.property = currentProperty
-        comment.createdDate = new Date().toISOString()
-        comment.userId = currentUser?._info.localAccountId
-        comment.commenterName = currentUser?._info.name
-        try {
-            const service = await GetCommentService()
-            const savedComment = await service.createComment(comment)
-            setReviewComments([...reviewComments, savedComment])
-            setSearchTerm("")
-            setNewReviewComment(undefined)
-            setTaggedUsers([])
-        } catch (error) {
-            console.log(`Error creating comment: ${error}`)
+    const createConversation = async () => {
+        const createCommentDto: Components.Schemas.ConversationDto = {
+            property: currentProperty,
+            text: newMessage?.text ?? "",
+            conversationLevel: 1,
+            conversationStatus: 0,
         }
-        setNewReviewComment(undefined)
+        try {
+            const service = await GetConversationService()
+            const savedConversation = await service.createConversation(activeTagData?.review?.id ?? "", createCommentDto)
+            setActiveConversation(savedConversation)
+            const newConversations = [...conversations, savedConversation]
+            setConversations(newConversations)
+        } catch (error) {
+            console.error(`Error creating comment: ${error}`)
+        }
+        setNewMessage(undefined)
+    }
+
+    const addMessage = async () => {
+        const message = { ...newMessage }
+        const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
+        console.log("processedString: ", processedString)
+        console.log("mentions: ", mentions)
+        
+        message.text = processedString
+        console.log("processed message: ", message)
+        try {
+            const service = await GetConversationService()
+            const savedMessage = await service.addMessage(activeTagData?.review?.id ?? "", activeConversation?.id ?? "", message)
+
+            const updatedMessages = [...activeConversation?.messages ?? [], savedMessage]
+
+            const updatedActiveConversation = { ...activeConversation }
+            updatedActiveConversation.messages = updatedMessages
+
+            setActiveConversation(updatedActiveConversation)
+        } catch (error) {
+            console.error(`Error creating comment: ${error}`)
+        }
+        setNewMessage(undefined)
+        setTaggedUsers([])
+        setSearchTerm("")
+    }
+
+    const handleSubmit = async () => {
+        if (activeConversation) {
+            addMessage()
+        } else {
+            createConversation()
+        }
     }
 
     useEffect(() => {
-        console.log("Tagged users: ", taggedUsers)
-    }, [taggedUsers])
+        console.log("newMessage: ", newMessage)
+    }, [newMessage])
 
     useEffect(() => {
-        console.log("New review comment: ", newReviewComment)
-    }, [newReviewComment])
+        console.log("taggedUsers: ", taggedUsers)
+    }, [taggedUsers])
 
     return (
         <Container>
-            <Conversation>
-                <ClusteredMessages
-                    comments={getCommentsForProperty(currentProperty)}
-                    reviewComments={reviewComments}
-                    setReviewComments={setReviewComments}
-                />
-            </Conversation>
+            <ConversationDiv>
+                <ClusteredMessages />
+            </ConversationDiv>
             <Controls>
-                { showTagDropDown
-                && (
-                <TagDropDown
-                    SearchTerm={searchTerm}
-                    setTaggedUsers={setTaggedUsers}
-                    onTagSelected={handleTagSelected}
-                    dummyData={dummyData}
-                />
-                ) }
+                {showTagDropDown && (
+                    <TagDropDown
+                        SearchTerm={searchTerm}
+                        setTaggedUsers={setTaggedUsers}
+                        onTagSelected={handleTagSelected}
+                        dummyData={dummyData}
+                    />
+                )}
 
                 <InputController
                     handleSubmit={handleSubmit}
+                    taggedUsers={taggedUsers}
+                    newMessage={newMessage}
+                    setNewMessage={setNewMessage}
                     setSearchTerm={setSearchTerm}
                     setShowTagDropDown={setShowTagDropDown}
-                    newReviewComment={newReviewComment}
-                    setNewReviewComment={setNewReviewComment}
-                    taggedUsers={taggedUsers}
                 />
             </Controls>
         </Container>

@@ -25,8 +25,8 @@ interface InputControllerProps {
     handleSubmit: () => void
     setSearchTerm: React.Dispatch<React.SetStateAction<string>>
     setShowTagDropDown: React.Dispatch<React.SetStateAction<boolean>>
-    newReviewComment: any
-    setNewReviewComment: React.Dispatch<React.SetStateAction<any>>
+    newMessage: any
+    setNewMessage: React.Dispatch<React.SetStateAction<any>>
     taggedUsers: string[]
 }
 
@@ -34,16 +34,16 @@ const InputController: FC<InputControllerProps> = ({
     handleSubmit,
     setShowTagDropDown,
     setSearchTerm,
-    newReviewComment,
-    setNewReviewComment,
+    newMessage,
+    setNewMessage,
     taggedUsers,
 }) => (
     <Controls>
         <InputField
             setSearchTerm={setSearchTerm}
             setShowTagDropDown={setShowTagDropDown}
-            newReviewComment={newReviewComment}
-            setNewReviewComment={setNewReviewComment}
+            newReviewComment={newMessage}
+            setNewReviewComment={setNewMessage}
             taggedUsers={taggedUsers}
         />
         <InputButtonWrapper>

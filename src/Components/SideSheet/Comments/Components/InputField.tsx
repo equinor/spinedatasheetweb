@@ -46,6 +46,7 @@ const InputField: React.FC<Props> = ({
 
 useEffect(() => {
     if (pRef.current) {
+      console.log("re-rendering with the text: ", newReviewComment?.text)
       pRef.current.innerHTML = newReviewComment?.text || ""
     }
 }, [taggedUsers])
