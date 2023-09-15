@@ -10,6 +10,7 @@ import {
 } from "@equinor/eds-icons"
 import { ReviewComment } from "../../../../Models/ReviewComment"
 import { GetCommentService } from "../../../../api/CommentService"
+import { unescapeHtmlEntities } from "../../../../utils/helpers"
 
 const CommentText = styled(Typography)`
     margin: 10px 0;
@@ -135,7 +136,7 @@ const RenderComment: FC<RenderCommentProps> = ({
                 onMouseOut={handleClose}
             >
                 {
-                    comment.softDeleted ? "Message deleted by user" : comment.text
+                    comment.softDeleted ? "Message deleted by user" : unescapeHtmlEntities(comment.text || "")
                 }
             </CommentText>
             <Popover

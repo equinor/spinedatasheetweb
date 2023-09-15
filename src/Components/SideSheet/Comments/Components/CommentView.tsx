@@ -5,17 +5,23 @@ import React, {
     useEffect,
     useState,
 } from "react"
-import { useParams } from "react-router-dom"
 import { useCurrentUser } from "@equinor/fusion"
 import styled from "styled-components"
 import { GetCommentService } from "../../../../api/CommentService"
 import { ReviewComment } from "../../../../Models/ReviewComment"
-import MessageBox from "./MessageBox"
 import InputController from "./InputController"
 import { ViewContext } from "../../../../Context/ViewContext"
-import { formatDate } from "../../../../utils/helpers"
 import ClusteredMessages from "./ClusteredMessages"
+import TagDropDown from "./TagDropDown"
+import { processMessageInput } from "../../../../utils/helpers"
 
+const Controls = styled.div`
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+
+`
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -45,24 +51,61 @@ const CommentView: React.FC<CommentViewProps> = ({
     setReviewComments,
 }) => {
     const [newReviewComment, setNewReviewComment] = useState<ReviewComment>()
+    const [searchTerm, setSearchTerm] = useState<string>("")
+    const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
+    const [taggedUsers, setTaggedUsers] = useState<string[]>([])
     const { activeTagData } = useContext(ViewContext)
-    const { tagId } = useParams<Record<string, string | undefined>>()
     const currentUser: any = useCurrentUser()
+
+        const dummyData = [
+        {
+            id: "1",
+            displayName: "Henrik Hansen",
+            accountType: "Consultant",
+            status: "Active",
+        },
+        {
+            id: "2",
+            displayName: "Peter Jensen",
+            accountType: "Consultant",
+            status: "Active",
+        },
+        {
+            id: "3",
+            displayName: "Jesper Gudbransen",
+            accountType: "Consultant",
+            status: "inactive",
+        },
+        {
+            id: "4",
+            displayName: "Mikkel Eriksen",
+            accountType: "Consultant",
+            status: "inactive",
+        },
+    ]
 
     const getCommentsForProperty = (property: string) => (
         reviewComments.filter((comment) => comment.property === property)
     )
 
-    const handleCommentChange = (
-        event: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
-        const comment = { ...newReviewComment }
-        comment.text = event.target.value
-        setNewReviewComment(comment)
+    const handleTagSelected = (displayName: string, userId: string) => {
+        const commentText = newReviewComment?.text || ""
+        const lastAtPos = commentText.lastIndexOf("@")
+        const beforeAt = commentText.substring(0, lastAtPos)
+        const afterAt = commentText.substring(lastAtPos + 1).replace(/^\S+/, "") // Removes the word right after the "@"
+
+        const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>&nbsp;${afterAt}`
+        setNewReviewComment({ ...newReviewComment, text: newCommentText })
+        setShowTagDropDown(false)
+        setSearchTerm("")
     }
 
     const handleSubmit = async () => {
-        const comment = { ...newReviewComment }
+        const { processedString, mentions } = processMessageInput(newReviewComment?.text || "")
+
+        console.log("these people were mentioned: ", mentions)
+        const comment = { ...newReviewComment, text: processedString }
+        console.log("Comment: ", comment)
         comment.tagDataReviewId = activeTagData?.review?.id
         comment.commentLevel = 0
         comment.property = currentProperty
@@ -73,11 +116,22 @@ const CommentView: React.FC<CommentViewProps> = ({
             const service = await GetCommentService()
             const savedComment = await service.createComment(comment)
             setReviewComments([...reviewComments, savedComment])
+            setSearchTerm("")
+            setNewReviewComment(undefined)
+            setTaggedUsers([])
         } catch (error) {
             console.log(`Error creating comment: ${error}`)
         }
         setNewReviewComment(undefined)
     }
+
+    useEffect(() => {
+        console.log("Tagged users: ", taggedUsers)
+    }, [taggedUsers])
+
+    useEffect(() => {
+        console.log("New review comment: ", newReviewComment)
+    }, [newReviewComment])
 
     return (
         <Container>
@@ -88,11 +142,26 @@ const CommentView: React.FC<CommentViewProps> = ({
                     setReviewComments={setReviewComments}
                 />
             </Conversation>
-            <InputController
-                value={newReviewComment?.text ?? ""}
-                handleCommentChange={handleCommentChange}
-                handleSubmit={handleSubmit}
-            />
+            <Controls>
+                { showTagDropDown
+                && (
+                <TagDropDown
+                    SearchTerm={searchTerm}
+                    setTaggedUsers={setTaggedUsers}
+                    onTagSelected={handleTagSelected}
+                    dummyData={dummyData}
+                />
+                ) }
+
+                <InputController
+                    handleSubmit={handleSubmit}
+                    setSearchTerm={setSearchTerm}
+                    setShowTagDropDown={setShowTagDropDown}
+                    newReviewComment={newReviewComment}
+                    setNewReviewComment={setNewReviewComment}
+                    taggedUsers={taggedUsers}
+                />
+            </Controls>
         </Container>
     )
 }
