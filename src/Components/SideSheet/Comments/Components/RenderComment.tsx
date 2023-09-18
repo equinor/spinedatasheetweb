@@ -33,10 +33,10 @@ function wrapInSpan(inputString: string): (string | JSX.Element)[] {
     return parts.map((part, index) => {
         if (isNextSpan) {
             isNextSpan = false
-            return <span key={index}>{part}</span>
+            return <span key={`${part}-${index}`}>{part}</span>
         }
-            isNextSpan = true
-            return part
+        isNextSpan = true
+        return part
     })
 }
 
