@@ -60,31 +60,28 @@ const InputField: React.FC<Props> = ({
   }, [isPlaceholderShown, placeholder])
 
   const handleCommentChange = (commentText: string) => {
-    const lastAtPos = commentText.lastIndexOf("@")
-    const shouldShowDropdown = lastAtPos !== -1
+      const words = commentText.split(/\s+/) // Split the text by spaces
 
-    setShowTagDropDown(shouldShowDropdown)
+      const mentionWord = words.find((word) => word.startsWith("@"))
+      const shouldShowDropdown = !!mentionWord
+      const searchTerm = mentionWord ? mentionWord.slice(1) : ""
 
-    if (shouldShowDropdown) {
-      const termAfterAt = commentText.slice(lastAtPos + 1)
-      setSearchTerm(termAfterAt)
-    } else {
-      setSearchTerm("")
-    }
+      setShowTagDropDown(shouldShowDropdown)
+      setSearchTerm(searchTerm)
 
-    const comment = { ...newReviewComment, text: commentText }
-    setNewReviewComment(comment)
+      const comment = { ...newReviewComment, text: commentText }
+      setNewReviewComment(comment)
   }
 
-const handleFocus = () => {
-  if (pRef.current) {
-    pRef.current.contentEditable = "true"
-    pRef.current.focus()
-    if (isPlaceholderShown && pRef.current.innerText === placeholder) {
-      pRef.current.innerText = ""
-      setIsPlaceholderShown(false)
+  const handleFocus = () => {
+    if (pRef.current) {
+      pRef.current.contentEditable = "true"
+      pRef.current.focus()
+      if (isPlaceholderShown && pRef.current.innerText === placeholder) {
+        pRef.current.innerText = ""
+        setIsPlaceholderShown(false)
+      }
     }
-  }
 }
 
   const handleBlur = () => {
