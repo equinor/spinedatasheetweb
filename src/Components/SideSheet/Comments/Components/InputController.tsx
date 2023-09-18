@@ -30,7 +30,7 @@ interface InputControllerProps {
     setShowTagDropDown: React.Dispatch<React.SetStateAction<boolean>>
     newMessage: any
     setNewMessage: React.Dispatch<React.SetStateAction<any>>
-    taggedUsers: string[]
+    reRenderCounter: number
 }
 
 const InputController: FC<InputControllerProps> = ({
@@ -39,7 +39,7 @@ const InputController: FC<InputControllerProps> = ({
     setSearchTerm,
     newMessage,
     setNewMessage,
-    taggedUsers,
+    reRenderCounter,
 }) => (
     <Controls>
         <InputField
@@ -47,7 +47,7 @@ const InputController: FC<InputControllerProps> = ({
             setShowTagDropDown={setShowTagDropDown}
             newReviewComment={newMessage}
             setNewReviewComment={setNewMessage}
-            taggedUsers={taggedUsers}
+            reRenderCounter={reRenderCounter}
         />
         <InputButtonWrapper>
             <StyledCheckbox label="Send to contractor" />

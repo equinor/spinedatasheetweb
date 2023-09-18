@@ -30,7 +30,7 @@ interface Props {
   setShowTagDropDown: React.Dispatch<React.SetStateAction<boolean>>
   newReviewComment: any
   setNewReviewComment: React.Dispatch<React.SetStateAction<any>>
-  taggedUsers: string[]
+  reRenderCounter: number
 }
 
 const InputField: React.FC<Props> = ({
@@ -39,7 +39,7 @@ const InputField: React.FC<Props> = ({
   setShowTagDropDown,
   newReviewComment,
   setNewReviewComment,
-  taggedUsers,
+  reRenderCounter,
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null)
   const [isPlaceholderShown, setIsPlaceholderShown] = useState(true)
@@ -51,7 +51,7 @@ const InputField: React.FC<Props> = ({
         }
         pRef.current.innerHTML = newReviewComment?.text || placeholder
       }
-  }, [taggedUsers])
+  }, [reRenderCounter])
 
   useEffect(() => {
       if (pRef.current && isPlaceholderShown) {

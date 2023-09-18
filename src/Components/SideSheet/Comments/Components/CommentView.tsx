@@ -44,7 +44,7 @@ const CommentView: React.FC<CommentViewProps> = ({
     currentProperty,
 }) => {
     const [newMessage, setNewMessage] = useState<Message>()
-    const [taggedUsers, setTaggedUsers] = useState<string[]>([])
+    const [reRenderCounter, setReRenderCounter] = useState<number>(0)
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
     const {
@@ -157,9 +157,6 @@ const CommentView: React.FC<CommentViewProps> = ({
         } catch (error) {
             console.error(`Error creating comment: ${error}`)
         }
-        setNewMessage(undefined)
-        setTaggedUsers([])
-        setSearchTerm("")
     }
 
     const handleSubmit = async () => {
@@ -168,8 +165,14 @@ const CommentView: React.FC<CommentViewProps> = ({
         } else {
             createConversation()
         }
-        setTaggedUsers([])
+        setNewMessage(undefined)
+        setReRenderCounter(reRenderCounter + 1)
+        setSearchTerm("")
     }
+
+    useEffect(() => {
+        console.log("re-rendering")
+    }, [reRenderCounter])
 
     return (
         <Container>
@@ -180,7 +183,7 @@ const CommentView: React.FC<CommentViewProps> = ({
                 {showTagDropDown && (
                     <TagDropDown
                         SearchTerm={searchTerm}
-                        setTaggedUsers={setTaggedUsers}
+                        setReRenderCounter={setReRenderCounter}
                         onTagSelected={handleTagSelected}
                         dummyData={dummyData}
                     />
@@ -188,7 +191,7 @@ const CommentView: React.FC<CommentViewProps> = ({
 
                 <InputController
                     handleSubmit={handleSubmit}
-                    taggedUsers={taggedUsers}
+                    reRenderCounter={reRenderCounter}
                     newMessage={newMessage}
                     setNewMessage={setNewMessage}
                     setSearchTerm={setSearchTerm}
