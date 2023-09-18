@@ -74,15 +74,16 @@ useEffect(() => {
     setNewReviewComment(comment)
   }
 
-  const handleFocus = () => {
-    if (pRef.current) {
-      pRef.current.contentEditable = "true"
-      pRef.current.focus()
-      if (isPlaceholderShown) {
-        pRef.current.innerText = ""
-      }
+const handleFocus = () => {
+  if (pRef.current) {
+    pRef.current.contentEditable = "true"
+    pRef.current.focus()
+
+    if (isPlaceholderShown && pRef.current.innerText === placeholder) {
+      pRef.current.innerText = ""
     }
   }
+}
 
   const handleBlur = () => {
       if (pRef.current) {
