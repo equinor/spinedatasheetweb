@@ -20,6 +20,9 @@ const InputButtonWrapper = styled.div`
     align-items: center;
     
 `
+const StyledCheckbox = styled(Checkbox)`
+    margin-left: -15px;
+`
 
 interface InputControllerProps {
     handleSubmit: () => void
@@ -47,7 +50,7 @@ const InputController: FC<InputControllerProps> = ({
             taggedUsers={taggedUsers}
         />
         <InputButtonWrapper>
-            <Checkbox label="Send to contractor" />
+            <StyledCheckbox label="Send to contractor" />
             <Button onClick={handleSubmit} variant="ghost">
                 <Icon data={send} />
             </Button>

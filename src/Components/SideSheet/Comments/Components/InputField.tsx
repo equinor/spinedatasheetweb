@@ -44,18 +44,20 @@ const InputField: React.FC<Props> = ({
   const pRef = useRef<HTMLParagraphElement>(null)
   const [isPlaceholderShown, setIsPlaceholderShown] = useState(true)
 
-useEffect(() => {
-    if (pRef.current) {
-      console.log("re-rendering with the text: ", newReviewComment?.text)
-      pRef.current.innerHTML = newReviewComment?.text || ""
-    }
-}, [taggedUsers])
+  useEffect(() => {
+      if (pRef.current) {
+        if (!newReviewComment?.text) {
+          setIsPlaceholderShown(true)
+        }
+        pRef.current.innerHTML = newReviewComment?.text || placeholder
+      }
+  }, [taggedUsers])
 
-useEffect(() => {
-    if (pRef.current && isPlaceholderShown) {
-      pRef.current.innerHTML = placeholder
-    }
-}, [isPlaceholderShown, placeholder])
+  useEffect(() => {
+      if (pRef.current && isPlaceholderShown) {
+        pRef.current.innerHTML = placeholder
+      }
+  }, [isPlaceholderShown, placeholder])
 
   const handleCommentChange = (commentText: string) => {
     const lastAtPos = commentText.lastIndexOf("@")
@@ -78,9 +80,9 @@ const handleFocus = () => {
   if (pRef.current) {
     pRef.current.contentEditable = "true"
     pRef.current.focus()
-
     if (isPlaceholderShown && pRef.current.innerText === placeholder) {
       pRef.current.innerText = ""
+      setIsPlaceholderShown(false)
     }
   }
 }

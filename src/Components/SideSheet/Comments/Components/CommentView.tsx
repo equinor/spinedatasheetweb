@@ -168,6 +168,7 @@ const CommentView: React.FC<CommentViewProps> = ({
         } else {
             createConversation()
         }
+        setTaggedUsers([])
     }
 
     return (
