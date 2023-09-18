@@ -160,6 +160,9 @@ const CommentView: React.FC<CommentViewProps> = ({
     }
 
     const handleSubmit = async () => {
+        if (!newMessage?.text) { return }
+        if (/^( |&nbsp;)*$/.test(newMessage.text)) { return } // if the string is only whitespace or &nbsp; then return
+
         if (activeConversation) {
             addMessage()
         } else {
