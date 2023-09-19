@@ -37,19 +37,9 @@ function CustomFilterToolPanel({ }: IToolPanel) {
         },
         {
             generalFilter: "Invalid properties",
-            children: [
-                {
-                    generalFilter: "Operating requirements not met",
-                },
-            ],
         },
         {
             generalFilter: "Comments",
-            children: [
-                {
-                    generalFilter: "Property comments",
-                },
-            ],
         },
     ]
 
@@ -73,7 +63,7 @@ function CustomFilterToolPanel({ }: IToolPanel) {
             <Typography>Work in progress...</Typography>
             <Wrapper>
                 <div
-                    className="ag-theme-alpine-fusion ag-theme-hide-header"
+                    className="ag-theme-alpine-fusion"
                     style={{ flex: "1 1 auto", width: "700" }}
                 >
                     <AgGridReact

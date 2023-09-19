@@ -4,8 +4,8 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import React, {
     useCallback, useMemo, useRef, useState,
 } from "react"
-import { Button, Divider, Icon } from "@equinor/eds-core-react"
-import { add, view_column } from "@equinor/eds-icons"
+import { Button, Icon } from "@equinor/eds-core-react"
+import { view_column } from "@equinor/eds-icons"
 import { styled } from "styled-components"
 import TextInput from "@equinor/fusion-react-textinput"
 import { InstrumentTagData } from "../../Models/InstrumentTagData"
@@ -15,7 +15,6 @@ import { comparisonTagsColumnDefs } from "./ColumnDefs/TagsColumnDefs."
 import { comparisonEquipmentConditionsColumnDefs } from "./ColumnDefs/EquipmentConditionColumnDefs"
 import CustomFilterToolPanel from "./CustomFilterToolPanel"
 import { comparisonOperatingConditionsColumnDefs } from "./ColumnDefs/OperatingConditionsColumnDefs"
-// import { comparisonOperatingConditionsColumnDefs } from "./ColumnDefs/OperatingConditionsColumnDefs"
 
 const TableContainer = styled.div`
     flex: 1 1 auto;
@@ -29,14 +28,7 @@ const FilterBar = styled.div`
     justify-content: right;
     margin-right: 1rem;
     margin-top: 1rem;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    z-index: 100;
+    margin-bottom: 1rem;
 `
 
 interface Props {
@@ -48,19 +40,6 @@ function TagComparisonTable({ tags }: Props) {
     const gridRef = useRef<AgGridReact>(null)
     const [columnSideBarIsOpen, setColumnSideBarIsOpen] = useState<boolean>(false)
     const toggleColumnSideBar = () => setColumnSideBarIsOpen(!columnSideBarIsOpen)
-
-    const [sheetWidth, setSheetWidth] = useState(0)
-    const [open, setOpen] = useState(true)
-
-    const onCloseReviewSideSheet = useCallback(() => {
-        setOpen(false)
-        setSheetWidth(0)
-    }, [setOpen])
-
-    const onOpenReviewSideSheet = useCallback((activatedTab: React.SetStateAction<number>) => {
-        setOpen(true)
-        setSheetWidth(620)
-    }, [setOpen])
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -128,7 +107,6 @@ function TagComparisonTable({ tags }: Props) {
 
     const toggleSideBar = () => {
         if (columnSideBarIsOpen) {
-            console.log(gridRef)
             return columnSideBar
         }
         return undefined
@@ -154,7 +132,6 @@ function TagComparisonTable({ tags }: Props) {
                     Columns
                 </Button>
             </FilterBar>
-            <Divider />
             <div className={styles.root}>
                 <TableContainer
                     className="ag-theme-alpine-fusion"
