@@ -1,21 +1,24 @@
 import React, {
-    Dispatch,
-    SetStateAction,
     useContext,
     useEffect,
     useState,
 } from "react"
-import { useParams } from "react-router-dom"
-import { useCurrentUser } from "@equinor/fusion"
 import styled from "styled-components"
-import { GetCommentService } from "../../../../api/CommentService"
-import { ReviewComment } from "../../../../Models/ReviewComment"
-import MessageBox from "./MessageBox"
+import { GetConversationService } from "../../../../api/ConversationService"
+import { Message } from "../../../../Models/Message"
 import InputController from "./InputController"
 import { ViewContext } from "../../../../Context/ViewContext"
-import { formatDate } from "../../../../utils/helpers"
 import ClusteredMessages from "./ClusteredMessages"
+import TagDropDown from "./TagDropDown"
+import { processMessageInput } from "../../../../utils/helpers"
 
+const Controls = styled.div`
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+
+`
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -25,7 +28,7 @@ const Container = styled.div`
     align-items: center;
 `
 
-const Conversation = styled.div`
+const ConversationDiv = styled.div`
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -35,64 +38,169 @@ const Conversation = styled.div`
 
 type CommentViewProps = {
     currentProperty: string
-    reviewComments: ReviewComment[]
-    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>
 }
 
 const CommentView: React.FC<CommentViewProps> = ({
     currentProperty,
-    reviewComments,
-    setReviewComments,
 }) => {
-    const [newReviewComment, setNewReviewComment] = useState<ReviewComment>()
-    const { activeTagData } = useContext(ViewContext)
-    const { tagId } = useParams<Record<string, string | undefined>>()
-    const currentUser: any = useCurrentUser()
+    const [newMessage, setNewMessage] = useState<Message>()
+    const [reRenderCounter, setReRenderCounter] = useState<number>(0)
+    const [searchTerm, setSearchTerm] = useState<string>("")
+    const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
+    const {
+        activeTagData,
+        conversations,
+        setConversations,
+        activeConversation,
+        setActiveConversation,
+    } = useContext(ViewContext)
 
-    const getCommentsForProperty = (property: string) => (
-        reviewComments.filter((comment) => comment.property === property)
+    const getConversationForProperty = (property: string) => (
+        conversations.find((conversation) => conversation.property?.toUpperCase() === property.toUpperCase())
     )
 
-    const handleCommentChange = (
-        event: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
-        const comment = { ...newReviewComment }
-        comment.text = event.target.value
-        setNewReviewComment(comment)
+    const dummyData = [
+        {
+            id: "1",
+            displayName: "Henrik Hansen",
+            accountType: "Consultant",
+            status: "Active",
+        },
+        {
+            id: "2",
+            displayName: "Peter Jensen",
+            accountType: "Consultant",
+            status: "Active",
+        },
+        {
+            id: "3",
+            displayName: "Jesper Gudbransen",
+            accountType: "Consultant",
+            status: "inactive",
+        },
+        {
+            id: "4",
+            displayName: "Mikkel Eriksen",
+            accountType: "Consultant",
+            status: "inactive",
+        },
+    ]
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const currentConversationId = getConversationForProperty(currentProperty)?.id
+
+                if (currentConversationId) {
+                    const currentConversation = await (await GetConversationService()).getMessagesForConversation(
+                        activeTagData?.review?.id ?? "",
+                        currentConversationId,
+                    )
+                    setActiveConversation(currentConversation)
+                } else {
+                    setActiveConversation(undefined)
+                }
+            } catch (error) {
+                console.error("Error getting messages for conversation: ", error)
+            }
+        })()
+    }, [currentProperty])
+
+    const handleTagSelected = (displayName: string, userId: string) => {
+        const commentText = newMessage?.text ?? ""
+        const lastAtPos = commentText.lastIndexOf("@")
+        const beforeAt = commentText.substring(0, lastAtPos)
+        const afterAt = commentText.substring(lastAtPos + 1).replace(/^\S+/, "") // Removes the word right after the "@"
+
+        const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>&nbsp;${afterAt}`
+        const message = { ...newMessage }
+        message.text = newCommentText
+        setNewMessage(message)
+        setShowTagDropDown(false)
+        setSearchTerm("")
+    }
+
+    const createConversation = async () => {
+        const createCommentDto: Components.Schemas.ConversationDto = {
+            property: currentProperty,
+            text: newMessage?.text ?? "",
+            conversationLevel: 1,
+            conversationStatus: 0,
+        }
+        try {
+            const service = await GetConversationService()
+            const savedConversation = await service.createConversation(activeTagData?.review?.id ?? "", createCommentDto)
+            setActiveConversation(savedConversation)
+            const newConversations = [...conversations, savedConversation]
+            setConversations(newConversations)
+        } catch (error) {
+            console.error(`Error creating comment: ${error}`)
+        }
+        setNewMessage(undefined)
+    }
+
+    const addMessage = async () => {
+        const message = { ...newMessage }
+        const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
+        console.log("mentions: ", mentions) // to be used for tagging users in the future
+        message.text = processedString
+        try {
+            const service = await GetConversationService()
+            const savedMessage = await service.addMessage(activeTagData?.review?.id ?? "", activeConversation?.id ?? "", message)
+
+            const updatedMessages = [...activeConversation?.messages ?? [], savedMessage]
+
+            const updatedActiveConversation = { ...activeConversation }
+            updatedActiveConversation.messages = updatedMessages
+
+            setActiveConversation(updatedActiveConversation)
+        } catch (error) {
+            console.error(`Error creating comment: ${error}`)
+        }
     }
 
     const handleSubmit = async () => {
-        const comment = { ...newReviewComment }
-        comment.tagDataReviewId = activeTagData?.review?.id
-        comment.commentLevel = 0
-        comment.property = currentProperty
-        comment.createdDate = new Date().toISOString()
-        comment.userId = currentUser?._info.localAccountId
-        comment.commenterName = currentUser?._info.name
-        try {
-            const service = await GetCommentService()
-            const savedComment = await service.createComment(comment)
-            setReviewComments([...reviewComments, savedComment])
-        } catch (error) {
-            console.log(`Error creating comment: ${error}`)
+        if (!newMessage?.text) { return }
+        if (/^( |&nbsp;)*$/.test(newMessage.text)) { return } // if the string is only whitespace or &nbsp; then return
+
+        if (activeConversation) {
+            addMessage()
+        } else {
+            createConversation()
         }
-        setNewReviewComment(undefined)
+        setNewMessage(undefined)
+        setReRenderCounter(reRenderCounter + 1)
+        setSearchTerm("")
     }
+
+    useEffect(() => {
+        console.log("re-rendering")
+    }, [reRenderCounter])
 
     return (
         <Container>
-            <Conversation>
-                <ClusteredMessages
-                    comments={getCommentsForProperty(currentProperty)}
-                    reviewComments={reviewComments}
-                    setReviewComments={setReviewComments}
+            <ConversationDiv>
+                <ClusteredMessages />
+            </ConversationDiv>
+            <Controls>
+                {showTagDropDown && (
+                    <TagDropDown
+                        SearchTerm={searchTerm}
+                        setReRenderCounter={setReRenderCounter}
+                        onTagSelected={handleTagSelected}
+                        dummyData={dummyData}
+                    />
+                )}
+
+                <InputController
+                    handleSubmit={handleSubmit}
+                    reRenderCounter={reRenderCounter}
+                    newMessage={newMessage}
+                    setNewMessage={setNewMessage}
+                    setSearchTerm={setSearchTerm}
+                    setShowTagDropDown={setShowTagDropDown}
                 />
-            </Conversation>
-            <InputController
-                value={newReviewComment?.text ?? ""}
-                handleCommentChange={handleCommentChange}
-                handleSubmit={handleSubmit}
-            />
+            </Controls>
         </Container>
     )
 }

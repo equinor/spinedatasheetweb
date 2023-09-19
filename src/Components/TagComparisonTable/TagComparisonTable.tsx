@@ -68,6 +68,7 @@ function TagComparisonTable({ tags }: Props) {
             filter: "agMultiColumnFilter",
             resizable: true,
             editable: false,
+            cellDataType: false,
         }),
         [],
     )

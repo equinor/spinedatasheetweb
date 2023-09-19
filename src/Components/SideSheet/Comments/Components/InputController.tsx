@@ -1,15 +1,13 @@
 import React, { FC } from "react"
 import {
- Input, Button, Icon, Checkbox,
+    Button, Icon, Checkbox,
 } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { send } from "@equinor/eds-icons"
+import InputField from "./InputField"
 
 const Controls = styled.div`
-    width: 100%;
     padding: 30px 15px 10px 15px;
-    position: sticky;
-    bottom: 0;
     background-color: white;
     border-top: 1px solid LightGray;
     display: flex;
@@ -22,29 +20,37 @@ const InputButtonWrapper = styled.div`
     align-items: center;
     
 `
+const StyledCheckbox = styled(Checkbox)`
+    margin-left: -15px;
+`
 
 interface InputControllerProps {
-    value: string
-    handleCommentChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
     handleSubmit: () => void
+    setSearchTerm: React.Dispatch<React.SetStateAction<string>>
+    setShowTagDropDown: React.Dispatch<React.SetStateAction<boolean>>
+    newMessage: any
+    setNewMessage: React.Dispatch<React.SetStateAction<any>>
+    reRenderCounter: number
 }
 
 const InputController: FC<InputControllerProps> = ({
-    value,
-    handleCommentChange,
     handleSubmit,
+    setShowTagDropDown,
+    setSearchTerm,
+    newMessage,
+    setNewMessage,
+    reRenderCounter,
 }) => (
     <Controls>
-        <Input
-            as="textarea"
-            type="text"
-            placeholder="Write a comment..."
-            onChange={handleCommentChange}
-            value={value}
-            rows={3}
+        <InputField
+            setSearchTerm={setSearchTerm}
+            setShowTagDropDown={setShowTagDropDown}
+            newReviewComment={newMessage}
+            setNewReviewComment={setNewMessage}
+            reRenderCounter={reRenderCounter}
         />
         <InputButtonWrapper>
-            <Checkbox label="Send to contractor" />
+            <StyledCheckbox label="Send to contractor" />
             <Button onClick={handleSubmit} variant="ghost">
                 <Icon data={send} />
             </Button>

@@ -1,12 +1,13 @@
 import React, {
-    FC, SetStateAction, Dispatch,
+    FC, useContext, useEffect, useState,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { useCurrentUser } from "@equinor/fusion"
 import MessageBox from "./MessageBox"
-import { ReviewComment } from "../../../../Models/ReviewComment"
+import { Message } from "../../../../Models/Message"
 import { formatDate } from "../../../../utils/helpers"
+import { ViewContext } from "../../../../Context/ViewContext"
 
 const Container = styled.div<{ commentIsByCurrentUser: boolean }>`
     align-self: ${(props) => (props.commentIsByCurrentUser ? "flex-end" : "flex-start")};
@@ -30,15 +31,17 @@ const TimeStamp = styled.div`
     }
 `
 
+const SubContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
 interface ClusteredMessagesProps {
-    comments: ReviewComment[]
-    reviewComments: ReviewComment[]
-    setReviewComments: Dispatch<SetStateAction<ReviewComment[]>>
 }
 
-const ClusteredMessages: FC<ClusteredMessagesProps> = ({
-    comments, reviewComments, setReviewComments,
-}) => {
+const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
+    const { activeConversation } = useContext(ViewContext)
+
     const currentUser: any = useCurrentUser()
     const isCurrentUser = (userId: string) => currentUser?._info.localAccountId === userId
     type Cluster = {
@@ -56,7 +59,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({
         }[];
     };
 
-    const generateMessageCluster = (postedComments: ReviewComment[]): Cluster[] => {
+    const generateMessageCluster = (postedComments: Message[]): Cluster[] => {
         const clusters: Cluster[] = []
         const strToDate = (dateString: string): Date => new Date(dateString)
         const diffInMinutes = (date1: Date, date2: Date): number => (date2.getTime() - date1.getTime()) / 1000 / 60
@@ -98,9 +101,11 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({
         return clusters
     }
 
+    if (activeConversation?.messages === undefined || activeConversation?.messages === null) { return (<div />) }
+
     return (
         <>
-            {generateMessageCluster(comments).map((cluster, index) => (
+            {generateMessageCluster(activeConversation.messages).map((cluster, index) => (
                 <Container commentIsByCurrentUser={isCurrentUser(cluster.userId)} key={`${cluster.userId}-${index}`}>
                     <Header isCurrentUser={!isCurrentUser(cluster.userId)}>
                         {!isCurrentUser(cluster.userId) && (
@@ -110,30 +115,25 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({
                             <Typography variant="meta">{formatDate(cluster.meta.createdDate)}</Typography>
                         </TimeStamp>
                     </Header>
-                    <div>
-                        {cluster.messages.map((message, messageIndex) => {
-                            console.log(message)
-                            return (
-                                <>
-                                    {message.isEdited && (
-                                        <Typography variant="meta">
-                                            Edited
-                                            {" "}
-                                            {formatDate(message.modifiedDate || "")}
-                                        </Typography>
+                    <SubContainer>
+                        {cluster.messages.map((message, messageIndex) => (
+                            <>
+                                {message.isEdited && (
+                                <Typography variant="meta">
+                                    Edited
+                                    {" "}
+                                    {formatDate(message.modifiedDate || "")}
+                                </Typography>
                                     )}
-                                    <MessageBox
-                                        key={`${cluster.userId}-${index}-${messageIndex}`}
-                                        isCurrentUser={isCurrentUser(cluster.userId)}
-                                        messageObject={message}
-                                        reviewComments={reviewComments}
-                                        setReviewComments={setReviewComments}
-                                        userId={cluster.userId}
-                                    />
-                                </>
-                            )
-                        })}
-                    </div>
+                                <MessageBox
+                                    key={`${cluster.userId}-${index}-${messageIndex}`}
+                                    messageObject={message}
+                                    userId={cluster.userId}
+                                    isCurrentUser={isCurrentUser(cluster.userId)}
+                                />
+                            </>
+                            ))}
+                    </SubContainer>
                 </Container>
             ))}
         </>
