@@ -1,5 +1,5 @@
 import React, {
-    Dispatch, SetStateAction, useContext, useRef, useEffect,
+    useContext, useRef, useEffect,
 } from "react"
 import {
     Icon, Tabs, Typography, Button,
@@ -14,7 +14,6 @@ import ChangeLogSideSheet from "./ChangeLog/ChangeLogSideSheet"
 import EquipmentSideSheet from "./Equipment/EquipmentSideSheet"
 import ActivitySideSheet from "./Activity/ActivitySideSheet"
 import { ViewContext } from "../../Context/ViewContext"
-import { Conversation } from "../../Models/Conversation"
 
 const SheetContent = styled.div`
     box-sizing: border-box;
@@ -120,9 +119,20 @@ const SheetContainer: React.FC<Props> = ({
         }
     }
 
+    function handleEscapeKey(event: globalThis.KeyboardEvent) {
+        if (event.code === "Escape") {
+            onClose()
+        }
+    }
+
     useEffect(() => {
         if (activeSheetTab !== 4) {
             scrollToTop()
+        }
+
+        document.addEventListener("keydown", handleEscapeKey)
+        return () => {
+            document.removeEventListener("keydown", handleEscapeKey)
         }
     }, [activeSheetTab])
 
