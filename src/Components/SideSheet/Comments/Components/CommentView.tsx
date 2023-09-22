@@ -4,6 +4,7 @@ import React, {
     useState,
 } from "react"
 import styled from "styled-components"
+import { useCurrentContext } from "@equinor/fusion"
 import { GetConversationService } from "../../../../api/ConversationService"
 import { Message } from "../../../../Models/Message"
 import InputController from "./InputController"
@@ -11,6 +12,7 @@ import { ViewContext } from "../../../../Context/ViewContext"
 import ClusteredMessages from "./ClusteredMessages"
 import TagDropDown from "./TagDropDown"
 import { processMessageInput } from "../../../../utils/helpers"
+import { GetProjectService } from "../../../../api/ProjectService"
 
 const Controls = styled.div`
     position: sticky;
@@ -47,6 +49,9 @@ const CommentView: React.FC<CommentViewProps> = ({
     const [reRenderCounter, setReRenderCounter] = useState<number>(0)
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
+    const [charCount, setCharCount] = useState(0)
+    const [userTags, setUserTags] = useState<any[]>([])
+
     const {
         activeTagData,
         conversations,
@@ -55,36 +60,25 @@ const CommentView: React.FC<CommentViewProps> = ({
         setActiveConversation,
     } = useContext(ViewContext)
 
+    const fusionContextId = useCurrentContext()
+
     const getConversationForProperty = (property: string) => (
         conversations.find((conversation) => conversation.property?.toUpperCase() === property.toUpperCase())
     )
 
-    const dummyData = [
-        {
-            id: "1",
-            displayName: "Henrik Hansen",
-            accountType: "Consultant",
-            status: "Active",
-        },
-        {
-            id: "2",
-            displayName: "Peter Jensen",
-            accountType: "Consultant",
-            status: "Active",
-        },
-        {
-            id: "3",
-            displayName: "Jesper Gudbransen",
-            accountType: "Consultant",
-            status: "inactive",
-        },
-        {
-            id: "4",
-            displayName: "Mikkel Eriksen",
-            accountType: "Consultant",
-            status: "inactive",
-        },
-    ]
+    useEffect(() => {
+        (async () => {
+            if (fusionContextId) {
+                try {
+                    const userTagsResult = await (await GetProjectService()).getUsers(fusionContextId.id, "", 1000, 0)
+                    setUserTags(userTagsResult.data)
+                    console.log("hello")
+                } catch (error) {
+                    console.error("Error getting users for project: ", error)
+                }
+            }
+        })()
+    }, [])
 
     useEffect(() => {
         (async () => {
@@ -112,18 +106,22 @@ const CommentView: React.FC<CommentViewProps> = ({
         const beforeAt = commentText.substring(0, lastAtPos)
         const afterAt = commentText.substring(lastAtPos + 1).replace(/^\S+/, "") // Removes the word right after the "@"
 
-        const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>&nbsp;${afterAt}`
+        const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>${afterAt}`
         const message = { ...newMessage }
         message.text = newCommentText
         setNewMessage(message)
         setShowTagDropDown(false)
         setSearchTerm("")
+        console.log("displayName: ", displayName)
+        setCharCount((prevCharCount) => prevCharCount + displayName.length)
     }
 
     const createConversation = async () => {
+        const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
+        console.log("new conversation message: ", processedString)
         const createCommentDto: Components.Schemas.ConversationDto = {
             property: currentProperty,
-            text: newMessage?.text ?? "",
+            text: processedString ?? "",
             conversationLevel: 1,
             conversationStatus: 0,
         }
@@ -142,6 +140,7 @@ const CommentView: React.FC<CommentViewProps> = ({
     const addMessage = async () => {
         const message = { ...newMessage }
         const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
+        console.log("added message: ", processedString)
         console.log("mentions: ", mentions) // to be used for tagging users in the future
         message.text = processedString
         try {
@@ -188,7 +187,7 @@ const CommentView: React.FC<CommentViewProps> = ({
                         SearchTerm={searchTerm}
                         setReRenderCounter={setReRenderCounter}
                         onTagSelected={handleTagSelected}
-                        dummyData={dummyData}
+                        dummyData={userTags}
                     />
                 )}
 
@@ -199,6 +198,8 @@ const CommentView: React.FC<CommentViewProps> = ({
                     setNewMessage={setNewMessage}
                     setSearchTerm={setSearchTerm}
                     setShowTagDropDown={setShowTagDropDown}
+                    charCount={charCount}
+                    setCharCount={setCharCount}
                 />
             </Controls>
         </Container>
