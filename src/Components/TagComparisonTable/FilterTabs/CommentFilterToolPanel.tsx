@@ -165,7 +165,6 @@ function CommentFilterToolPanel({}: IToolPanel) {
                     </Accordion.Panel>
                 </Accordion.Item>
             </CustomAccordion>
-
         </Container>
     )
 }
