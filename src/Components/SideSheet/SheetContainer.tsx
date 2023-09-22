@@ -126,13 +126,19 @@ const SheetContainer: React.FC<Props> = ({
     }
 
     useEffect(() => {
-        if (activeSheetTab !== 4) {
-            scrollToTop()
+        if (isOpen) {
+            document.addEventListener("keydown", handleEscapeKey)
+            return () => {
+                document.removeEventListener("keydown", handleEscapeKey)
+            }
         }
 
-        document.addEventListener("keydown", handleEscapeKey)
-        return () => {
-            document.removeEventListener("keydown", handleEscapeKey)
+        return () => {}
+    }, [isOpen])
+
+    useEffect(() => {
+        if (activeSheetTab !== 4) {
+            scrollToTop()
         }
     }, [activeSheetTab])
 
