@@ -90,14 +90,6 @@ function TagComparisonTable({ tags }: Props) {
                 toolPanel: "agFiltersToolPanel",
             },
             {
-                id: "InvalidPropertyFilters",
-                labelDefault: "Invalid Properties",
-                labelKey: "InvalidPropertyFilters",
-                iconKey: "filter",
-                toolPanel: InvalidPropertyFilterToolPanel,
-                width: 250,
-            },
-            {
                 id: "commentFilters",
                 labelDefault: "Comments",
                 labelKey: "commentFilters",
