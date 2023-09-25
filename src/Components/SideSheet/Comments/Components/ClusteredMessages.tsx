@@ -44,7 +44,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
     const { activeConversation } = useContext(ViewContext)
 
     const currentUser: any = useCurrentUser()
-    const person = usePersonDetails(currentUser?._info.localAccountId)
+    // const person = usePersonDetails(currentUser?._info.localAccountId)
     const isCurrentUser = (userId: string) => currentUser?._info.localAccountId === userId
     type Cluster = {
         userId: string;
@@ -105,24 +105,26 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
 
     if (activeConversation?.messages === undefined || activeConversation?.messages === null) { return (<div />) }
 
-    const renderPerson = () => (
-        <PersonCard
-            key={person.personDetails?.azureUniqueId}
-            personId={person.personDetails?.azureUniqueId}
-            photoSize="small"
-            isFetchingPerson={person.isFetching}
-        />
+    const renderPerson = (userId: string) => {
+        const person = usePersonDetails(userId)
+        return (
+            <PersonCard
+                key={person.personDetails?.azureUniqueId}
+                personId={person.personDetails?.azureUniqueId}
+                photoSize="small"
+                isFetchingPerson={person.isFetching}
+            />
         )
+    }
 
     return (
         <>
             {generateMessageCluster(activeConversation.messages).map((cluster, index) => (
                 <Container commentIsByCurrentUser={isCurrentUser(cluster.userId)} key={`${cluster.userId}-${index}`}>
                     <Header isCurrentUser={!isCurrentUser(cluster.userId)}>
-                        {/* {!isCurrentUser(cluster.userId) && ( */}
-                        {/* <Typography variant="meta">{cluster.meta.commenterName}</Typography> */}
-                        {renderPerson()}
-                        {/* )} */}
+                        {!isCurrentUser(cluster.userId) && (
+                            renderPerson(cluster.userId)
+                        )}
                         <TimeStamp>
                             <Typography variant="meta">{formatDate(cluster.meta.createdDate)}</Typography>
                         </TimeStamp>
