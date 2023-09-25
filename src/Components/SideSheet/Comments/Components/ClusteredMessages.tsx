@@ -105,8 +105,8 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
 
     if (activeConversation?.messages === undefined || activeConversation?.messages === null) { return (<div />) }
 
-    const renderPerson = (userId: string) => {
-        const person = usePersonDetails(userId)
+    const renderPerson = (cluster: Cluster) => {
+        const person = usePersonDetails(cluster.userId)
         return (
             <PersonCard
                 key={person.personDetails?.azureUniqueId}
@@ -122,8 +122,14 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
             {generateMessageCluster(activeConversation.messages).map((cluster, index) => (
                 <Container commentIsByCurrentUser={isCurrentUser(cluster.userId)} key={`${cluster.userId}-${index}`}>
                     <Header isCurrentUser={!isCurrentUser(cluster.userId)}>
-                        {!isCurrentUser(cluster.userId) && (
-                            renderPerson(cluster.userId)
+                        {isCurrentUser(cluster.userId) && (
+                            // renderPerson(cluster)
+                            <PersonCard
+                                key={`${cluster.userId}-${index}`}
+                                personId={cluster.userId}
+                                photoSize="small"
+                                // isFetchingPerson={person.isFetching}
+                            />
                         )}
                         <TimeStamp>
                             <Typography variant="meta">{formatDate(cluster.meta.createdDate)}</Typography>
