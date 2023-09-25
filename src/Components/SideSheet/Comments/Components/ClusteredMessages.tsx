@@ -3,7 +3,8 @@ import React, {
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { useCurrentUser } from "@equinor/fusion"
+import { useCurrentUser, usePersonDetails } from "@equinor/fusion"
+import { PersonCard } from "@equinor/fusion-components"
 import MessageBox from "./MessageBox"
 import { Message } from "../../../../Models/Message"
 import { formatDate } from "../../../../utils/helpers"
@@ -43,6 +44,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
     const { activeConversation } = useContext(ViewContext)
 
     const currentUser: any = useCurrentUser()
+    const person = usePersonDetails(currentUser?._info.localAccountId)
     const isCurrentUser = (userId: string) => currentUser?._info.localAccountId === userId
     type Cluster = {
         userId: string;
@@ -103,14 +105,24 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
 
     if (activeConversation?.messages === undefined || activeConversation?.messages === null) { return (<div />) }
 
+    const renderPerson = () => (
+        <PersonCard
+            key={person.personDetails?.azureUniqueId}
+            personId={person.personDetails?.azureUniqueId}
+            photoSize="small"
+            isFetchingPerson={person.isFetching}
+        />
+        )
+
     return (
         <>
             {generateMessageCluster(activeConversation.messages).map((cluster, index) => (
                 <Container commentIsByCurrentUser={isCurrentUser(cluster.userId)} key={`${cluster.userId}-${index}`}>
                     <Header isCurrentUser={!isCurrentUser(cluster.userId)}>
-                        {!isCurrentUser(cluster.userId) && (
-                            <Typography variant="meta">{cluster.meta.commenterName}</Typography>
-                        )}
+                        {/* {!isCurrentUser(cluster.userId) && ( */}
+                        {/* <Typography variant="meta">{cluster.meta.commenterName}</Typography> */}
+                        {renderPerson()}
+                        {/* )} */}
                         <TimeStamp>
                             <Typography variant="meta">{formatDate(cluster.meta.createdDate)}</Typography>
                         </TimeStamp>
@@ -119,12 +131,12 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                         {cluster.messages.map((message, messageIndex) => (
                             <>
                                 {message.isEdited && (
-                                <Typography variant="meta">
-                                    Edited
-                                    {" "}
-                                    {formatDate(message.modifiedDate || "")}
-                                </Typography>
-                                    )}
+                                    <Typography variant="meta">
+                                        Edited
+                                        {" "}
+                                        {formatDate(message.modifiedDate || "")}
+                                    </Typography>
+                                )}
                                 <MessageBox
                                     key={`${cluster.userId}-${index}-${messageIndex}`}
                                     messageObject={message}
@@ -132,7 +144,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                                     isCurrentUser={isCurrentUser(cluster.userId)}
                                 />
                             </>
-                            ))}
+                        ))}
                     </SubContainer>
                 </Container>
             ))}
