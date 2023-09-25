@@ -14,7 +14,6 @@ import { comparisonTR3111ColumnDefs } from "./ColumnDefs/TR3111ColumnDefs"
 import { comparisonTagsColumnDefs } from "./ColumnDefs/TagsColumnDefs."
 import { comparisonEquipmentConditionsColumnDefs } from "./ColumnDefs/EquipmentConditionColumnDefs"
 import { comparisonOperatingConditionsColumnDefs } from "./ColumnDefs/OperatingConditionsColumnDefs"
-import InvalidPropertyFilterToolPanel from "./FilterTabs/InvalidPropertyFilterToolPanel"
 import CommentFilterToolPanel from "./FilterTabs/CommentFilterToolPanel"
 import IconFilterToolPanel from "./FilterTabs/IconFilterToolPanel"
 
