@@ -122,7 +122,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
             {generateMessageCluster(activeConversation.messages).map((cluster, index) => (
                 <Container commentIsByCurrentUser={isCurrentUser(cluster.userId)} key={`${cluster.userId}-${index}`}>
                     <Header isCurrentUser={!isCurrentUser(cluster.userId)}>
-                        {isCurrentUser(cluster.userId) && (
+                        {!isCurrentUser(cluster.userId) && (
                             // renderPerson(cluster)
                             <PersonCard
                                 key={`${cluster.userId}-${index}`}
