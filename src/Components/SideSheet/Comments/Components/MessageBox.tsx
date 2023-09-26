@@ -2,11 +2,23 @@ import React, {
     FC, useState,
 } from "react"
 import styled from "styled-components"
+import { PersonPhoto } from "@equinor/fusion-components"
 import { Message } from "../../../../Models/Message"
 import RenderComment from "./RenderComment"
 
-const Container = styled.div<{ commentIsByCurrentUser: boolean }>`
+const MainContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
+    display: flex;
+    flex-direction: row;
+    background-color: "white";
     align-self: ${(props) => (props.commentIsByCurrentUser ? "flex-end" : "flex-start")};
+    align-items: center; /* Vertically center children */
+`
+
+const Container = styled.div`
+    align-items: center; /* Vertically center its child */
+`
+
+const SubContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
     border-radius: 5px;
     margin: 5px 0;
     padding: 10px;
@@ -19,28 +31,39 @@ const Container = styled.div<{ commentIsByCurrentUser: boolean }>`
 
 interface MessageBoxProps {
     messageObject: Message
+    photoIndex: string
     userId?: string
     isCurrentUser: boolean
 }
 
 const MessageBox: FC<MessageBoxProps> = ({
     messageObject,
+    photoIndex,
     userId,
     isCurrentUser,
 }) => {
     const [isUpdateMode, setUpdateMode] = useState(false)
 
     return (
-        <Container key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
-            <div>
-                <RenderComment
-                    comment={messageObject}
-                    isUpdateMode={isUpdateMode}
-                    setUpdateMode={setUpdateMode}
-                    isCurrentUser={isCurrentUser}
+        <MainContainer key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
+            <Container>
+                <PersonPhoto
+                    personId={userId}
+                    key={photoIndex}
+                    size="large"
                 />
-            </div>
-        </Container>
+            </Container>
+            <SubContainer key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
+                <div>
+                    <RenderComment
+                        comment={messageObject}
+                        isUpdateMode={isUpdateMode}
+                        setUpdateMode={setUpdateMode}
+                        isCurrentUser={isCurrentUser}
+                    />
+                </div>
+            </SubContainer>
+        </MainContainer>
     )
 }
 
