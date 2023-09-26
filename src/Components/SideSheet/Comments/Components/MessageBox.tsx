@@ -5,15 +5,8 @@ import styled from "styled-components"
 import { Message } from "../../../../Models/Message"
 import RenderComment from "./RenderComment"
 
-const MainContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
-    display: flex;
-    flex-direction: row;
-    background-color: "white";
+const Container = styled.div<{ commentIsByCurrentUser: boolean }>`
     align-self: ${(props) => (props.commentIsByCurrentUser ? "flex-end" : "flex-start")};
-    align-items: center; /* Vertically center children */
-`
-
-const SubContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
     border-radius: 5px;
     margin: 5px 0;
     padding: 10px;
@@ -38,18 +31,16 @@ const MessageBox: FC<MessageBoxProps> = ({
     const [isUpdateMode, setUpdateMode] = useState(false)
 
     return (
-        <MainContainer key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
-            <SubContainer key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
-                <div>
-                    <RenderComment
-                        comment={messageObject}
-                        isUpdateMode={isUpdateMode}
-                        setUpdateMode={setUpdateMode}
-                        isCurrentUser={isCurrentUser}
-                    />
-                </div>
-            </SubContainer>
-        </MainContainer>
+        <Container key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
+            <div>
+                <RenderComment
+                    comment={messageObject}
+                    isUpdateMode={isUpdateMode}
+                    setUpdateMode={setUpdateMode}
+                    isCurrentUser={isCurrentUser}
+                />
+            </div>
+        </Container>
     )
 }
 
