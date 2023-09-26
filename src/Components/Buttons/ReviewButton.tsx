@@ -36,8 +36,6 @@ const AbandonButton = styled(Button)`
     }
 `
 
-// ... other styled components
-
 const ReviewButton = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [isDialogOpen, setDialogOpen] = useState(false)
