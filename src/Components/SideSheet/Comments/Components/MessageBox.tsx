@@ -2,7 +2,6 @@ import React, {
     FC, useState,
 } from "react"
 import styled from "styled-components"
-import { PersonPhoto } from "@equinor/fusion-components"
 import { Message } from "../../../../Models/Message"
 import RenderComment from "./RenderComment"
 
@@ -12,10 +11,6 @@ const MainContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
     background-color: "white";
     align-self: ${(props) => (props.commentIsByCurrentUser ? "flex-end" : "flex-start")};
     align-items: center; /* Vertically center children */
-`
-
-const Container = styled.div`
-    align-items: center; /* Vertically center its child */
 `
 
 const SubContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
@@ -31,14 +26,12 @@ const SubContainer = styled.div<{ commentIsByCurrentUser: boolean }>`
 
 interface MessageBoxProps {
     messageObject: Message
-    photoIndex: string
     userId?: string
     isCurrentUser: boolean
 }
 
 const MessageBox: FC<MessageBoxProps> = ({
     messageObject,
-    photoIndex,
     userId,
     isCurrentUser,
 }) => {
@@ -46,13 +39,6 @@ const MessageBox: FC<MessageBoxProps> = ({
 
     return (
         <MainContainer key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
-            <Container>
-                <PersonPhoto
-                    personId={userId}
-                    key={photoIndex}
-                    size="large"
-                />
-            </Container>
             <SubContainer key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
                 <div>
                     <RenderComment
