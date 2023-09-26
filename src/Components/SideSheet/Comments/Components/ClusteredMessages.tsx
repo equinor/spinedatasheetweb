@@ -117,13 +117,8 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
     if (activeConversation?.messages === undefined || activeConversation?.messages === null) { return (<div />) }
 
     const getClusterWithoutFirstMessage = (cluster: Cluster) => {
-        const [firstMessage, ...restMessages] = cluster.messages
+        const [, ...restMessages] = cluster.messages
         return restMessages
-    }
-
-    const getFirstMessage = (cluster: Cluster) => {
-        const [firstMessage, ...restMessages] = cluster.messages
-        return firstMessage
     }
 
     return (
@@ -151,7 +146,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                                 )}
                                 <MessageBox
                                     key={`${cluster.userId}-${index}-${0}`}
-                                    messageObject={getFirstMessage(cluster)}
+                                    messageObject={cluster.messages[0]}
                                     userId={cluster.userId}
                                     isCurrentUser={isCurrentUser(cluster.userId)}
                                 />
