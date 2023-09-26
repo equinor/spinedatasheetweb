@@ -1,5 +1,5 @@
 import React, {
-    FC, useContext, useEffect, useState,
+    FC, useContext,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
