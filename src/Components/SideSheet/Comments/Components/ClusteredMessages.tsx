@@ -116,7 +116,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
 
     if (activeConversation?.messages === undefined || activeConversation?.messages === null) { return (<div />) }
 
-    const separateFromFirstMessage = (cluster: Cluster) => {
+    const getClusterWithoutFirstMessage = (cluster: Cluster) => {
         const [firstMessage, ...restMessages] = cluster.messages
         return restMessages
     }
@@ -142,11 +142,13 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                     <SubContainer>
                         <MessageContainer>
                             <PhotoContainer isCurrentUser={isCurrentUser(cluster.userId)}>
-                                <PersonPhoto
-                                    personId={cluster.userId}
-                                    key={`${cluster.userId}-${index}`}
-                                    size="large"
-                                />
+                                {!isCurrentUser && (
+                                    <PersonPhoto
+                                        personId={cluster.userId}
+                                        key={`${cluster.userId}-${index}`}
+                                        size="large"
+                                    />
+                                )}
                                 <MessageBox
                                     key={`${cluster.userId}-${index}-${0}`}
                                     messageObject={getFirstMessage(cluster)}
@@ -155,7 +157,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                                 />
                             </PhotoContainer>
 
-                            {separateFromFirstMessage(cluster).map((message, messageIndex) => (
+                            {getClusterWithoutFirstMessage(cluster).map((message, messageIndex) => (
                                 <>
                                     {message.isEdited && (
                                         <Typography variant="meta">
