@@ -139,16 +139,14 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                         <MessageContainer>
                             <PhotoContainer isCurrentUser={isCurrentUser(cluster.userId)}>
                                 {/* {!isCurrentUser && ( */}
-                                <div>
-                                    {/* <PersonPhoto
+                                {/* <PersonPhoto
                                             personId={cluster.userId}
                                             key={`${cluster.userId}-${index}`}
                                             size="large"
                                         /> */}
-                                    <PersonAvatar
-                                        azureId={cluster.userId}
-                                    />
-                                </div>
+                                <PersonAvatar
+                                    azureId={cluster.userId}
+                                />
                                 {/* )} */}
                                 <MessageBox
                                     key={`${cluster.userId}-${index}-${0}`}
