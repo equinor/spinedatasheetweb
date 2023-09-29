@@ -1,5 +1,6 @@
+/* eslint-disable no-nested-ternary */
 import React, {
- useRef, useState, useEffect, MutableRefObject,
+  useRef, useState, useEffect, MutableRefObject,
 } from "react"
 import styled from "styled-components"
 
@@ -11,7 +12,7 @@ const StyledDiv = styled.div`
 `
 
 const StyledP = styled.p<{ isPlaceholder: boolean }>`
-  color: ${({ isPlaceholder }) => (isPlaceholder ? "grey" : "black")};
+  color: ${({ isPlaceholder }) => (isPlaceholder ? "grey" : "black")}!important;
   margin: 0;
   
   min-height: 18px;
@@ -24,6 +25,8 @@ const StyledP = styled.p<{ isPlaceholder: boolean }>`
     color: #007079;
     font-weight: 500;
 `
+
+// add in isUpdateMode for black color? or when not placeholder?
 const CharCount = styled.p<{ isOverLimit: boolean }>`
   color: ${({ isOverLimit }) => (isOverLimit ? "red" : "black")};
   font-weight: ${({ isOverLimit }) => (isOverLimit ? "bold" : "normal")};
@@ -40,6 +43,7 @@ interface Props {
   reRenderCounter: number
   charCount: number
   setCharCount: React.Dispatch<React.SetStateAction<number>>
+  isUpdateMode?: boolean
 }
 
 const InputField: React.FC<Props> = ({
@@ -51,23 +55,36 @@ const InputField: React.FC<Props> = ({
   reRenderCounter,
   charCount,
   setCharCount,
+  isUpdateMode,
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null)
   const [isPlaceholderShown, setIsPlaceholderShown] = useState(true)
 
+  console.log(isUpdateMode)
+
   useEffect(() => {
-      if (pRef.current) {
-        if (!newReviewComment?.text) {
-          setIsPlaceholderShown(true)
-        }
-        pRef.current.innerHTML = newReviewComment?.text || placeholder
+    if (pRef.current) {
+      // console.log(pRef)
+      // console.log(newReviewComment)
+      // if (newReviewComment) {
+      //   setNewReviewComment(newReviewComment)
+      //   setIsPlaceholderShown(false)
+      // }
+      if (!newReviewComment?.text) {
+        setIsPlaceholderShown(true)
       }
+      pRef.current.innerHTML = newReviewComment?.text || placeholder
+    }
   }, [reRenderCounter])
 
   useEffect(() => {
-      if (pRef.current && isPlaceholderShown) {
-        pRef.current.innerHTML = placeholder
-      }
+    if (pRef.current && isPlaceholderShown === false) {
+      pRef.current.innerText = newReviewComment
+      setCharCount(pRef.current.innerText.length)
+    }
+    if (pRef.current && isPlaceholderShown) {
+      pRef.current.innerHTML = placeholder
+    }
   }, [isPlaceholderShown, placeholder])
 
   const handleCommentChange = (commentText: string) => {
@@ -100,28 +117,48 @@ const InputField: React.FC<Props> = ({
   }
 
   const handleBlur = () => {
-      if (pRef.current) {
-        pRef.current.contentEditable = "false"
-        const content = pRef.current.innerHTML
-        handleCommentChange(content)
-        if (content.trim() === "") {
-          setIsPlaceholderShown(true)
-          pRef.current.innerHTML = placeholder
-        } else {
-          setIsPlaceholderShown(false)
-        }
-      }
-  }
-const handleInput = () => {
     if (pRef.current) {
-        const content = pRef.current.innerText
-        if (content !== placeholder) {
-            handleCommentChange(content)
-            console.log("content:", content)
-            setCharCount(content.length)
-        }
+      pRef.current.contentEditable = "false"
+      const content = pRef.current.innerHTML
+      handleCommentChange(content)
+      if (content.trim() === "") {
+        setIsPlaceholderShown(true)
+        pRef.current.innerHTML = placeholder
+      } else {
+        setIsPlaceholderShown(false)
+      }
     }
-}
+  }
+  const handleInput = () => {
+    if (pRef.current) {
+      const content = pRef.current.innerText
+      if (content !== placeholder) {
+        handleCommentChange(content)
+        console.log("content:", content)
+        setCharCount(content.length)
+      }
+    }
+  }
+
+  if (isUpdateMode) {
+    return (
+        <>
+            <StyledDiv onClick={handleFocus}>
+                <StyledP
+                    ref={pRef}
+                    onBlur={handleBlur}
+                    onInput={handleInput}
+                    isPlaceholder={isPlaceholderShown}
+                />
+            </StyledDiv>
+            <CharCount isOverLimit={charCount > 500}>
+                {charCount}
+                /500
+            </CharCount>
+
+        </>
+    )
+  }
 
   return (
       <>
