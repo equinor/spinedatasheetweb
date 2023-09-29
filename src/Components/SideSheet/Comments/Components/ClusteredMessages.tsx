@@ -127,7 +127,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                 <Container commentIsByCurrentUser={isCurrentUser(cluster.userId)} key={`${cluster.userId}-${index}`}>
                     <Header isCurrentUser={!isCurrentUser(cluster.userId)}>
                         {!isCurrentUser(cluster.userId) && (
-                            <Typography>{cluster.meta.commenterName}</Typography>
+                            <Typography variant="meta">{cluster.meta.commenterName}</Typography>
                         )}
                         <TimeStamp>
                             <Typography variant="meta">{formatDate(cluster.meta.createdDate)}</Typography>
