@@ -73,8 +73,8 @@ const InputController: FC<InputControllerProps> = ({
                     <InputField
                         setSearchTerm={setSearchTerm}
                         setShowTagDropDown={setShowTagDropDown}
-                        newReviewComment={newMessage}
-                        setNewReviewComment={setNewMessage}
+                        newMessage={newMessage}
+                        setNewMessage={setNewMessage}
                         reRenderCounter={reRenderCounter}
                         charCount={charCount}
                         setCharCount={setCharCount}

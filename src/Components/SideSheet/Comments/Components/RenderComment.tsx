@@ -1,14 +1,11 @@
 import React, {
-    Dispatch, FC, SetStateAction, useContext, useEffect, useRef, useState,
+    Dispatch, FC, SetStateAction, useContext, useRef, useState,
 } from "react"
 import { styled } from "styled-components"
 import {
-    Button, Icon, Input, Popover, Typography,
+    Button, Icon, Popover, Typography,
 } from "@equinor/eds-core-react"
-import {
-    delete_to_trash, edit,
-} from "@equinor/eds-icons"
-import { useCurrentContext } from "@equinor/fusion"
+import { delete_to_trash, edit } from "@equinor/eds-icons"
 import { Message } from "../../../../Models/Message"
 import { GetConversationService } from "../../../../api/ConversationService"
 import { Conversation } from "../../../../Models/Conversation"
@@ -16,7 +13,6 @@ import { ViewContext } from "../../../../Context/ViewContext"
 import { unescapeHtmlEntities } from "../../../../utils/helpers"
 import InputField from "./InputField"
 import TagDropDown from "./TagDropDown"
-import { GetProjectService } from "../../../../api/ProjectService"
 
 const Container = styled.div`
     max-width: 500px;
@@ -30,13 +26,6 @@ const CommentText = styled(Typography)`
         color: #3aadb6;
         font-weight: 500;
     }
-`
-
-const Controls = styled.div`
-    position: sticky;
-    bottom: 0;
-    width: 100%;
-    box-sizing: border-box;
 `
 
 const SubmitEditButton = styled(Button)`
@@ -61,6 +50,18 @@ interface RenderCommentProps {
     isUpdateMode: boolean,
     setUpdateMode: any,
     isCurrentUser: boolean,
+    showTagDropDown: boolean;
+    setShowTagDropDown: any;
+    searchTerm: string;
+    setSearchTerm: any;
+    reRenderCounter: number;
+    setReRenderCounter: any;
+    handleTagSelected: any;
+    userTags: any[];
+    charCount: number;
+    setCharCount: any;
+    newMessage: any,
+    setNewMessage: any,
 }
 
 const updateComment = async (
@@ -120,74 +121,40 @@ const RenderComment: FC<RenderCommentProps> = ({
     isUpdateMode,
     setUpdateMode,
     isCurrentUser,
+    showTagDropDown,
+    setShowTagDropDown,
+    searchTerm,
+    setSearchTerm,
+    reRenderCounter,
+    setReRenderCounter,
+    handleTagSelected,
+    userTags,
+    charCount,
+    setCharCount,
+    newMessage,
+    setNewMessage,
 }) => {
-    const [editedMessageText, setEditedMessageText] = useState(comment.text || "")
     const [open, setOpen] = useState(false)
-    const [reRenderCounter, setReRenderCounter] = useState<number>(0)
-    const [searchTerm, setSearchTerm] = useState<string>("")
-    const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
-    const [charCount, setCharCount] = useState(0)
-    const [userTags, setUserTags] = useState<any[]>([])
-    const [newMessage, setNewMessage] = useState<Message>()
+    const [editedMessageText, setEditedMessageText] = useState(comment.text || "")
 
     const {
         activeTagData, activeConversation, setActiveConversation,
     } = useContext(ViewContext)
 
-    const fusionContextId = useCurrentContext()
-
     if (!activeConversation) { return (<>Error loading conversation</>) }
-
-    // useEffect(() => {
-    //     if (editedMessageText === "") {
-    //         setEditedMessageText(comment?.text!)
-    //     }
-    // }, [])
-
-    useEffect(() => {
-        (async () => {
-            if (fusionContextId) {
-                try {
-                    const userTagsResult = await (await GetProjectService()).getUsers(fusionContextId.id, "", 1000, 0)
-                    setUserTags(userTagsResult.data)
-                    console.log("hello")
-                } catch (error) {
-                    console.error("Error getting users for project: ", error)
-                }
-            }
-        })()
-    }, [])
-
-    const handleTagSelected = (displayName: string, userId: string) => {
-        const commentText = newMessage?.text ?? ""
-        const lastAtPos = commentText.lastIndexOf("@")
-        const beforeAt = commentText.substring(0, lastAtPos)
-        const afterAt = commentText.substring(lastAtPos + 1).replace(/^\S+/, "") // Removes the word right after the "@"
-
-        const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>${afterAt}`
-        const message = { ...newMessage }
-        message.text = newCommentText
-        setNewMessage(message)
-        setShowTagDropDown(false)
-        setSearchTerm("")
-        console.log("displayName: ", displayName)
-        setCharCount((prevCharCount) => prevCharCount + displayName.length)
-    }
 
     const editComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setEditedMessageText(e.target.value)
     const cancelEdit = () => setUpdateMode(false)
+
     const saveComment = () => {
         updateComment(
             activeTagData?.review?.id ?? "",
             activeConversation.id ?? "",
             comment,
-            editedMessageText,
+            newMessage.text,
             activeConversation,
             setActiveConversation,
         )
-        setNewMessage(undefined)
-        setReRenderCounter(reRenderCounter + 1)
-        setSearchTerm("")
         cancelEdit()
     }
 
@@ -220,13 +187,7 @@ const RenderComment: FC<RenderCommentProps> = ({
     if (isUpdateMode) {
         return (
             <div>
-                {/* <Input
-                    as="textarea"
-                    type="text"
-                    value={editedMessageText}
-                    onChange={editComment}
-                /> */}
-                <Controls>
+                <div>
                     {showTagDropDown && (
                     <TagDropDown
                         SearchTerm={searchTerm}
@@ -238,14 +199,14 @@ const RenderComment: FC<RenderCommentProps> = ({
                     <InputField
                         setSearchTerm={setSearchTerm}
                         setShowTagDropDown={setShowTagDropDown}
-                        newReviewComment={editedMessageText}
-                        setNewReviewComment={setEditedMessageText}
+                        newMessage={{ text: editedMessageText }}
+                        setNewMessage={setNewMessage}
                         reRenderCounter={reRenderCounter}
                         charCount={charCount}
                         setCharCount={setCharCount}
                         isUpdateMode={isUpdateMode}
                     />
-                </Controls>
+                </div>
                 <SubmitEditButton variant="ghost" onClick={cancelEdit}>Cancel</SubmitEditButton>
                 <SubmitEditButton variant="contained" onClick={saveComment}>Save</SubmitEditButton>
             </div>

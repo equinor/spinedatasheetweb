@@ -13,6 +13,7 @@ import { ViewContext } from "../../../../Context/ViewContext"
 const Container = styled.div<{ commentIsByCurrentUser: boolean }>`
     align-self: ${(props) => (props.commentIsByCurrentUser ? "flex-end" : "flex-start")};
     margin: 0 15px 15px 15px;
+    max-width: 500px;
 `
 
 const Header = styled.div<{ isCurrentUser: boolean }>`
@@ -51,9 +52,36 @@ const PhotoContainer = styled.div<{ isCurrentUser: boolean }>`
 `
 
 interface ClusteredMessagesProps {
+    showTagDropDown: boolean;
+    setShowTagDropDown: any;
+    searchTerm: string;
+    setSearchTerm: any;
+    reRenderCounter: number;
+    setReRenderCounter: any;
+    handleTagSelected: any;
+    userTags: any[];
+    charCount: number;
+    setCharCount: any;
+    newMessage: any,
+    setNewMessage: any,
 }
 
-const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
+const ClusteredMessages: FC<ClusteredMessagesProps> = (
+    {
+        showTagDropDown,
+        setShowTagDropDown,
+        searchTerm,
+        setSearchTerm,
+        reRenderCounter,
+        setReRenderCounter,
+        handleTagSelected,
+        userTags,
+        charCount,
+        setCharCount,
+        newMessage,
+        setNewMessage,
+    },
+) => {
     const { activeConversation } = useContext(ViewContext)
     const currentUser: any = useCurrentUser()
     const isCurrentUser = (userId: string) => currentUser?._info.localAccountId === userId
@@ -150,6 +178,18 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                                     messageObject={cluster.messages[0]}
                                     userId={cluster.userId}
                                     isCurrentUser={isCurrentUser(cluster.userId)}
+                                    showTagDropDown={showTagDropDown}
+                                    setShowTagDropDown={setShowTagDropDown}
+                                    searchTerm={searchTerm}
+                                    setSearchTerm={setSearchTerm}
+                                    reRenderCounter={reRenderCounter}
+                                    setReRenderCounter={setReRenderCounter}
+                                    handleTagSelected={handleTagSelected}
+                                    userTags={userTags}
+                                    charCount={charCount}
+                                    setCharCount={setCharCount}
+                                    newMessage={newMessage}
+                                    setNewMessage={setNewMessage}
                                 />
                             </PhotoContainer>
 
@@ -167,6 +207,18 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                                         messageObject={message}
                                         userId={cluster.userId}
                                         isCurrentUser={isCurrentUser(cluster.userId)}
+                                        showTagDropDown={showTagDropDown}
+                                        setShowTagDropDown={setShowTagDropDown}
+                                        searchTerm={searchTerm}
+                                        setSearchTerm={setSearchTerm}
+                                        reRenderCounter={reRenderCounter}
+                                        setReRenderCounter={setReRenderCounter}
+                                        handleTagSelected={handleTagSelected}
+                                        userTags={userTags}
+                                        charCount={charCount}
+                                        setCharCount={setCharCount}
+                                        newMessage={newMessage}
+                                        setNewMessage={setNewMessage}
                                     />
                                 </>
                             ))}

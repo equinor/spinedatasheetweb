@@ -72,7 +72,6 @@ const CommentView: React.FC<CommentViewProps> = ({
                 try {
                     const userTagsResult = await (await GetProjectService()).getUsers(fusionContextId.id, "", 1000, 0)
                     setUserTags(userTagsResult.data)
-                    console.log("hello")
                 } catch (error) {
                     console.error("Error getting users for project: ", error)
                 }
@@ -110,6 +109,7 @@ const CommentView: React.FC<CommentViewProps> = ({
         const message = { ...newMessage }
         message.text = newCommentText
         setNewMessage(message)
+        console.log("1", message)
         setShowTagDropDown(false)
         setSearchTerm("")
         console.log("displayName: ", displayName)
@@ -179,7 +179,20 @@ const CommentView: React.FC<CommentViewProps> = ({
     return (
         <Container>
             <ConversationDiv>
-                <ClusteredMessages />
+                <ClusteredMessages
+                    showTagDropDown={showTagDropDown}
+                    setShowTagDropDown={setShowTagDropDown}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    reRenderCounter={reRenderCounter}
+                    setReRenderCounter={setReRenderCounter}
+                    handleTagSelected={handleTagSelected}
+                    userTags={userTags}
+                    charCount={charCount}
+                    setCharCount={setCharCount}
+                    newMessage={newMessage}
+                    setNewMessage={setNewMessage}
+                />
             </ConversationDiv>
             <Controls>
                 {showTagDropDown && (

@@ -21,12 +21,36 @@ interface MessageBoxProps {
     messageObject: Message
     userId?: string
     isCurrentUser: boolean
+    showTagDropDown: boolean;
+    setShowTagDropDown: any;
+    searchTerm: string;
+    setSearchTerm: any;
+    reRenderCounter: number;
+    setReRenderCounter: any;
+    handleTagSelected: any;
+    userTags: any[];
+    charCount: number;
+    setCharCount: any;
+    newMessage: any,
+    setNewMessage: any,
 }
 
 const MessageBox: FC<MessageBoxProps> = ({
     messageObject,
     userId,
     isCurrentUser,
+    showTagDropDown,
+    setShowTagDropDown,
+    searchTerm,
+    setSearchTerm,
+    reRenderCounter,
+    setReRenderCounter,
+    handleTagSelected,
+    userTags,
+    charCount,
+    setCharCount,
+    newMessage,
+    setNewMessage,
 }) => {
     const [isUpdateMode, setUpdateMode] = useState(false)
 
@@ -38,6 +62,18 @@ const MessageBox: FC<MessageBoxProps> = ({
                     isUpdateMode={isUpdateMode}
                     setUpdateMode={setUpdateMode}
                     isCurrentUser={isCurrentUser}
+                    showTagDropDown={showTagDropDown}
+                    setShowTagDropDown={setShowTagDropDown}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    reRenderCounter={reRenderCounter}
+                    setReRenderCounter={setReRenderCounter}
+                    handleTagSelected={handleTagSelected}
+                    userTags={userTags}
+                    charCount={charCount}
+                    setCharCount={setCharCount}
+                    newMessage={newMessage}
+                    setNewMessage={setNewMessage}
                 />
             </div>
         </Container>

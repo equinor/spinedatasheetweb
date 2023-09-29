@@ -38,8 +38,8 @@ interface Props {
   placeholder?: string
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>
   setShowTagDropDown: React.Dispatch<React.SetStateAction<boolean>>
-  newReviewComment: any
-  setNewReviewComment: React.Dispatch<React.SetStateAction<any>>
+  newMessage: any
+  setNewMessage: React.Dispatch<React.SetStateAction<any>>
   reRenderCounter: number
   charCount: number
   setCharCount: React.Dispatch<React.SetStateAction<number>>
@@ -50,39 +50,50 @@ const InputField: React.FC<Props> = ({
   placeholder = "Write a comment...",
   setSearchTerm,
   setShowTagDropDown,
-  newReviewComment,
-  setNewReviewComment,
+  newMessage,
+  setNewMessage,
   reRenderCounter,
   charCount,
   setCharCount,
   isUpdateMode,
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null)
-  const [isPlaceholderShown, setIsPlaceholderShown] = useState(true)
-
-  console.log(isUpdateMode)
+  const [isPlaceholderShown, setIsPlaceholderShown] = useState(!newMessage?.text)
+/*
+  useEffect(() => {
+    console.log((isUpdateMode))
+    console.log(newMessage)
+    if (pRef.current && isUpdateMode && newMessage) {
+      setIsPlaceholderShown(false)
+      pRef.current.innerHTML = newMessage.text
+    }
+  }, [isUpdateMode, newMessage])
+*/
+  // inserts tagged persons name
 
   useEffect(() => {
-    if (pRef.current) {
-      // console.log(pRef)
-      // console.log(newReviewComment)
-      // if (newReviewComment) {
-      //   setNewReviewComment(newReviewComment)
-      //   setIsPlaceholderShown(false)
-      // }
-      if (!newReviewComment?.text) {
-        setIsPlaceholderShown(true)
+    console.log("new message: ", newMessage)
+  }, [newMessage])
+
+  useEffect(() => {
+      if (pRef.current) {
+        console.log("useeffect nr 2 ran")
+        console.log("comment: ", newMessage)
+        if (!newMessage?.text) {
+          setIsPlaceholderShown(true)
+        }
+        pRef.current.innerHTML = newMessage?.text || placeholder
       }
-      pRef.current.innerHTML = newReviewComment?.text || placeholder
-    }
   }, [reRenderCounter])
 
+  // inserts placeholder when newMessage is empty
   useEffect(() => {
-    if (pRef.current && isPlaceholderShown === false) {
-      pRef.current.innerText = newReviewComment
-      setCharCount(pRef.current.innerText.length)
-    }
+    // if (pRef.current && isPlaceholderShown === false) {
+    //  pRef.current.innerText = newMessage
+    //  setCharCount(pRef.current.innerText.length)
+    // }
     if (pRef.current && isPlaceholderShown) {
+      console.log("useeffect nr 1 ran")
       pRef.current.innerHTML = placeholder
     }
   }, [isPlaceholderShown, placeholder])
@@ -101,8 +112,9 @@ const InputField: React.FC<Props> = ({
       setSearchTerm("")
     }
 
-    const comment = { ...newReviewComment, text: commentText }
-    setNewReviewComment(comment)
+    const comment = { ...newMessage, text: commentText }
+    setNewMessage(comment)
+    console.log("2 ", comment)
   }
 
   const handleFocus = () => {
@@ -134,7 +146,6 @@ const InputField: React.FC<Props> = ({
       const content = pRef.current.innerText
       if (content !== placeholder) {
         handleCommentChange(content)
-        console.log("content:", content)
         setCharCount(content.length)
       }
     }
