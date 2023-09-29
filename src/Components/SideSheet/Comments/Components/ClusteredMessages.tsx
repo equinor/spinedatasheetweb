@@ -5,7 +5,6 @@ import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { useCurrentUser } from "@equinor/fusion"
 import { PersonPhoto } from "@equinor/fusion-components"
-import { PersonAvatar } from "@equinor/fusion-react-person"
 import MessageBox from "./MessageBox"
 import { Message } from "../../../../Models/Message"
 import { formatDate } from "../../../../utils/helpers"
@@ -139,16 +138,11 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
                         <MessageContainer>
                             {/* TODO: change to PersonAvatar when docs are better */}
                             <PhotoContainer isCurrentUser={isCurrentUser(cluster.userId)}>
-                                {/* {!isCurrentUser && ( */}
-                                {/* <PersonPhoto
+                                <PersonPhoto
                                     personId={cluster.userId}
                                     key={`${cluster.userId}-${index}`}
                                     size="large"
-                                /> */}
-                                <PersonAvatar
-                                    azureId={cluster.userId}
                                 />
-                                {/* )} */}
                                 <MessageBox
                                     key={`${cluster.userId}-${index}-${0}`}
                                     messageObject={cluster.messages[0]}
