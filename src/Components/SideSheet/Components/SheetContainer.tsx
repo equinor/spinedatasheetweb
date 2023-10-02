@@ -152,12 +152,6 @@ const SheetContainer: React.FC<Props> = ({
 
     if (!isOpen) return null
 
-    const placeholder = (
-        <Placeholder>
-            <Typography variant="body_short">Work in progress...</Typography>
-        </Placeholder>
-    )
-
     if (activeTagData === undefined
         || activeTagData.tagNo === undefined
         || activeTagData.description === undefined) { return (<div>Error loading tag</div>) }
