@@ -149,6 +149,7 @@ const SheetContainer: React.FC<Props> = ({
      useEffect(() => {
         scrollToBottom()
     }, [currentProperty, activeConversation])
+
     if (!isOpen) return null
 
     const placeholder = (
@@ -197,7 +198,10 @@ const SheetContainer: React.FC<Props> = ({
                 <SheetHeader>
                     <Banner>
                         <Typography variant="h4">
-                            <strong>{currentProperty.description}</strong>
+                            {
+                                currentProperty
+                                && <strong>{currentProperty.description}</strong>
+                            }
                         </Typography>
                         <Button variant="ghost_icon" onClick={onClose}>
                             <Icon data={close} size={24} />

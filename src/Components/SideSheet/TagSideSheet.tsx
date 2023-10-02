@@ -37,28 +37,24 @@ const TagSideSheet: React.FC<Props> = ({
   )
 
 return (
-    currentProperty ? (
-        <SheetContainer
-            key={activeTagData?.tagNo}
-            isOpen={isOpen}
-            onClose={onClose}
-            width={width}
-            setWidth={setWidth}
-            activeTagData={activeTagData}
-            currentProperty={currentProperty}
-            tabs={[
+
+    <SheetContainer
+        key={activeTagData?.tagNo}
+        isOpen={isOpen}
+        onClose={onClose}
+        width={width}
+        setWidth={setWidth}
+        activeTagData={activeTagData}
+        currentProperty={currentProperty}
+        tabs={[
                 { title: "Activity", content: <ActivitySideSheet /> },
                 { title: "Equipment", content: <EquipmentSideSheet /> },
                 { title: "Area", content: <AreaSideSheet /> },
                 { title: "Connections", content: placeholder },
-                {
-                    title: "Comments",
-                    content: <CommentsSideSheet currentProperty={currentProperty.property} />,
-                },
                 { title: "Changelog", content: <ChangeLogSideSheet /> },
             ]}
-        />
-        ) : null
+    />
+
 )
 }
 
