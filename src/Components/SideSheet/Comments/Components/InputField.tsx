@@ -82,7 +82,12 @@ const InputField: React.FC<Props> = ({
         if (!newMessage?.text) {
           setIsPlaceholderShown(true)
         }
-        pRef.current.innerHTML = newMessage?.text || placeholder
+        if (isUpdateMode) {
+          pRef.current.innerHTML = newMessage?.text
+          setCharCount(pRef.current.innerText.length)
+        } else {
+          pRef.current.innerHTML = placeholder
+        }
       }
   }, [reRenderCounter])
 

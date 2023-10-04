@@ -1,5 +1,6 @@
 import React, {
-    FC, useState,
+    Dispatch,
+    FC, SetStateAction, useState,
 } from "react"
 import styled from "styled-components"
 import { Message } from "../../../../Models/Message"

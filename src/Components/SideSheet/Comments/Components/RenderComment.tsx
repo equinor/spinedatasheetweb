@@ -10,7 +10,7 @@ import { Message } from "../../../../Models/Message"
 import { GetConversationService } from "../../../../api/ConversationService"
 import { Conversation } from "../../../../Models/Conversation"
 import { ViewContext } from "../../../../Context/ViewContext"
-import { unescapeHtmlEntities } from "../../../../utils/helpers"
+import { processMessageInput, unescapeHtmlEntities } from "../../../../utils/helpers"
 import InputField from "./InputField"
 import TagDropDown from "./TagDropDown"
 
@@ -136,6 +136,9 @@ const RenderComment: FC<RenderCommentProps> = ({
 }) => {
     const [open, setOpen] = useState(false)
     const [editedMessageText, setEditedMessageText] = useState(comment.text || "")
+    // const [reRenderCounter2, setReRenderCounter2] = useState<number>(0)
+    // setNewMessage(editedMessageText)?
+    // const [charCount2, setCharCount2] = useState(0)
 
     const {
         activeTagData, activeConversation, setActiveConversation,
@@ -147,11 +150,12 @@ const RenderComment: FC<RenderCommentProps> = ({
     const cancelEdit = () => setUpdateMode(false)
 
     const saveComment = () => {
+        const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
         updateComment(
             activeTagData?.review?.id ?? "",
             activeConversation.id ?? "",
             comment,
-            newMessage.text,
+            processedString,
             activeConversation,
             setActiveConversation,
         )
@@ -184,6 +188,17 @@ const RenderComment: FC<RenderCommentProps> = ({
         }, 100)
     }
 
+    // console.log(newMessage?.text)
+    // const editedMessage = () => {
+    //     // setNewMessage({ text: editedMessageText })
+    //     // console.log(newMessage?.text)
+    //     if (newMessage?.text === undefined) {
+    //         setNewMessage({ text: editedMessageText })
+    //         return newMessage
+    //     }
+    //     return newMessage
+    // }
+
     if (isUpdateMode) {
         return (
             <div>
@@ -199,7 +214,8 @@ const RenderComment: FC<RenderCommentProps> = ({
                     <InputField
                         setSearchTerm={setSearchTerm}
                         setShowTagDropDown={setShowTagDropDown}
-                        newMessage={{ text: editedMessageText }}
+                        // newMessage={editedMessage()}
+                        newMessage={newMessage ?? { text: editedMessageText }}
                         setNewMessage={setNewMessage}
                         reRenderCounter={reRenderCounter}
                         charCount={charCount}

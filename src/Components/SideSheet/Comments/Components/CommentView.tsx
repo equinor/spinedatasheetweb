@@ -50,7 +50,9 @@ const CommentView: React.FC<CommentViewProps> = ({
     const [searchTerm, setSearchTerm] = useState<string>("")
     const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
     const [charCount, setCharCount] = useState(0)
+    const [charEditCount, setCharEditCount] = useState(0)
     const [userTags, setUserTags] = useState<any[]>([])
+    const [isUpdateMode, setUpdateMode] = useState(false)
 
     const {
         activeTagData,
@@ -114,6 +116,24 @@ const CommentView: React.FC<CommentViewProps> = ({
         setSearchTerm("")
         console.log("displayName: ", displayName)
         setCharCount((prevCharCount) => prevCharCount + displayName.length)
+        // setCharEditCount((prevCharCount) => prevCharCount + displayName.length)
+    }
+
+    const handleEditedCommentTagSelected = (displayName: string, userId: string) => {
+        const commentText = newMessage?.text ?? ""
+        const lastAtPos = commentText.lastIndexOf("@")
+        const beforeAt = commentText.substring(0, lastAtPos)
+        const afterAt = commentText.substring(lastAtPos + 1).replace(/^\S+/, "") // Removes the word right after the "@"
+
+        const newCommentText = `${beforeAt}<span data-mention="${userId}" contenteditable="false">${displayName}</span>${afterAt}`
+        const message = { ...newMessage }
+        message.text = newCommentText
+        setNewMessage(message)
+        console.log("1", message)
+        setShowTagDropDown(false)
+        setSearchTerm("")
+        console.log("displayName: ", displayName)
+        setCharEditCount((prevCharCount) => prevCharCount + displayName.length)
     }
 
     const createConversation = async () => {
@@ -188,8 +208,8 @@ const CommentView: React.FC<CommentViewProps> = ({
                     setReRenderCounter={setReRenderCounter}
                     handleTagSelected={handleTagSelected}
                     userTags={userTags}
-                    charCount={charCount}
-                    setCharCount={setCharCount}
+                    charCount={charEditCount}
+                    setCharCount={setCharEditCount}
                     newMessage={newMessage}
                     setNewMessage={setNewMessage}
                 />
@@ -199,7 +219,7 @@ const CommentView: React.FC<CommentViewProps> = ({
                     <TagDropDown
                         SearchTerm={searchTerm}
                         setReRenderCounter={setReRenderCounter}
-                        onTagSelected={handleTagSelected}
+                        onTagSelected={handleEditedCommentTagSelected}
                         dummyData={userTags}
                     />
                 )}
