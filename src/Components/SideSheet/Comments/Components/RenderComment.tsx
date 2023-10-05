@@ -38,7 +38,7 @@ function wrapInSpan(inputString: string): (string | JSX.Element)[] {
     return parts.map((part, index) => {
         if (isNextSpan) {
             isNextSpan = false
-            return <span key={`${part}-${index}`}>{part}</span>
+            return <span contentEditable="false" key={`${part}-${index}`}>{part}</span>
         }
         isNextSpan = true
         return part
@@ -136,9 +136,6 @@ const RenderComment: FC<RenderCommentProps> = ({
 }) => {
     const [open, setOpen] = useState(false)
     const [editedMessageText, setEditedMessageText] = useState(comment.text || "")
-    // const [reRenderCounter2, setReRenderCounter2] = useState<number>(0)
-    // setNewMessage(editedMessageText)?
-    // const [charCount2, setCharCount2] = useState(0)
 
     const {
         activeTagData, activeConversation, setActiveConversation,
@@ -151,6 +148,8 @@ const RenderComment: FC<RenderCommentProps> = ({
 
     const saveComment = () => {
         const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
+        console.log(processedString)
+        setUpdateMode(false)
         updateComment(
             activeTagData?.review?.id ?? "",
             activeConversation.id ?? "",

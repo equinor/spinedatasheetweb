@@ -1,6 +1,5 @@
-/* eslint-disable no-nested-ternary */
 import React, {
-  useRef, useState, useEffect, MutableRefObject,
+ useRef, useState, useEffect,
 } from "react"
 import styled from "styled-components"
 import { unescapeHtmlEntities } from "../../../../utils/helpers"
@@ -26,8 +25,6 @@ const StyledP = styled.p<{ isPlaceholder: boolean }>`
     color: #007079;
     font-weight: 500;
 `
-
-// add in isUpdateMode for black color? or when not placeholder?
 const CharCount = styled.p<{ isOverLimit: boolean }>`
   color: ${({ isOverLimit }) => (isOverLimit ? "red" : "black")};
   font-weight: ${({ isOverLimit }) => (isOverLimit ? "bold" : "normal")};
@@ -59,18 +56,8 @@ const InputField: React.FC<Props> = ({
   isUpdateMode,
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null)
-  const [isPlaceholderShown, setIsPlaceholderShown] = useState(!newMessage?.text)
-/*
-  useEffect(() => {
-    console.log((isUpdateMode))
-    console.log(newMessage)
-    if (pRef.current && isUpdateMode && newMessage) {
-      setIsPlaceholderShown(false)
-      pRef.current.innerHTML = newMessage.text
-    }
-  }, [isUpdateMode, newMessage])
-*/
-  // inserts tagged persons name
+  const [isPlaceholderShown, setIsPlaceholderShown] = useState(newMessage?.text === "")
+  const [textWithTags, setTextWithTags] = useState<(string | JSX.Element)[]>([])
 
   function wrapInSpan(inputString: string): (string | JSX.Element)[] {
     const parts = inputString.split(/{{(.*?)}}/)
@@ -79,47 +66,38 @@ const InputField: React.FC<Props> = ({
     return parts.map((part, index) => {
         if (isNextSpan) {
             isNextSpan = false
-            return <span key={`${part}-${index}`}>{part}</span>
+            return <span contentEditable="false" key={`${part}-${index}`}>{part}</span>
         }
         isNextSpan = true
-        console.log(part)
         return part
     })
-}
-
-  useEffect(() => {
-    console.log("new message: ", newMessage)
-  }, [newMessage])
+  }
 
   useEffect(() => {
       if (pRef.current) {
-        console.log("useeffect nr 2 ran")
-        console.log("comment: ", newMessage)
+        console.log(newMessage)
         if (!newMessage?.text) {
           setIsPlaceholderShown(true)
-        }
-        if (isUpdateMode) {
-          const editedMessage = wrapInSpan(unescapeHtmlEntities(newMessage?.text || ""))
-          console.log(editedMessage)
-          pRef.current.innerHTML = editedMessage.toString()
-          setCharCount(pRef.current.innerText.length)
-        } else {
           pRef.current.innerHTML = placeholder
+        } else {
+          setIsPlaceholderShown(false)
+          setTextWithTags(wrapInSpan(unescapeHtmlEntities(newMessage?.text)))
         }
       }
-  }, [reRenderCounter])
+  }, [reRenderCounter, isUpdateMode])
 
-  // inserts placeholder when newMessage is empty
   useEffect(() => {
-    // if (pRef.current && isPlaceholderShown === false) {
-    //  pRef.current.innerText = newMessage
-    //  setCharCount(pRef.current.innerText.length)
-    // }
-    if (pRef.current && isPlaceholderShown) {
-      console.log("useeffect nr 1 ran")
-      pRef.current.innerHTML = placeholder
-    }
+      if (pRef.current && isPlaceholderShown) {
+        pRef.current.innerHTML = placeholder
+      }
   }, [isPlaceholderShown, placeholder])
+
+  useEffect(() => {
+    console.log("isUpdatemode: ", isUpdateMode)
+    if (!isUpdateMode) {
+      setTextWithTags([])
+    }
+  }, [isUpdateMode])
 
   const handleCommentChange = (commentText: string) => {
     const lastAtPos = commentText.lastIndexOf("@")
@@ -137,7 +115,6 @@ const InputField: React.FC<Props> = ({
 
     const comment = { ...newMessage, text: commentText }
     setNewMessage(comment)
-    console.log("2 ", comment)
   }
 
   const handleFocus = () => {
@@ -152,57 +129,53 @@ const InputField: React.FC<Props> = ({
   }
 
   const handleBlur = () => {
-    if (pRef.current) {
-      pRef.current.contentEditable = "false"
-      const content = pRef.current.innerHTML
-      handleCommentChange(content)
-      if (content.trim() === "") {
-        setIsPlaceholderShown(true)
-        pRef.current.innerHTML = placeholder
-      } else {
-        setIsPlaceholderShown(false)
-      }
-    }
-  }
-  const handleInput = () => {
-    if (pRef.current) {
-      const content = pRef.current.innerText
-      if (content !== placeholder) {
+      if (pRef.current) {
+        pRef.current.contentEditable = "false"
+        const content = pRef.current.innerHTML
         handleCommentChange(content)
-        setCharCount(content.length)
+        if (content.trim() === "") {
+          setIsPlaceholderShown(true)
+          pRef.current.innerHTML = placeholder
+        } else {
+          setIsPlaceholderShown(false)
+        }
       }
+  }
+const handleInput = () => {
+    if (pRef.current) {
+        const content = pRef.current.innerText
+        if (content !== placeholder) {
+            handleCommentChange(content)
+            setCharCount(content.length)
+        }
     }
-  }
-
-  if (isUpdateMode) {
-    return (
-        <>
-            <StyledDiv onClick={handleFocus}>
-                <StyledP
-                    ref={pRef}
-                    onBlur={handleBlur}
-                    onInput={handleInput}
-                    isPlaceholder={isPlaceholderShown}
-                />
-            </StyledDiv>
-            <CharCount isOverLimit={charCount > 500}>
-                {charCount}
-                /500
-            </CharCount>
-
-        </>
-    )
-  }
+}
 
   return (
       <>
           <StyledDiv onClick={handleFocus}>
-              <StyledP
-                  ref={pRef}
-                  onBlur={handleBlur}
-                  onInput={handleInput}
-                  isPlaceholder={isPlaceholderShown}
-              />
+              {
+              !isUpdateMode ? (
+                  <StyledP
+                      suppressContentEditableWarning
+                      ref={pRef}
+                      onBlur={handleBlur}
+                      onInput={handleInput}
+                      isPlaceholder={isPlaceholderShown}
+                  />
+              ) : (
+                  <StyledP
+                      suppressContentEditableWarning
+                      ref={pRef}
+                      isPlaceholder={isPlaceholderShown}
+                      onBlur={handleBlur}
+                      onInput={handleInput}
+                  >
+                      {textWithTags}
+                  </StyledP>
+              )
+            }
+
           </StyledDiv>
           <CharCount isOverLimit={charCount > 500}>
               {charCount}

@@ -66,13 +66,18 @@ export function getPropertyName<T>(property: keyof T): keyof T {
  * @returns {number[]} mentions - An array of mention IDs.
  */
 export function processMessageInput(input: string): { processedString: string, mentions: number[] } {
-    const regex = /<span data-mention="(\w+-\w+-\w+-\w+-\w+)" contenteditable="false">([^<]+)<\/span>/g
+    // Regex matches <span> elements with optional data-mention attribute and captures:
+    // 1. the optional mention ID
+    // 2. the inner text content of the span
+    const regex = /<span(?: data-mention="(\w+-\w+-\w+-\w+-\w+)")? contenteditable="false">([^<]+)<\/span>/g
 
-    let match
     const mentions: number[] = []
 
     let processedString = input.replace(regex, (fullMatch, mentionId, content) => {
-        mentions.push(Number(mentionId))
+        // If mentionId is not undefined, convert and push to mentions array
+        if (mentionId) {
+            mentions.push(Number(mentionId))
+        }
         return `{{${content}}} `
     })
 
