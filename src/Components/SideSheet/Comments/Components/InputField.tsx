@@ -3,6 +3,7 @@ import React, {
   useRef, useState, useEffect, MutableRefObject,
 } from "react"
 import styled from "styled-components"
+import { unescapeHtmlEntities } from "../../../../utils/helpers"
 
 const StyledDiv = styled.div`
   background-color: #F7F7F7;
@@ -71,6 +72,21 @@ const InputField: React.FC<Props> = ({
 */
   // inserts tagged persons name
 
+  function wrapInSpan(inputString: string): (string | JSX.Element)[] {
+    const parts = inputString.split(/{{(.*?)}}/)
+
+    let isNextSpan = false
+    return parts.map((part, index) => {
+        if (isNextSpan) {
+            isNextSpan = false
+            return <span key={`${part}-${index}`}>{part}</span>
+        }
+        isNextSpan = true
+        console.log(part)
+        return part
+    })
+}
+
   useEffect(() => {
     console.log("new message: ", newMessage)
   }, [newMessage])
@@ -83,7 +99,9 @@ const InputField: React.FC<Props> = ({
           setIsPlaceholderShown(true)
         }
         if (isUpdateMode) {
-          pRef.current.innerHTML = newMessage?.text
+          const editedMessage = wrapInSpan(unescapeHtmlEntities(newMessage?.text || ""))
+          console.log(editedMessage)
+          pRef.current.innerHTML = editedMessage.toString()
           setCharCount(pRef.current.innerText.length)
         } else {
           pRef.current.innerHTML = placeholder
