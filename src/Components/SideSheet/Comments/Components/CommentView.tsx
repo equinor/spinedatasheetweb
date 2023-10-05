@@ -52,7 +52,6 @@ const CommentView: React.FC<CommentViewProps> = ({
     const [charCount, setCharCount] = useState(0)
     const [charEditCount, setCharEditCount] = useState(0)
     const [userTags, setUserTags] = useState<any[]>([])
-    const [isUpdateMode, setUpdateMode] = useState(false)
 
     const {
         activeTagData,
@@ -102,6 +101,7 @@ const CommentView: React.FC<CommentViewProps> = ({
     }, [currentProperty])
 
     const handleTagSelected = (displayName: string, userId: string) => {
+        console.log("handleTagSelected triggered")
         const commentText = newMessage?.text ?? ""
         const lastAtPos = commentText.lastIndexOf("@")
         const beforeAt = commentText.substring(0, lastAtPos)
@@ -116,10 +116,12 @@ const CommentView: React.FC<CommentViewProps> = ({
         setSearchTerm("")
         console.log("displayName: ", displayName)
         setCharCount((prevCharCount) => prevCharCount + displayName.length)
+        setReRenderCounter((prev) => prev + 1)
         // setCharEditCount((prevCharCount) => prevCharCount + displayName.length)
     }
 
     const handleEditedCommentTagSelected = (displayName: string, userId: string) => {
+        console.log("handleEditedCommentTagSelected triggered")
         const commentText = newMessage?.text ?? ""
         const lastAtPos = commentText.lastIndexOf("@")
         const beforeAt = commentText.substring(0, lastAtPos)
@@ -188,6 +190,7 @@ const CommentView: React.FC<CommentViewProps> = ({
             createConversation()
         }
         setNewMessage(undefined)
+        console.log("triggering re-render")
         setReRenderCounter(reRenderCounter + 1)
         setSearchTerm("")
     }
@@ -219,7 +222,7 @@ const CommentView: React.FC<CommentViewProps> = ({
                     <TagDropDown
                         SearchTerm={searchTerm}
                         setReRenderCounter={setReRenderCounter}
-                        onTagSelected={handleEditedCommentTagSelected}
+                        onTagSelected={handleTagSelected}
                         dummyData={userTags}
                     />
                 )}

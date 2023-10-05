@@ -1,5 +1,5 @@
 import React, {
-    Dispatch, FC, SetStateAction, useContext, useRef, useState,
+    Dispatch, FC, SetStateAction, useContext, useEffect, useRef, useState,
 } from "react"
 import { styled } from "styled-components"
 import {
@@ -47,8 +47,6 @@ function wrapInSpan(inputString: string): (string | JSX.Element)[] {
 
 interface RenderCommentProps {
     comment: Message,
-    isUpdateMode: boolean,
-    setUpdateMode: any,
     isCurrentUser: boolean,
     showTagDropDown: boolean;
     setShowTagDropDown: any;
@@ -118,8 +116,6 @@ const deleteComment = async (
 
 const RenderComment: FC<RenderCommentProps> = ({
     comment,
-    isUpdateMode,
-    setUpdateMode,
     isCurrentUser,
     showTagDropDown,
     setShowTagDropDown,
@@ -136,6 +132,8 @@ const RenderComment: FC<RenderCommentProps> = ({
 }) => {
     const [open, setOpen] = useState(false)
     const [editedMessageText, setEditedMessageText] = useState(comment.text || "")
+    const [isUpdateMode, setUpdateMode] = useState(false)
+    const [textWithTags, setTextWithTags] = useState<(string | JSX.Element)[]>([])
 
     const {
         activeTagData, activeConversation, setActiveConversation,
@@ -145,6 +143,22 @@ const RenderComment: FC<RenderCommentProps> = ({
 
     const editComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setEditedMessageText(e.target.value)
     const cancelEdit = () => setUpdateMode(false)
+
+    useEffect(
+        () => {
+            console.log("checking update mode in rendercomment: ", isUpdateMode)
+        },
+        [isUpdateMode],
+    )
+
+    // handles the placeholder text when the isUpdateMode prop changes
+    useEffect(() => {
+        console.log("isUpdatemode: ", isUpdateMode)
+        if (!isUpdateMode && setTextWithTags) {
+        console.log("deleting old text")
+        setTextWithTags([])
+        }
+    }, [isUpdateMode])
 
     const saveComment = () => {
         const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
@@ -186,7 +200,6 @@ const RenderComment: FC<RenderCommentProps> = ({
             closePopover()
         }, 100)
     }
-
     // console.log(newMessage?.text)
     // const editedMessage = () => {
     //     // setNewMessage({ text: editedMessageText })
@@ -213,13 +226,15 @@ const RenderComment: FC<RenderCommentProps> = ({
                     <InputField
                         setSearchTerm={setSearchTerm}
                         setShowTagDropDown={setShowTagDropDown}
-                        // newMessage={editedMessage()}
                         newMessage={newMessage ?? { text: editedMessageText }}
                         setNewMessage={setNewMessage}
                         reRenderCounter={reRenderCounter}
                         charCount={charCount}
                         setCharCount={setCharCount}
                         isUpdateMode={isUpdateMode}
+                        textWithTags={textWithTags}
+                        setTextWithTags={setTextWithTags}
+
                     />
                 </div>
                 <SubmitEditButton variant="ghost" onClick={cancelEdit}>Cancel</SubmitEditButton>

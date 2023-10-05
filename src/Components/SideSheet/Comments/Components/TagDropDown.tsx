@@ -57,7 +57,6 @@ const TagDropDown: FC<Props> = ({
         || mail.toLowerCase().includes(SearchTerm.toLowerCase()))
 
     const handleTagClick = (userId: string, displayName: string) => {
-        setReRenderCounter((prev) => prev + 1)
         onTagSelected(displayName.trim(), userId)
     }
 

@@ -52,33 +52,27 @@ const MessageBox: FC<MessageBoxProps> = ({
     setCharCount,
     newMessage,
     setNewMessage,
-}) => {
-    const [isUpdateMode, setUpdateMode] = useState(false)
-
-    return (
-        <Container key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
-            <div>
-                <RenderComment
-                    comment={messageObject}
-                    isUpdateMode={isUpdateMode}
-                    setUpdateMode={setUpdateMode}
-                    isCurrentUser={isCurrentUser}
-                    showTagDropDown={showTagDropDown}
-                    setShowTagDropDown={setShowTagDropDown}
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    reRenderCounter={reRenderCounter}
-                    setReRenderCounter={setReRenderCounter}
-                    handleTagSelected={handleTagSelected}
-                    userTags={userTags}
-                    charCount={charCount}
-                    setCharCount={setCharCount}
-                    newMessage={newMessage}
-                    setNewMessage={setNewMessage}
-                />
-            </div>
-        </Container>
+}) => (
+    <Container key={messageObject.id} commentIsByCurrentUser={isCurrentUser}>
+        <div>
+            <RenderComment
+                comment={messageObject}
+                isCurrentUser={isCurrentUser}
+                showTagDropDown={showTagDropDown}
+                setShowTagDropDown={setShowTagDropDown}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                reRenderCounter={reRenderCounter}
+                setReRenderCounter={setReRenderCounter}
+                handleTagSelected={handleTagSelected}
+                userTags={userTags}
+                charCount={charCount}
+                setCharCount={setCharCount}
+                newMessage={newMessage}
+                setNewMessage={setNewMessage}
+            />
+        </div>
+    </Container>
     )
-}
 
 export default MessageBox

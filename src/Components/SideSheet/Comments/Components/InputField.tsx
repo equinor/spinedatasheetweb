@@ -41,7 +41,9 @@ interface Props {
   reRenderCounter: number
   charCount: number
   setCharCount: React.Dispatch<React.SetStateAction<number>>
-  isUpdateMode?: boolean
+  isUpdateMode: boolean
+  textWithTags?: (string | JSX.Element)[]
+  setTextWithTags?: React.Dispatch<React.SetStateAction<(string | JSX.Element)[]>>
 }
 
 const InputField: React.FC<Props> = ({
@@ -54,10 +56,11 @@ const InputField: React.FC<Props> = ({
   charCount,
   setCharCount,
   isUpdateMode,
+  textWithTags = [],
+  setTextWithTags,
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null)
   const [isPlaceholderShown, setIsPlaceholderShown] = useState(newMessage?.text === "")
-  const [textWithTags, setTextWithTags] = useState<(string | JSX.Element)[]>([])
 
   function wrapInSpan(inputString: string): (string | JSX.Element)[] {
     const parts = inputString.split(/{{(.*?)}}/)
@@ -73,31 +76,33 @@ const InputField: React.FC<Props> = ({
     })
   }
 
+  // handles the initial rendering of the placeholder text
   useEffect(() => {
       if (pRef.current) {
         console.log(newMessage)
+        console.log(isUpdateMode)
         if (!newMessage?.text) {
           setIsPlaceholderShown(true)
           pRef.current.innerHTML = placeholder
         } else {
           setIsPlaceholderShown(false)
-          setTextWithTags(wrapInSpan(unescapeHtmlEntities(newMessage?.text)))
+          if (isUpdateMode && setTextWithTags) {
+            console.log("inserting this text into the input field: ", newMessage?.text)
+            setTextWithTags(wrapInSpan(unescapeHtmlEntities(newMessage?.text)))
+          } else {
+            pRef.current.innerHTML = newMessage?.text
+          }
         }
       }
   }, [reRenderCounter, isUpdateMode])
 
+  // handles the placeholder text when the placeholder prop changes
   useEffect(() => {
       if (pRef.current && isPlaceholderShown) {
+        console.log("setting placeholder")
         pRef.current.innerHTML = placeholder
       }
   }, [isPlaceholderShown, placeholder])
-
-  useEffect(() => {
-    console.log("isUpdatemode: ", isUpdateMode)
-    if (!isUpdateMode) {
-      setTextWithTags([])
-    }
-  }, [isUpdateMode])
 
   const handleCommentChange = (commentText: string) => {
     const lastAtPos = commentText.lastIndexOf("@")

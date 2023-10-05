@@ -78,6 +78,7 @@ const InputController: FC<InputControllerProps> = ({
                         reRenderCounter={reRenderCounter}
                         charCount={charCount}
                         setCharCount={setCharCount}
+                        isUpdateMode={false}
                     />
                 </StyledInputField>
             </PhotoAndInputWrapper>
