@@ -122,7 +122,7 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = () => {
     }
 
     const renderPhoto = (userId: string) => {
-        console.log(`$"user id: ${userId}"`)
+        console.error(`$"user id: ${userId}"`)
         return (
             <PersonPhoto
                 personId={userId}
