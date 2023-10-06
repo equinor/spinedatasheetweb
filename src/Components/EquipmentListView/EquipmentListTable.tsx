@@ -223,7 +223,7 @@ function EquipmentListTable({
     return (
         <Wrapper className={styles.root}>
             <TableContainer
-                className="ag-theme-alpine ag-theme-datasheetTable"
+                className="ag-theme-alpine-fusion"
             >
                 <AgGridReact
                     rowData={tags}
