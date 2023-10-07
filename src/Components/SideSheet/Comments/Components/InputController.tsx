@@ -1,13 +1,18 @@
-import React, { FC, useContext } from "react"
+import React, {
+ FC, useContext, SetStateAction, Dispatch,
+} from "react"
 import {
     Button, Icon, Checkbox,
 } from "@equinor/eds-core-react"
 import { useCurrentUser } from "@equinor/fusion"
 import { PersonPhoto } from "@equinor/fusion-components"
 import styled from "styled-components"
-import { send } from "@equinor/eds-icons"
+import { send, save } from "@equinor/eds-icons"
 import InputField from "./InputField"
 import { ViewContext } from "../../../../Context/ViewContext"
+import { Message } from "../../../../Models/Message"
+import { GetConversationService } from "../../../../api/ConversationService"
+import { Conversation } from "../../../../Models/Conversation"
 
 const Controls = styled.div`
     padding: 30px 15px 10px 15px;
@@ -39,6 +44,36 @@ const StyledCheckbox = styled(Checkbox)`
     margin-left: -15px;
 `
 
+const EditControls = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+`
+
+const updateComment = async (
+    reviewId: string,
+    activeConversationId: string,
+    comment: Message,
+    newCommentText: string,
+    activeConversation: Conversation,
+    setActiveConversation: Dispatch<SetStateAction<Conversation | undefined>>,
+) => {
+    if (newCommentText && comment.id) {
+        try {
+            const newComment = { ...comment }
+            newComment.text = newCommentText
+            const commentService = await GetConversationService()
+            const updatedComment = await commentService.updateMessage(reviewId, activeConversationId, comment.id, newComment)
+            const updatedMessages = activeConversation.messages?.map((m) => (m.id !== comment.id ? m : updatedComment))
+            const updatedConversation = { ...activeConversation }
+            updatedConversation.messages = updatedMessages
+            setActiveConversation(updatedConversation)
+        } catch (error) {
+            console.error(`Error updating comment: ${error}`)
+        }
+    }
+}
+
 interface InputControllerProps {
     handleSubmit: () => void
     setSearchTerm: React.Dispatch<React.SetStateAction<string>>
@@ -46,8 +81,11 @@ interface InputControllerProps {
     newMessage: any
     setNewMessage: React.Dispatch<React.SetStateAction<any>>
     reRenderCounter: number
+    setReRenderCounter: React.Dispatch<React.SetStateAction<number>>
     charCount: number
     setCharCount: React.Dispatch<React.SetStateAction<number>>
+    editMode: boolean
+    setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const InputController: FC<InputControllerProps> = ({
@@ -57,11 +95,22 @@ const InputController: FC<InputControllerProps> = ({
     newMessage,
     setNewMessage,
     reRenderCounter,
+    setReRenderCounter,
     charCount,
     setCharCount,
+    editMode,
+    setEditMode,
 }) => {
     const currentUser: any = useCurrentUser()
-    const { errors, setErrors } = useContext(ViewContext)
+    const {
+        errors,
+        setErrors,
+        activeTagData,
+        activeConversation,
+        setActiveConversation,
+    } = useContext(ViewContext)
+
+    if (!activeConversation) { return (<>Error loading conversation</>) }
 
     const throwCharacterLimitError = () => {
         const error = {
@@ -71,6 +120,24 @@ const InputController: FC<InputControllerProps> = ({
             variant: "danger",
         }
         setErrors({ ...errors, [error.id]: error })
+    }
+
+    const cancelEdit = () => {
+        setEditMode(false)
+        setNewMessage(undefined)
+        setReRenderCounter(reRenderCounter + 1)
+    }
+
+    const saveComment = () => {
+        updateComment(
+            activeTagData?.review?.id ?? "",
+            activeConversation.id ?? "",
+            newMessage,
+            newMessage.text,
+            activeConversation,
+            setActiveConversation,
+        )
+        cancelEdit()
     }
 
     return (
@@ -86,23 +153,43 @@ const InputController: FC<InputControllerProps> = ({
                     <InputField
                         setSearchTerm={setSearchTerm}
                         setShowTagDropDown={setShowTagDropDown}
-                        newReviewComment={newMessage}
-                        setNewReviewComment={setNewMessage}
+                        newMessage={newMessage}
+                        setNewMessage={setNewMessage}
                         reRenderCounter={reRenderCounter}
                         charCount={charCount}
                         setCharCount={setCharCount}
+                        editMode={editMode}
                     />
                 </StyledInputField>
             </PhotoAndInputWrapper>
             <InputButtonWrapper>
                 <StyledCheckbox label="Send to contractor" />
-                <Button
-                    title={charCount > 500 ? "character limit exeeded" : "send message"}
-                    onClick={charCount > 500 ? throwCharacterLimitError : handleSubmit}
-                    variant="ghost"
-                >
-                    <Icon data={send} />
-                </Button>
+                { editMode ? (
+                    <EditControls>
+                        <Button
+                            title="cancel edit"
+                            onClick={() => cancelEdit()}
+                            variant="ghost"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            title="save edit"
+                            onClick={() => saveComment()}
+                        >
+                            <Icon data={save} />
+                            Save
+                        </Button>
+                    </EditControls>
+                ) : (
+                    <Button
+                        title={charCount > 500 ? "character limit exeeded" : "send message"}
+                        onClick={charCount > 500 ? throwCharacterLimitError : handleSubmit}
+                        variant="ghost"
+                    >
+                        <Icon data={send} />
+                    </Button>
+                )}
             </InputButtonWrapper>
         </Controls>
     )
