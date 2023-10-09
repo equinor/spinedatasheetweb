@@ -174,7 +174,6 @@ const CommentView: React.FC<CommentViewProps> = ({
     }
 
     const initEditMode = (commentObjectToEdit: Message) => {
-        console.log("now editing comment", commentObjectToEdit)
         const messageText = wrapInSpan(commentObjectToEdit.text ?? "")
         const wrappedCommentObject = { ...commentObjectToEdit, text: messageText }
         setEditMode(true)
