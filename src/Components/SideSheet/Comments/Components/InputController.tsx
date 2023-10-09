@@ -13,6 +13,7 @@ import { ViewContext } from "../../../../Context/ViewContext"
 import { Message } from "../../../../Models/Message"
 import { GetConversationService } from "../../../../api/ConversationService"
 import { Conversation } from "../../../../Models/Conversation"
+import { GetMessageService } from "../../../../api/MessageService"
 
 const Controls = styled.div`
     padding: 30px 15px 10px 15px;
@@ -53,18 +54,19 @@ const EditControls = styled.div`
 const updateComment = async (
     reviewId: string,
     activeConversationId: string,
-    comment: Message,
+    message: Message,
     newCommentText: string,
     activeConversation: Conversation,
     setActiveConversation: Dispatch<SetStateAction<Conversation | undefined>>,
 ) => {
-    if (newCommentText && comment.id) {
+    if (newCommentText && message.id) {
         try {
-            const newComment = { ...comment }
-            newComment.text = newCommentText
-            const commentService = await GetConversationService()
-            const updatedComment = await commentService.updateMessage(reviewId, activeConversationId, comment.id, newComment)
-            const updatedMessages = activeConversation.messages?.map((m) => (m.id !== comment.id ? m : updatedComment))
+            const newMessage: Components.Schemas.MessageDto = {
+                text: newCommentText,
+            }
+            const commentService = await GetMessageService()
+            const updatedComment = await commentService.updateMessage(activeConversationId, message.id, newMessage)
+            const updatedMessages = activeConversation.messages?.map((m) => (m.id !== message.id ? m : updatedComment))
             const updatedConversation = { ...activeConversation }
             updatedConversation.messages = updatedMessages
             setActiveConversation(updatedConversation)

@@ -9,10 +9,10 @@ import {
     delete_to_trash, edit,
 } from "@equinor/eds-icons"
 import { Message } from "../../../../Models/Message"
-import { GetConversationService } from "../../../../api/ConversationService"
 import { Conversation } from "../../../../Models/Conversation"
 import { ViewContext } from "../../../../Context/ViewContext"
 import { wrapInSpan } from "../../../../utils/helpers"
+import { GetMessageService } from "../../../../api/MessageService"
 
 const Container = styled.div`
     max-width: 500px;
@@ -43,8 +43,8 @@ const deleteComment = async (
 ) => {
     if (message.id && activeConversation && activeConversation.messages) {
         try {
-            const service = await GetConversationService()
-            const response = await service.deleteMessage(reviewId, activeConversationId, message.id)
+            const service = await GetMessageService()
+            const response = await service.deleteMessage(activeConversationId, message.id)
             if (response === 204) {
                 const deletedMessage = { ...activeConversation.messages?.find((m) => m.id === message.id) }
                 deletedMessage.softDeleted = true
