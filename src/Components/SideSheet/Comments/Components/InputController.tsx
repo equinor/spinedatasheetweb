@@ -110,8 +110,6 @@ const InputController: FC<InputControllerProps> = ({
         setActiveConversation,
     } = useContext(ViewContext)
 
-    if (!activeConversation) { return (<>Error loading conversation</>) }
-
     const throwCharacterLimitError = () => {
         const error = {
             id: "characterLimitError",
@@ -129,6 +127,11 @@ const InputController: FC<InputControllerProps> = ({
     }
 
     const saveComment = () => {
+        if (!activeConversation) {
+            console.error("Error saving comment: no active conversation")
+            return
+        }
+
         updateComment(
             activeTagData?.review?.id ?? "",
             activeConversation.id ?? "",
