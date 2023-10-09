@@ -1,5 +1,5 @@
 import React, {
-    Dispatch, FC, SetStateAction, useContext, useRef, useState,
+    Dispatch, FC, SetStateAction, useContext, useEffect, useRef, useState,
 } from "react"
 import { styled } from "styled-components"
 import {
@@ -9,10 +9,10 @@ import {
     delete_to_trash, edit,
 } from "@equinor/eds-icons"
 import { Message } from "../../../../Models/Message"
-import { GetConversationService } from "../../../../api/ConversationService"
 import { Conversation } from "../../../../Models/Conversation"
 import { ViewContext } from "../../../../Context/ViewContext"
-import { unescapeHtmlEntities } from "../../../../utils/helpers"
+import { wrapInSpan } from "../../../../utils/helpers"
+import { GetMessageService } from "../../../../api/MessageService"
 
 const Container = styled.div`
     max-width: 500px;
@@ -28,52 +28,10 @@ const CommentText = styled(Typography)`
     }
 `
 
-const SubmitEditButton = styled(Button)`
-    margin-right: 15px;
-`
-function wrapInSpan(inputString: string): (string | JSX.Element)[] {
-    const parts = inputString.split(/{{(.*?)}}/)
-
-    let isNextSpan = false
-    return parts.map((part, index) => {
-        if (isNextSpan) {
-            isNextSpan = false
-            return <span key={`${part}-${index}`}>{part}</span>
-        }
-        isNextSpan = true
-        return part
-    })
-}
-
 interface RenderCommentProps {
     comment: Message,
-    isUpdateMode: boolean,
-    setUpdateMode: any,
+    initEditMode: (message: Message) => void,
     isCurrentUser: boolean,
-}
-
-const updateComment = async (
-    reviewId: string,
-    activeConversationId: string,
-    comment: Message,
-    newCommentText: string,
-    activeConversation: Conversation,
-    setActiveConversation: Dispatch<SetStateAction<Conversation | undefined>>,
-) => {
-    if (newCommentText && comment.id) {
-        try {
-            const newComment = { ...comment }
-            newComment.text = newCommentText
-            const commentService = await GetConversationService()
-            const updatedComment = await commentService.updateMessage(reviewId, activeConversationId, comment.id, newComment)
-            const updatedMessages = activeConversation.messages?.map((m) => (m.id !== comment.id ? m : updatedComment))
-            const updatedConversation = { ...activeConversation }
-            updatedConversation.messages = updatedMessages
-            setActiveConversation(updatedConversation)
-        } catch (error) {
-            console.error(`Error updating comment: ${error}`)
-        }
-    }
 }
 
 const deleteComment = async (
@@ -85,8 +43,8 @@ const deleteComment = async (
 ) => {
     if (message.id && activeConversation && activeConversation.messages) {
         try {
-            const service = await GetConversationService()
-            const response = await service.deleteMessage(reviewId, activeConversationId, message.id)
+            const service = await GetMessageService()
+            const response = await service.deleteMessage(activeConversationId, message.id)
             if (response === 204) {
                 const deletedMessage = { ...activeConversation.messages?.find((m) => m.id === message.id) }
                 deletedMessage.softDeleted = true
@@ -106,11 +64,9 @@ const deleteComment = async (
 
 const RenderComment: FC<RenderCommentProps> = ({
     comment,
-    isUpdateMode,
-    setUpdateMode,
     isCurrentUser,
+    initEditMode,
 }) => {
-    const [editedMessageText, setEditedMessageText] = useState(comment.text || "")
     const [open, setOpen] = useState(false)
 
     const {
@@ -118,20 +74,6 @@ const RenderComment: FC<RenderCommentProps> = ({
     } = useContext(ViewContext)
 
     if (!activeConversation) { return (<>Error loading conversation</>) }
-
-    const editComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => setEditedMessageText(e.target.value)
-    const cancelEdit = () => setUpdateMode(false)
-    const saveComment = () => {
-        updateComment(
-            activeTagData?.review?.id ?? "",
-            activeConversation.id ?? "",
-            comment,
-            editedMessageText,
-            activeConversation,
-            setActiveConversation,
-        )
-        cancelEdit()
-    }
 
     const anchorRef = useRef<HTMLParagraphElement>(null)
 
@@ -159,20 +101,6 @@ const RenderComment: FC<RenderCommentProps> = ({
         }, 100)
     }
 
-    if (isUpdateMode) {
-        return (
-            <div>
-                <Input
-                    as="textarea"
-                    type="text"
-                    value={editedMessageText}
-                    onChange={editComment}
-                />
-                <SubmitEditButton variant="ghost" onClick={cancelEdit}>Cancel</SubmitEditButton>
-                <SubmitEditButton variant="contained" onClick={saveComment}>Save</SubmitEditButton>
-            </div>
-        )
-    }
     return (
         <Container>
             <CommentText
@@ -182,11 +110,12 @@ const RenderComment: FC<RenderCommentProps> = ({
                 onFocus={handleHover}
                 onBlur={handleClose}
                 onMouseOut={handleClose}
-            >
-                {
-                    comment.softDeleted ? "Message deleted by user" : wrapInSpan(unescapeHtmlEntities(comment.text || ""))
-                }
-            </CommentText>
+                dangerouslySetInnerHTML={{
+            __html: comment.softDeleted
+                ? "Message deleted by user"
+                : wrapInSpan(comment.text || ""),
+        }}
+            />
             <Popover
                 anchorEl={anchorRef.current}
                 onClose={handleClose}
@@ -199,7 +128,7 @@ const RenderComment: FC<RenderCommentProps> = ({
                 <Popover.Header>
                     <Button
                         variant="ghost_icon"
-                        onClick={() => setUpdateMode((prevMode: boolean) => !prevMode)}
+                        onClick={() => initEditMode(comment)}
                         title="Edit comment"
                     >
                         <Icon data={edit} size={16} color="#007079" />

@@ -4,15 +4,16 @@ import React, {
     useState,
 } from "react"
 import styled from "styled-components"
-import { useCurrentContext } from "@equinor/fusion"
+import { useCurrentContext } from "@equinor/fusion-framework-react-app/context"
 import { GetConversationService } from "../../../../api/ConversationService"
 import { Message } from "../../../../Models/Message"
 import InputController from "./InputController"
 import { ViewContext } from "../../../../Context/ViewContext"
 import ClusteredMessages from "./ClusteredMessages"
 import TagDropDown from "./TagDropDown"
-import { processMessageInput } from "../../../../utils/helpers"
+import { processMessageInput, wrapInSpan } from "../../../../utils/helpers"
 import { GetProjectService } from "../../../../api/ProjectService"
+import { GetMessageService } from "../../../../api/MessageService"
 
 const Controls = styled.div`
     position: sticky;
@@ -51,6 +52,7 @@ const CommentView: React.FC<CommentViewProps> = ({
     const [showTagDropDown, setShowTagDropDown] = useState<boolean>(false)
     const [charCount, setCharCount] = useState(0)
     const [userTags, setUserTags] = useState<any[]>([])
+    const [editMode, setEditMode] = useState<boolean>(false)
 
     const {
         activeTagData,
@@ -60,7 +62,7 @@ const CommentView: React.FC<CommentViewProps> = ({
         setActiveConversation,
     } = useContext(ViewContext)
 
-    const fusionContextId = useCurrentContext()
+    const currentContext = useCurrentContext()
 
     const getConversationForProperty = (property: string) => (
         conversations.find((conversation) => conversation.property?.toUpperCase() === property.toUpperCase())
@@ -68,9 +70,9 @@ const CommentView: React.FC<CommentViewProps> = ({
 
     useEffect(() => {
         (async () => {
-            if (fusionContextId) {
+            if (currentContext && currentContext.currentContext?.id) {
                 try {
-                    const userTagsResult = await (await GetProjectService()).getUsers(fusionContextId.id, "", 1000, 0)
+                    const userTagsResult = await (await GetProjectService()).getUsers(currentContext.currentContext.id, "", 1000, 0)
                     setUserTags(userTagsResult.data)
                 } catch (error) {
                     console.error("Error getting users for project: ", error)
@@ -85,8 +87,7 @@ const CommentView: React.FC<CommentViewProps> = ({
                 const currentConversationId = getConversationForProperty(currentProperty)?.id
 
                 if (currentConversationId) {
-                    const currentConversation = await (await GetConversationService()).getMessagesForConversation(
-                        activeTagData?.review?.id ?? "",
+                    const currentConversation = await (await GetMessageService()).getMessagesForConversation(
                         currentConversationId,
                     )
                     setActiveConversation(currentConversation)
@@ -122,9 +123,14 @@ const CommentView: React.FC<CommentViewProps> = ({
             conversationLevel: "Tag",
             conversationStatus: "Open",
         }
+        if (!currentContext.currentContext?.externalId || !activeTagData?.tagNo) { return }
         try {
             const service = await GetConversationService()
-            const savedConversation = await service.createConversation(activeTagData?.review?.id ?? "", createCommentDto)
+            const savedConversation = await service.createConversation(
+                currentContext.currentContext?.externalId,
+                activeTagData?.tagNo,
+                createCommentDto,
+            )
             setActiveConversation(savedConversation)
             const newConversations = [...conversations, savedConversation]
             setConversations(newConversations)
@@ -135,13 +141,12 @@ const CommentView: React.FC<CommentViewProps> = ({
     }
 
     const addMessage = async () => {
-        const message = { ...newMessage }
         const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
+        const message: Components.Schemas.MessageDto = { ...newMessage, text: processedString }
         console.log("mentions: ", mentions) // to be used for tagging users in the future
-        message.text = processedString
         try {
-            const service = await GetConversationService()
-            const savedMessage = await service.addMessage(activeTagData?.review?.id ?? "", activeConversation?.id ?? "", message)
+            const service = await GetMessageService()
+            const savedMessage = await service.addMessage(activeConversation?.id ?? "", message)
 
             const updatedMessages = [...activeConversation?.messages ?? [], savedMessage]
 
@@ -168,10 +173,21 @@ const CommentView: React.FC<CommentViewProps> = ({
         setSearchTerm("")
     }
 
+    const initEditMode = (commentObjectToEdit: Message) => {
+        const messageText = wrapInSpan(commentObjectToEdit.text ?? "")
+        const wrappedCommentObject = { ...commentObjectToEdit, text: messageText }
+        setEditMode(true)
+        setNewMessage(wrappedCommentObject)
+        setReRenderCounter(reRenderCounter + 1)
+    }
+
     return (
         <Container>
             <ConversationDiv>
-                <ClusteredMessages />
+                <ClusteredMessages
+                    initEditMode={initEditMode}
+                    editMode={editMode}
+                />
             </ConversationDiv>
             <Controls>
                 {showTagDropDown && (
@@ -186,12 +202,15 @@ const CommentView: React.FC<CommentViewProps> = ({
                 <InputController
                     handleSubmit={handleSubmit}
                     reRenderCounter={reRenderCounter}
+                    setReRenderCounter={setReRenderCounter}
                     newMessage={newMessage}
                     setNewMessage={setNewMessage}
                     setSearchTerm={setSearchTerm}
                     setShowTagDropDown={setShowTagDropDown}
                     charCount={charCount}
                     setCharCount={setCharCount}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
                 />
             </Controls>
         </Container>
