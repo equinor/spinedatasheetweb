@@ -1,8 +1,13 @@
 import React, { FC } from "react"
-import { Button, Icon, Typography } from "@equinor/eds-core-react"
+import {
+ Icon, Typography, Tooltip,
+} from "@equinor/eds-core-react"
 import { tag } from "@equinor/eds-icons"
 import styled from "styled-components"
 import Card from "../../Components/Card"
+import { Message } from "../../../../Models/Message"
+import { User } from "../../../../Models/User"
+import { formatDate, wrapInSpan } from "../../../../utils/helpers"
 
 const ConversationCardContainer = styled.div`
     padding: 0px 15px;
@@ -20,31 +25,144 @@ const Buttons = styled.div`
     justify-content: space-between;
 `
 
-interface ConversationCardProps {
-    property: string
-    value: string
+const TitleContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+`
+
+const CommentText = styled(Typography)`
+    margin: 10px 0;
+    max-width: 100%;
+    white-space: wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    word-wrap: break-word;
+
+    span {
+        color: #3aadb6;
+        font-weight: 500;
+    }
+`
+
+interface DisplayConversation {
+    title: string,
+    value: string,
+    status: Components.Schemas.ConversationStatusDto,
     conversationId: string
-    conversationStatus: Components.Schemas.ConversationStatusDto
+    messages: Message[]
+    participants: User[]
+}
+
+const StatusCircle = styled.div<{ status: Components.Schemas.ConversationStatusDto }>`
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: ${(props) => {
+        switch (props.status) {
+            case "Open":
+                return "#007079"
+            case "Closed":
+                return "#243746"
+            case "Implemented":
+                return "#7D0023"
+            case "To_be_implemented":
+                return "#EB0037"
+            default:
+                return "#757575"
+        }
+    }};    
+`
+
+const NewestMessageContainer = styled.div`
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+`
+
+const MessageDate = styled(Typography)`
+    word-break: keep-all;
+    white-space: nowrap;
+`
+
+const Value = styled(Typography)`
+    font-size: 16px;
+    max-width: 425px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #243746;
+
+    span {
+        color: black;
+        font-weight: 500;
+    }
+`
+
+interface ConversationCardProps {
+    conversation: DisplayConversation
 }
 
 const ConversationCard: FC<ConversationCardProps> = ({
- property, value, conversationId, conversationStatus,
+    conversation,
 }) => {
-    const formattedProperty = property.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
-    const conversationTitle = `${formattedProperty}: ${value}`
+    const formattedProperty = conversation.title.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+    const conversationTitle = `${formattedProperty}: `
+
     return (
         <ConversationCardContainer>
             <Card>
-                <Typography variant="h5">
-                    {conversationTitle}
-                </Typography>
-                <TagInfo>
-                    <Icon data={tag} />
-                </TagInfo>
-                <Buttons>
-                    <Button>{conversationStatus}</Button>
-                    <Button variant="ghost">Open comments</Button>
-                </Buttons>
+                <TitleContainer>
+                    <TagInfo>
+                        <Icon size={16} data={tag} />
+                    </TagInfo>
+                    <Value>
+                        {conversationTitle}
+                        <span>
+                            {conversation.value}
+                        </span>
+                    </Value>
+                    <Tooltip
+                        placement="right"
+                        title={
+                            (() => {
+                                switch (conversation.status) {
+                                    case "Open":
+                                        return "Status: Open"
+                                    case "Closed":
+                                        return "Status: Closed"
+                                    case "Implemented":
+                                        return "Status: Implemented"
+                                    case "To_be_implemented":
+                                        return "Status: To be implemented"
+                                    default:
+                                        return "Status: Unknown"
+                                }
+                            })()
+                        }
+                    >
+                        <StatusCircle status={conversation.status} />
+                    </Tooltip>
+                </TitleContainer>
+                <NewestMessageContainer>
+                    <CommentText
+                        dangerouslySetInnerHTML={{
+                            __html: wrapInSpan(conversation.messages[0].text || ""),
+                        }}
+                    />
+                    <MessageDate variant="meta">
+                        {
+                            conversation.messages[0].isEdited
+                                ? formatDate(conversation.messages[0].modifiedDate || "")
+                                : formatDate(conversation.messages[0].createdDate || "")
+                        }
+                    </MessageDate>
+                </NewestMessageContainer>
             </Card>
         </ConversationCardContainer>
     )

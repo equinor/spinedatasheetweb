@@ -68,6 +68,7 @@ const CommentView: React.FC<CommentViewProps> = ({
         conversations.find((conversation) => conversation.property?.toUpperCase() === property.toUpperCase())
     )
 
+    // Get users for tagging
     useEffect(() => {
         (async () => {
             if (currentContext && currentContext.currentContext?.id) {
@@ -81,11 +82,11 @@ const CommentView: React.FC<CommentViewProps> = ({
         })()
     }, [])
 
+    // Get messages for conversation
     useEffect(() => {
         (async () => {
             try {
                 const currentConversationId = getConversationForProperty(currentProperty)?.id
-
                 if (currentConversationId) {
                     const currentConversation = await (await GetMessageService()).getMessagesForConversation(
                         currentConversationId,
@@ -143,7 +144,7 @@ const CommentView: React.FC<CommentViewProps> = ({
     const addMessage = async () => {
         const { processedString, mentions } = processMessageInput(newMessage?.text ?? "")
         const message: Components.Schemas.MessageDto = { ...newMessage, text: processedString }
-        console.log("mentions: ", mentions) // to be used for tagging users in the future
+
         try {
             const service = await GetMessageService()
             const savedMessage = await service.addMessage(activeConversation?.id ?? "", message)

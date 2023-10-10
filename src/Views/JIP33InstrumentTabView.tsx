@@ -115,6 +115,7 @@ function JIP33InstrumentTabView({ }) {
         setConversations(newConversations)
     }
 
+    // Get tag data and conversations for with current tagId
     useEffect(() => {
         (async () => {
             setError(false)

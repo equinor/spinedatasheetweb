@@ -64,10 +64,12 @@ export const ViewContextProvider: React.FC<ViewContextProviderProps> = ({
     const [activeConversation, setActiveConversation] = useState<Conversation>()
     const [errors, setErrors] = useState<{}>({})
 
+    // Save activeSheetTab to localStorage
     useEffect(() => {
         localStorage.setItem("activeSheetTab", activeSheetTab.toString())
     }, [activeSheetTab])
 
+    // Save SideSheetScrollPos to localStorage
     useEffect(() => {
         localStorage.setItem("SideSheetScrollPos", activeSheetTab.toString())
     }, [activeSheetTab])

@@ -154,6 +154,7 @@ function TagComparisonTable({ tags }: Props) {
         setActiveTagData({ description: event.data.description, tagNo: event.data.tagNo })
     }
 
+    // Opens side sheet when tag is clicked
     useEffect(() => {
         if (activeTagData !== undefined) {
             setSideSheetIsOpen(true)

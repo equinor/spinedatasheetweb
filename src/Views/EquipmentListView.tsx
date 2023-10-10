@@ -49,12 +49,14 @@ function EquipmentListView() {
 
     const navigate = useNavigate()
 
+    // Set externalId to current project's externalId
     useEffect(() => {
         if (currentProject.currentContext?.externalId !== externalId) {
             setExternalId(currentProject.currentContext?.externalId)
         }
     }, [currentProject])
 
+    // Get all tag data
     useEffect(() => {
         let isCancelled = false;
 
@@ -87,6 +89,7 @@ function EquipmentListView() {
         }
     }, [externalId])
 
+    // Redirect to project if no project is selected
     useEffect(() => {
         if (
             currentProject?.currentContext !== null
@@ -142,11 +145,7 @@ function EquipmentListView() {
             <EquipmentListReview
                 isOpen={reviewModalOpen}
                 setIsOpen={setReviewModalOpen}
-                tags={tagData}
-                setReviewModalOpen={setReviewModalOpen}
-                setTagInReview={setTagInReview}
                 tagNoInReview={tagInReview}
-                setRevisionInReview={setRevisionInReview}
                 revisionInReview={revisionInReview}
             />
 

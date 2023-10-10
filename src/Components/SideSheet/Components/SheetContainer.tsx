@@ -155,6 +155,7 @@ const SheetContainer: React.FC<Props> = ({
         if (scrollableRef.current) scrollableRef.current.scrollTop = SideSheetScrollPos
     }, [])
 
+    // Scrolls to top when the user opens a new tag
     useEffect(() => {
         if (SideSheetScrollPos === 0) scrollToTop()
     }, [SideSheetScrollPos])
