@@ -87,10 +87,13 @@ const CommentView: React.FC<CommentViewProps> = ({
         (async () => {
             try {
                 const currentConversationId = getConversationForProperty(currentProperty)?.id
-                if (currentConversationId) {
-                    const currentConversation = await (await GetMessageService()).getMessagesForConversation(
+
+                if (currentConversationId && currentContext.currentContext && activeTagData?.tagNo) {
+                    const currentConversation = await (await GetConversationService()).getConversation(
+                        currentContext.currentContext.id,
+                        activeTagData?.tagNo,
                         currentConversationId,
-                    )
+                        )
                     setActiveConversation(currentConversation)
                 } else {
                     setActiveConversation(undefined)
