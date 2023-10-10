@@ -45,7 +45,7 @@ type Props = {
 };
 
 interface DisplayConversation {
-    title: string,
+    property: string,
     value: string,
     status: Components.Schemas.ConversationStatusDto,
     conversationId: string
@@ -113,7 +113,7 @@ const CommentSideSheet: FC<Props> = ({
             if (!conversation.property) { return }
             const value = getPropertyValue(conversation.property, activeTagData)
             const newConversation: DisplayConversation = {
-                title: conversation.property,
+                property: conversation.property,
                 value: value ?? "",
                 status: conversation.conversationStatus ?? "Open",
                 conversationId: conversation.id ?? "",
@@ -197,7 +197,7 @@ const CommentSideSheet: FC<Props> = ({
                     </Overview>
                     {mapTabToConversations(activeTab)?.map((conversation: DisplayConversation) => (
                         <ConversationCard
-                            key={conversation.title}
+                            key={conversation.property + conversation.conversationId}
                             conversation={conversation}
                         />
                     ))}

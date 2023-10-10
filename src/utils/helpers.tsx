@@ -138,3 +138,16 @@ export const sanitizeContent = (content: string): string => {
 
     return sanitizedContent
 }
+
+/**
+ * Format a camelCase string by adding a space before each uppercase letter and capitalizing the first letter of the string.
+ *
+ * @function
+ * @param {string} property - The string to be formatted.
+ * @returns {string} - The formatted string.
+ */
+export function formatCamelCase(property: string) {
+    return property
+        .replace(/([A-Z])/g, " $1")
+        .replace(/^./, (str) => str.toUpperCase())
+}

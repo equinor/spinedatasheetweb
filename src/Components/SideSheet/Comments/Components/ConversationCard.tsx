@@ -1,14 +1,29 @@
-import React, { FC } from "react"
+import React, { FC, useContext } from "react"
 import {
  Icon, Typography, Tooltip,
 } from "@equinor/eds-core-react"
 import { tag } from "@equinor/eds-icons"
 import styled from "styled-components"
+import { ViewContext } from "../../../../Context/ViewContext"
 import Card from "../../Components/Card"
 import { Message } from "../../../../Models/Message"
 import { User } from "../../../../Models/User"
-import { formatDate, wrapInSpan } from "../../../../utils/helpers"
+import { formatDate, wrapInSpan, formatCamelCase } from "../../../../utils/helpers"
 
+const ClickableCard = styled.button`
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: 0.2s;
+    &:hover {
+        background-color: #f7f7f7;
+        transform: scale(1.02);
+    }
+`
 const ConversationCardContainer = styled.div`
     padding: 0px 15px;
 `
@@ -47,7 +62,7 @@ const CommentText = styled(Typography)`
 `
 
 interface DisplayConversation {
-    title: string,
+    property: string,
     value: string,
     status: Components.Schemas.ConversationStatusDto,
     conversationId: string
@@ -111,25 +126,27 @@ interface ConversationCardProps {
 const ConversationCard: FC<ConversationCardProps> = ({
     conversation,
 }) => {
-    const formattedProperty = conversation.title.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+    const { setCurrentProperty } = useContext(ViewContext)
+    const formattedProperty = formatCamelCase(conversation.property)
     const conversationTitle = `${formattedProperty}: `
 
     return (
-        <ConversationCardContainer>
-            <Card>
-                <TitleContainer>
-                    <TagInfo>
-                        <Icon size={16} data={tag} />
-                    </TagInfo>
-                    <Value>
-                        {conversationTitle}
-                        <span>
-                            {conversation.value}
-                        </span>
-                    </Value>
-                    <Tooltip
-                        placement="right"
-                        title={
+        <ClickableCard type="button" onClick={() => { setCurrentProperty(conversation.property) }}>
+            <ConversationCardContainer>
+                <Card>
+                    <TitleContainer>
+                        <TagInfo>
+                            <Icon size={16} data={tag} />
+                        </TagInfo>
+                        <Value>
+                            {conversationTitle}
+                            <span>
+                                {conversation.value}
+                            </span>
+                        </Value>
+                        <Tooltip
+                            placement="right"
+                            title={
                             (() => {
                                 switch (conversation.status) {
                                     case "Open":
@@ -145,26 +162,27 @@ const ConversationCard: FC<ConversationCardProps> = ({
                                 }
                             })()
                         }
-                    >
-                        <StatusCircle status={conversation.status} />
-                    </Tooltip>
-                </TitleContainer>
-                <NewestMessageContainer>
-                    <CommentText
-                        dangerouslySetInnerHTML={{
+                        >
+                            <StatusCircle status={conversation.status} />
+                        </Tooltip>
+                    </TitleContainer>
+                    <NewestMessageContainer>
+                        <CommentText
+                            dangerouslySetInnerHTML={{
                             __html: wrapInSpan(conversation.messages[0].text || ""),
                         }}
-                    />
-                    <MessageDate variant="meta">
-                        {
+                        />
+                        <MessageDate variant="meta">
+                            {
                             conversation.messages[0].isEdited
                                 ? formatDate(conversation.messages[0].modifiedDate || "")
                                 : formatDate(conversation.messages[0].createdDate || "")
                         }
-                    </MessageDate>
-                </NewestMessageContainer>
-            </Card>
-        </ConversationCardContainer>
+                        </MessageDate>
+                    </NewestMessageContainer>
+                </Card>
+            </ConversationCardContainer>
+        </ClickableCard>
     )
 }
 
