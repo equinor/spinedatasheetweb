@@ -4,7 +4,6 @@ import React, {
 import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { useCurrentUser } from "@equinor/fusion"
-import { PersonAvatar } from "@equinor/fusion-react-person"
 import { PersonPhoto } from "@equinor/fusion-components"
 import MessageBox from "./MessageBox"
 import { Message } from "../../../../Models/Message"
