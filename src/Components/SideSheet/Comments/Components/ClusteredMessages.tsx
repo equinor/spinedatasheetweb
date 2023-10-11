@@ -123,16 +123,6 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({ initEditMode, editMode 
         return restMessages
     }
 
-    const renderPhoto = (userId: string) => {
-        console.log(userId)
-        return (
-            <PersonPhoto
-                personId={userId}
-                size="large"
-            />
-        )
-    }
-
     return (
         <>
             {generateMessageCluster(activeConversation.messages).map((cluster, index) => (
@@ -150,9 +140,12 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({ initEditMode, editMode 
                         <MessageContainer>
                             {/* TODO: change to PersonAvatar when docs are better */}
                             <PhotoContainer isCurrentUser={isCurrentUser(cluster.userId)}>
-                                {/* {!isCurrentUser && ( */}
-                                {renderPhoto(cluster.userId)}
-                                {/* )} */}
+                                {!isCurrentUser(cluster.userId) && (
+                                    <PersonPhoto
+                                        personId={cluster.userId}
+                                        size="large"
+                                    />
+                                )}
                                 <MessageBox
                                     key={`${cluster.userId}-${index}-${0}`}
                                     messageObject={cluster.messages[0]}
