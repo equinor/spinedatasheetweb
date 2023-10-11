@@ -100,11 +100,6 @@ const NewestMessageContainer = styled.div`
     gap: 10px;
 `
 
-const MessageDate = styled(Typography)`
-    word-break: keep-all;
-    white-space: nowrap;
-`
-
 const Value = styled(Typography)`
     font-size: 16px;
     max-width: 425px;
@@ -119,6 +114,22 @@ const Value = styled(Typography)`
     }
 `
 
+const Meta = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    top: 15px;
+
+`
+const SenderMeta = styled(Typography)`
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.7;
+    word-break: keep-all;
+    white-space: nowrap;
+`
 interface ConversationCardProps {
     conversation: DisplayConversation
 }
@@ -166,19 +177,24 @@ const ConversationCard: FC<ConversationCardProps> = ({
                             <StatusCircle status={conversation.status} />
                         </Tooltip>
                     </TitleContainer>
+                    <Meta>
+                        <SenderMeta>
+                            {conversation.messages[0].commenterName}
+                        </SenderMeta>
+                        <SenderMeta>
+                            {
+                            conversation.messages[0].isEdited
+                                ? formatDate(conversation.messages[0].modifiedDate || "")
+                                : formatDate(conversation.messages[0].createdDate || "")
+                        }
+                        </SenderMeta>
+                    </Meta>
                     <NewestMessageContainer>
                         <CommentText
                             dangerouslySetInnerHTML={{
                             __html: wrapInSpan(conversation.messages[0].text || ""),
                         }}
                         />
-                        <MessageDate variant="meta">
-                            {
-                            conversation.messages[0].isEdited
-                                ? formatDate(conversation.messages[0].modifiedDate || "")
-                                : formatDate(conversation.messages[0].createdDate || "")
-                        }
-                        </MessageDate>
                     </NewestMessageContainer>
                 </Card>
             </ConversationCardContainer>

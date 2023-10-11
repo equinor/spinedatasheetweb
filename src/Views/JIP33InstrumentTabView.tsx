@@ -95,16 +95,6 @@ function JIP33InstrumentTabView({ }) {
     const [error, setError] = useState<boolean>(false)
     const [activeTab, setActiveTab] = useState(0)
 
-    /*
-    useEffect(
-() => {
-        setOpen(true)
-        setCurrentProperty("setalarmPoint")
-    },
-     [],
-)
-*/
-
     const onCloseReviewSideSheet = useCallback(() => {
         setSideSheetOpen(false)
         setCurrentProperty("")
