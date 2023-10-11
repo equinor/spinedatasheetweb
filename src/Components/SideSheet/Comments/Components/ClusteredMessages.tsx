@@ -127,8 +127,8 @@ const ClusteredMessages: FC<ClusteredMessagesProps> = ({ initEditMode, editMode 
     const renderPhoto = (userId: string) => {
         console.log(userId)
         return (
-            <PersonAvatar
-                azureId={userId}
+            <PersonPhoto
+                personId={userId}
                 size="large"
             />
         )
