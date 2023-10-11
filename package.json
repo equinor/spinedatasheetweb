@@ -73,6 +73,7 @@
     "@equinor/fusion-observable": "^8.0.2",
     "@equinor/fusion-query": "^3.0.3",
     "@equinor/fusion-react-ag-grid-styles": "^29.3.16",
+    "@equinor/fusion-react-person": "^0.6.0",
     "@equinor/fusion-react-side-sheet": "^1.0.1",
     "@equinor/fusion-react-textinput": "^0.6.15",
     "@equinor/fusion-wc-textinput": "^0.5.19",
