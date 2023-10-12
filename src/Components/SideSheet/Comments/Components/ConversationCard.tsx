@@ -140,10 +140,6 @@ interface ConversationCardProps {
     conversation: DisplayConversation
 }
 
-const renderPhotos = (conversation: DisplayConversation) => (
-    conversation.participants.map((participant) => <PersonPhoto personId={participant.userId} size="small" />)
-)
-
 const ConversationCard: FC<ConversationCardProps> = ({
     conversation,
 }) => {
@@ -186,9 +182,11 @@ const ConversationCard: FC<ConversationCardProps> = ({
                         >
                             <StatusCircle status={conversation.status} />
                         </Tooltip>
-                        <PhotoContainer>
-                            {renderPhotos(conversation)}
-                        </PhotoContainer>
+                        {conversation.participants.map((participant) => (
+                            <PhotoContainer>
+                                <PersonPhoto personId={participant.userId} size="small" />
+                            </PhotoContainer>
+                        ))}
                     </TitleContainer>
                     <Meta>
                         <SenderMeta>
