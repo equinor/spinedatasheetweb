@@ -126,6 +126,8 @@ const Meta = styled.div`
 `
 
 const PhotoContainer = styled.div`
+    display: flex;
+    flex-direction: row;
     margin-left: auto;
 `
 
@@ -182,11 +184,11 @@ const ConversationCard: FC<ConversationCardProps> = ({
                         >
                             <StatusCircle status={conversation.status} />
                         </Tooltip>
-                        {conversation.participants.map((participant) => (
-                            <PhotoContainer>
+                        <PhotoContainer>
+                            {conversation.participants.map((participant) => (
                                 <PersonPhoto personId={participant.userId} size="small" />
-                            </PhotoContainer>
-                        ))}
+                            ))}
+                        </PhotoContainer>
                     </TitleContainer>
                     <Meta>
                         <SenderMeta>
