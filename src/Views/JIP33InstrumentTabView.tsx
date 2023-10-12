@@ -55,10 +55,6 @@ const TableView = styled.div``
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
-interface StyledTabPanelProps {
-    sheetWidth: number
-}
-
 const StyledTabPanel = styled(Panel).attrs<{ sheetWidth: number }>((props) => ({
     style: {
         width: `calc(100vw - ${props.sheetWidth}px)`,
@@ -81,40 +77,44 @@ const SheetIcon = styled(Icon)`
 
 function JIP33InstrumentTabView({ }) {
     const { tagId } = useParams<Record<string, string | undefined>>()
+    const currentContext = useCurrentContext()
+    const {
+            activeTagData,
+            setActiveTagData,
+            activeSheetTab,
+            setActiveSheetTab,
+            setConversations,
+            currentProperty,
+            setCurrentProperty,
+            sideSheetOpen,
+            setSideSheetOpen,
+            sheetWidth,
+        } = useContext(ViewContext)
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<boolean>(false)
-    const [open, setOpen] = useState(false)
-    const [currentProperty, setCurrentProperty] = useState<string>("")
     const [activeTab, setActiveTab] = useState(0)
-    const [sheetWidth, setSheetWidth] = useState(0)
-
-    const currentContext = useCurrentContext()
-
-    const {
-        activeTagData, setActiveTagData, activeSheetTab, setActiveSheetTab, setConversations,
-    } = useContext(ViewContext)
 
     const onCloseReviewSideSheet = useCallback(() => {
-        setOpen(false)
-        setSheetWidth(0)
-    }, [setOpen])
+        setSideSheetOpen(false)
+        setCurrentProperty("")
+    }, [setSideSheetOpen])
 
     const onOpenReviewSideSheet = useCallback((activatedTab: React.SetStateAction<number>) => {
         setActiveSheetTab(activatedTab)
-        setOpen(true)
-        setSheetWidth(620)
+        setSideSheetOpen(true)
         setCurrentProperty("")
-    }, [setOpen])
+    }, [setSideSheetOpen])
 
-    const getConversationsForTagReview = async (id: string) => {
-        if (!currentContext.currentContext?.externalId || !activeTagData?.tagNo) { return }
+    const getConversationsForTagReview = async (tagNo: string) => {
+        if (!currentContext.currentContext?.externalId) { return }
         const newConversations = await (
             await GetConversationService()
-        ).getConversationsForTag(currentContext.currentContext.externalId, activeTagData.tagNo, true)
+        ).getConversations(currentContext.currentContext.externalId, tagNo, true)
         setConversations(newConversations)
     }
 
+    // Get tag data and conversations for with current tagId
     useEffect(() => {
         (async () => {
             setError(false)
@@ -128,13 +128,7 @@ function JIP33InstrumentTabView({ }) {
                     ).getTagData(tagId)
                     setActiveTagData(tagData)
 
-                    const tagDataReviewId = tagData?.review?.id
-                    if (
-                        tagDataReviewId !== null
-                        && tagDataReviewId !== undefined
-                    ) {
-                        await getConversationsForTagReview(tagDataReviewId)
-                    }
+                    await getConversationsForTagReview(tagId)
 
                     setIsLoading(false)
                 } catch {
@@ -143,7 +137,7 @@ function JIP33InstrumentTabView({ }) {
                 }
             }
         })()
-    }, [])
+    }, [tagId])
 
     if (error) {
         return <Dialogue type="error" message="Error loading tag" />
@@ -217,7 +211,7 @@ function JIP33InstrumentTabView({ }) {
                             color="#007079"
                         />
                     </Typography>
-                    {!open && (
+                    {!sideSheetOpen && (
                         <Button variant="ghost_icon" onClick={() => onOpenReviewSideSheet(activeSheetTab)}>
                             <SheetIcon size={24} data={open_side_sheet} />
                         </Button>
@@ -234,10 +228,6 @@ function JIP33InstrumentTabView({ }) {
                                 <JIP33WithSideMenu
                                     sideMenuList={sideMenuListNORSOK}
                                     rowDataList={rowDataListNORSOK}
-                                    setCurrentProperty={setCurrentProperty}
-                                    setReviewSideSheetOpen={setOpen}
-                                    setWidth={setSheetWidth}
-                                    width={sheetWidth}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel sheetWidth={sheetWidth}>
@@ -245,10 +235,6 @@ function JIP33InstrumentTabView({ }) {
                                     sideMenuList={sideMenuListJIP33}
                                     rowDataList={rowDataListJIP33}
                                     customTabList={customTabList}
-                                    setCurrentProperty={setCurrentProperty}
-                                    setReviewSideSheetOpen={setOpen}
-                                    setWidth={setSheetWidth}
-                                    width={sheetWidth}
                                 />
                             </StyledTabPanel>
                         </Panels>
@@ -257,10 +243,7 @@ function JIP33InstrumentTabView({ }) {
             </TableView>
             <TagSideSheet
                 onClose={onCloseReviewSideSheet}
-                isOpen={open}
                 currentProperty={currentProperty}
-                width={sheetWidth}
-                setWidth={setSheetWidth}
                 activeTagData={activeTagData}
             />
         </View>
