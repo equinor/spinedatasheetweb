@@ -163,7 +163,6 @@ function TagComparisonTable({ tags }: Props) {
         }
     }, [activeTagData])
 
-
     return (
         <>
             {showTagSideSheet ? (
