@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import SheetContainer from "./Components/SheetContainer"
 import CommentsSideSheet from "./Comments/CommentSideSheet"
 import ChangeLogSideSheet from "./ChangeLog/ChangeLogSideSheet"
+import { ViewContext } from "../../Context/ViewContext"
 
 const Placeholder = styled.div`
     height: 100%;
@@ -12,15 +13,14 @@ const Placeholder = styled.div`
 
 type props = {
     onClose: () => void
-    currentProperty: any
     activeTagData: any
 }
 
 const TagSideSheet: React.FC<props> = ({
     activeTagData,
     onClose,
-    currentProperty,
 }) => {
+    const { currentProperty } = useContext(ViewContext)
     const placeholder = (
         <Placeholder>
             <Typography variant="body_short">Work in progress...</Typography>
@@ -32,7 +32,6 @@ const TagSideSheet: React.FC<props> = ({
                 key={activeTagData?.tagNo}
                 onClose={onClose}
                 activeTagData={activeTagData}
-                currentProperty={currentProperty}
                 tabs={[
                 { title: "Requirements", content: placeholder },
                 { title: "Comments", content: <CommentsSideSheet currentProperty={currentProperty} /> },
