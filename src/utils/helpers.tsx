@@ -133,17 +133,12 @@ export function wrapInSpan(inputString: string): string {
  * @returns {string} The sanitized text content.
  */
 export const sanitizeContent = (content: string): string => {
-    const config = {
-        ALLOWED_TAGS: ["span"],
-    }
-
+    const config = { ALLOWED_TAGS: ["span"] }
     const sanitizedContent = DOMPurify.sanitize(content, config)
-
-    console.log("original content", content)
-    console.log("sanitized content", sanitizedContent)
 
     return sanitizedContent
 }
+
 /**
  * Format a camelCase string by adding a space before each uppercase letter and capitalizing the first letter of the string.
  *
