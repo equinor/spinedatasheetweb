@@ -9,7 +9,9 @@ import { ViewContext } from "../../../../Context/ViewContext"
 import Card from "../../Components/Card"
 import { Message } from "../../../../Models/Message"
 import { User } from "../../../../Models/User"
-import { formatDate, wrapInSpan, formatCamelCase } from "../../../../utils/helpers"
+import {
+ formatDate, wrapInSpan, formatCamelCase, sanitizeContent,
+} from "../../../../utils/helpers"
 
 const ClickableCard = styled.button`
     width: 100%;
@@ -205,8 +207,8 @@ const ConversationCard: FC<ConversationCardProps> = ({
                     <NewestMessageContainer>
                         <CommentText
                             dangerouslySetInnerHTML={{
-                                __html: wrapInSpan(conversation.messages[0].text || ""),
-                            }}
+                            __html: sanitizeContent(wrapInSpan(conversation.messages[0].text || "")),
+                        }}
                         />
                     </NewestMessageContainer>
                 </Card>
