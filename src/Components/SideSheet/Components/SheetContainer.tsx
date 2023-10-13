@@ -89,12 +89,10 @@ type TabType = {
 
 type Props = {
     onClose: () => void
-    activeTagData: any
     tabs: TabType[],
 }
 
 const SheetContainer: React.FC<Props> = ({
-    activeTagData,
     onClose,
     tabs,
 }) => {
@@ -108,7 +106,7 @@ const SheetContainer: React.FC<Props> = ({
         sheetWidth,
         setSheetWidth,
         currentProperty,
-
+        activeTagData,
     } = useContext(ViewContext)
     const scrollableRef = useRef<HTMLDivElement>(null)
 

@@ -224,7 +224,6 @@ const CommentView: React.FC<CommentViewProps> = ({
                         color="#007079"
                     />
                 </Button>
-
                 <Typography>
                     {formatCamelCase(currentProperty)}
                 </Typography>
@@ -237,7 +236,6 @@ const CommentView: React.FC<CommentViewProps> = ({
                     />
                 </ConversationDiv>
             </ConversationContainer>
-
             <Controls>
                 {showTagDropDown && (
                     <TagDropDown
@@ -247,7 +245,6 @@ const CommentView: React.FC<CommentViewProps> = ({
                         dummyData={userTags}
                     />
                 )}
-
                 <InputController
                     handleSubmit={handleSubmit}
                     reRenderCounter={reRenderCounter}

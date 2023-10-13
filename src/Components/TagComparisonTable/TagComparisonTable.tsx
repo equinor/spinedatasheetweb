@@ -52,9 +52,10 @@ function TagComparisonTable({ tags }: Props) {
         setSideSheetOpen,
         sheetWidth,
         setCurrentProperty,
+        activeTagData,
+        setActiveTagData,
     } = useContext(ViewContext)
     const [FilterSidebarIsOpen, SetFilterSidebarIsOpen] = useState<boolean>(false)
-    const [activeTagData, setActiveTagData] = useState<ActiveTagData | undefined>(undefined)
     const [showTagSideSheet, setShowTagSideSheet] = useState<boolean>(false)
 
     const toggleFilterSidebar = () => SetFilterSidebarIsOpen(!FilterSidebarIsOpen)
@@ -150,9 +151,15 @@ function TagComparisonTable({ tags }: Props) {
     }
 
     const handleCellClicked = (event: any) => {
-        setShowTagSideSheet(event.colDef.field === "tagNo")
+        const shouldOpenTaggSideSheet = event.colDef.field === "tagNo"
+        if (shouldOpenTaggSideSheet) {
+            setShowTagSideSheet(true)
+            setCurrentProperty("")
+        } else {
+            setShowTagSideSheet(false)
+            setCurrentProperty(event.data.description)
+        }
         setActiveTagData({ description: event.data.description, tagNo: event.data.tagNo })
-        setCurrentProperty(event.data.tagNo)
     }
 
     // Opens side sheet when tag is clicked
@@ -169,13 +176,11 @@ function TagComparisonTable({ tags }: Props) {
                 <TagSideSheet
                     key={activeTagData?.tagNo}
                     onClose={closeSideSheet}
-                    activeTagData={activeTagData}
                 />
             ) : (
                 <TagPropertySideSheet
                     key={activeTagData?.tagNo}
                     onClose={closeSideSheet}
-                    activeTagData={activeTagData}
                 />
             )}
             <ResizableTableContainer sheetWidth={sheetWidth}>

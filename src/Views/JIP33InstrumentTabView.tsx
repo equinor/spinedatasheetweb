@@ -239,7 +239,6 @@ function JIP33InstrumentTabView({ }) {
             </TableView>
             <TagSideSheet
                 onClose={onCloseReviewSideSheet}
-                activeTagData={activeTagData}
             />
         </View>
     )

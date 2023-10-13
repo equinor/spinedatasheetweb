@@ -16,14 +16,13 @@ const Placeholder = styled.div`
 
 type Props = {
   onClose: () => void;
-  activeTagData: any;
 };
 
 const TagSideSheet: React.FC<Props> = ({
-  activeTagData,
   onClose,
 }) => {
-  const { currentProperty } = useContext(ViewContext)
+  const { activeTagData } = useContext(ViewContext)
+
   const placeholder = (
       <Placeholder>
           <Typography variant="body_short">Work in progress...</Typography>
@@ -34,7 +33,6 @@ const TagSideSheet: React.FC<Props> = ({
       <SheetContainer
           key={activeTagData?.tagNo}
           onClose={onClose}
-          activeTagData={activeTagData}
           tabs={[
                   { title: "Activity", content: <ActivitySideSheet /> },
                   { title: "Equipment", content: <EquipmentSideSheet /> },
@@ -42,7 +40,7 @@ const TagSideSheet: React.FC<Props> = ({
                   { title: "Connections", content: placeholder },
                   {
                       title: "Comments",
-                      content: <CommentsSideSheet currentProperty={currentProperty} />,
+                      content: <CommentsSideSheet />,
                   },
                   { title: "Changelog", content: <ChangeLogSideSheet /> },
               ]}
