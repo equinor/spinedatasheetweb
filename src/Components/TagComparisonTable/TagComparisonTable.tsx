@@ -19,6 +19,8 @@ import IconFilterToolPanel from "./FilterTabs/IconFilterToolPanel"
 import TagPropertySideSheet from "../SideSheet/TagPropertySideSheet"
 import TagSideSheet from "../SideSheet/TagSideSheet"
 import { ViewContext } from "../../Context/ViewContext"
+import { comparisonReviewColumnDefs } from "./ColumnDefs/ReviewColumnDefs"
+import { GetTagDataReviewService } from "../../api/TagDataReviewService"
 
 const TableContainer = styled.div`
     flex: 1 1 auto;
@@ -56,6 +58,7 @@ function TagComparisonTable({ tags }: Props) {
     const [activeTagData, setActiveTagData] = useState<ActiveTagData | undefined>(undefined)
     const [currentProperty, setCurrentProperty] = useState<any>(undefined)
     const [showTagSideSheet, setShowTagSideSheet] = useState<boolean>(false)
+    const [tagReviews, setTagReviews] = useState<any>()
 
     const toggleFilterSidebar = () => SetFilterSidebarIsOpen(!FilterSidebarIsOpen)
     const defaultColDef = useMemo<ColDef>(
@@ -69,14 +72,39 @@ function TagComparisonTable({ tags }: Props) {
         [],
     )
 
-    const newColumns = [...comparisonTagsColumnDefs(),
+    useEffect(() => {
+        (async () => {
+            const result = await (await GetTagDataReviewService()).getTagDataReviews()
+            setTagReviews(result.data)
+        })()
+    }, [])
+
+    const mapTagReviews = (tag: any) => {
+        let reviewerId = ""
+        // eslint-disable-next-line array-callback-return
+        const map = tagReviews?.map((tagReview: any) => {
+            if (tagReview.tagNo === tag.tagNo) {
+                reviewerId = tagReview?.reviewer[0]?.reviewerId
+            }
+        })
+        return reviewerId
+    }
+
+    const newColumns = [...comparisonReviewColumnDefs(),
+        ...comparisonTagsColumnDefs(),
         ...comparisonTR3111ColumnDefs(),
         ...comparisonGeneralColumnDefs(),
         ...comparisonEquipmentConditionsColumnDefs(),
         ...comparisonOperatingConditionsColumnDefs(),
     ]
 
-    const tagRows = tags.map((tag) => ({ ...tag.instrumentPurchaserRequirement, ...tag, tagNumber: tag.tagNo }))
+    const tagRows = tags.map((tag) => ({
+        ...tag.instrumentPurchaserRequirement,
+        ...tag,
+        tagNumber: tag.tagNo,
+        tagReviews,
+        reviewerId: mapTagReviews(tag),
+    }))
 
     const columnSideBar = useMemo<
         SideBarDef | string | string[] | boolean | null
@@ -161,6 +189,7 @@ function TagComparisonTable({ tags }: Props) {
         if (activeTagData !== undefined) {
             setSideSheetOpen(true)
         }
+        console.log(comparisonReviewColumnDefs())
     }, [activeTagData])
 
     return (
