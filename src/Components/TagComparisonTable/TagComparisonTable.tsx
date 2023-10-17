@@ -89,7 +89,7 @@ function TagComparisonTable({ tags }: Props) {
         const map = tagReviews?.map(async (tagReview: any) => {
             if (tagReview.tagNo === tag.tagNo) {
                 for (let i = 0; i < tagReview?.reviewer?.length; i += 1) {
-                    reviewers.push(tagReview?.reviewer[i]?.reviewerId)
+                    reviewers.push(tagReview?.reviewer[i]?.displayName)
                 }
             }
         })
