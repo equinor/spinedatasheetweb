@@ -58,7 +58,7 @@ function TagComparisonTable({ tags }: Props) {
     const [activeTagData, setActiveTagData] = useState<ActiveTagData | undefined>(undefined)
     const [currentProperty, setCurrentProperty] = useState<any>(undefined)
     const [showTagSideSheet, setShowTagSideSheet] = useState<boolean>(false)
-    const [tagReviews, setTagReviews] = useState<any>()
+    const [tagReviews, setTagReviews] = useState<Components.Schemas.TagDataReviewDto[]>()
 
     const toggleFilterSidebar = () => SetFilterSidebarIsOpen(!FilterSidebarIsOpen)
     const defaultColDef = useMemo<ColDef>(
@@ -83,15 +83,15 @@ function TagComparisonTable({ tags }: Props) {
         })()
     }, [])
 
-    const mapTagReviews = (tag: any) => {
+    const getReviewerNamesFromReviews = (tag: InstrumentTagData) => {
         const reviewers: string[] = []
-        // eslint-disable-next-line array-callback-return
-        const map = tagReviews?.map((tagReview: any) => {
-            if (tagReview.tagNo === tag.tagNo) {
-                tagReview?.reviewer?.forEach((tR: any) => {
+        tagReviews?.forEach((tagReview: Components.Schemas.TagDataReviewDto) => {
+            if (tag.tagNo !== tagReview.tagNo) { return }
+            tagReview?.reviewer?.forEach((tR: Components.Schemas.ReviewerDto) => {
+                if (tR.displayName) {
                     reviewers.push(tR?.displayName)
-                })
-            }
+                }
+            })
         })
         return reviewers.toString()
     }
@@ -108,7 +108,7 @@ function TagComparisonTable({ tags }: Props) {
         ...tag.instrumentPurchaserRequirement,
         ...tag,
         tagNumber: tag.tagNo,
-        displayName: mapTagReviews(tag),
+        displayName: getReviewerNamesFromReviews(tag),
     }))
 
     const columnSideBar = useMemo<
