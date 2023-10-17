@@ -80,14 +80,16 @@ function TagComparisonTable({ tags }: Props) {
     }, [])
 
     const mapTagReviews = (tag: any) => {
-        let reviewerId = ""
+        const reviewers: any = []
         // eslint-disable-next-line array-callback-return
-        const map = tagReviews?.map((tagReview: any) => {
+        const map = tagReviews?.map(async (tagReview: any) => {
             if (tagReview.tagNo === tag.tagNo) {
-                reviewerId = tagReview?.reviewer[0]?.reviewerId
+                for (let i = 0; i < tagReview?.reviewer?.length; i += 1) {
+                    reviewers.push(tagReview?.reviewer[i]?.reviewerId)
+                }
             }
         })
-        return reviewerId
+        return reviewers.toString()
     }
 
     const newColumns = [...comparisonReviewColumnDefs(),
