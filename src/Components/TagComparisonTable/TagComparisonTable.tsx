@@ -108,7 +108,6 @@ function TagComparisonTable({ tags }: Props) {
         ...tag.instrumentPurchaserRequirement,
         ...tag,
         tagNumber: tag.tagNo,
-        tagReviews,
         displayName: mapTagReviews(tag),
     }))
 
