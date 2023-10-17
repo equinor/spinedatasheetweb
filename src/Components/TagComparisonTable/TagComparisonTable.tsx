@@ -194,7 +194,6 @@ function TagComparisonTable({ tags }: Props) {
         if (activeTagData !== undefined) {
             setSideSheetOpen(true)
         }
-        console.log(comparisonReviewColumnDefs())
     }, [activeTagData])
 
     return (
