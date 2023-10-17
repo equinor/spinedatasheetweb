@@ -80,7 +80,7 @@ function TagComparisonTable({ tags }: Props) {
     }, [])
 
     const mapTagReviews = (tag: any) => {
-        const reviewers: any = []
+        const reviewers: string[] = []
         // eslint-disable-next-line array-callback-return
         const map = tagReviews?.map(async (tagReview: any) => {
             if (tagReview.tagNo === tag.tagNo) {
