@@ -109,7 +109,7 @@ function TagComparisonTable({ tags }: Props) {
         ...tag,
         tagNumber: tag.tagNo,
         tagReviews,
-        reviewerId: mapTagReviews(tag),
+        displayName: mapTagReviews(tag),
     }))
 
     const columnSideBar = useMemo<
