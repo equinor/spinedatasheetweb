@@ -74,8 +74,12 @@ function TagComparisonTable({ tags }: Props) {
 
     useEffect(() => {
         (async () => {
-            const result = await (await GetTagDataReviewService()).getTagDataReviews()
-            setTagReviews(result.data)
+            try {
+                const result = await (await GetTagDataReviewService()).getTagDataReviews()
+                setTagReviews(result.data)
+            } catch (error) {
+                console.error(`Couldn't get tag reviews: ${error}`)
+            }
         })()
     }, [])
 
