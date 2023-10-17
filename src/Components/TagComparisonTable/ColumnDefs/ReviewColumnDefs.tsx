@@ -3,7 +3,7 @@ import { getPropertyName } from "../../../utils/helpers"
 
 export const comparisonReviewColumnDefs = (): ColDef[] => [
     {
-        headerName: "Assigned reviewer",
+        headerName: "Assigned reviewers",
         field: getPropertyName<Components.Schemas.ReviewerDto>("displayName"),
         hide: true,
     },
