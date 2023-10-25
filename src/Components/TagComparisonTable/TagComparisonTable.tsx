@@ -195,20 +195,20 @@ function TagComparisonTable({ tags }: Props) {
         setActiveTagData({ description: event.data.description, tagNo: event.data.tagNo })
     }
 
-    const hideEmptyColumns = useCallback((params: any) => {
-        const columns = params.columnApi?.getColumns()
-        const rowNodes = params.api?.getRenderedNodes()
-        columns?.forEach((column: any) => {
-          const isColumnEmpty = !rowNodes?.some((rowNode: any) => {
-            const value = params.api?.getValue(column, rowNode)
-            return typeof value !== "undefined" && value !== null && value !== ""
+    const hideColumnsWithNoData = useCallback((params: any) => {
+        const comparisonColumns = params.columnApi?.getColumns()
+        const renderedRowNodes = params.api?.getRenderedNodes()
+        comparisonColumns?.forEach((column: any) => {
+          const columnHasNoData = !renderedRowNodes?.some((rowNode: any) => {
+            const nodeValue = params.api?.getValue(column, rowNode)
+            return typeof nodeValue !== "undefined" && nodeValue !== null && nodeValue !== ""
           })
-          params.columnApi.setColumnVisible(column, !isColumnEmpty)
+          params.columnApi.setColumnVisible(column, !columnHasNoData)
         })
     }, [])
 
     const onGridReady = (params: any) => {
-        hideEmptyColumns(params)
+        hideColumnsWithNoData(params)
     }
 
     // Opens side sheet when tag is clicked
