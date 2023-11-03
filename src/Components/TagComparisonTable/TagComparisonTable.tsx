@@ -1,10 +1,12 @@
-import { ColDef, SideBarDef } from "@ag-grid-community/core"
+import {
+ ColDef, SideBarDef,
+} from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import React, {
     useCallback, useEffect, useMemo, useRef, useState, useContext,
 } from "react"
-import { Button, Icon } from "@equinor/eds-core-react"
+import { Button, Icon, Typography } from "@equinor/eds-core-react"
 import { view_column } from "@equinor/eds-icons"
 import { styled } from "styled-components"
 import TextInput from "@equinor/fusion-react-textinput"
@@ -21,6 +23,9 @@ import TagSideSheet from "../SideSheet/TagSideSheet"
 import { ViewContext } from "../../Context/ViewContext"
 import { comparisonReviewColumnDefs } from "./ColumnDefs/ReviewColumnDefs"
 import { GetTagDataReviewService } from "../../api/TagDataReviewService"
+import {
+ resetFilters, restoreFilterModel, saveFilterModel, showActiveFilters,
+} from "../../utils/AgGridFilterFunctions"
 
 const TableContainer = styled.div`
     flex: 1 1 auto;
@@ -33,11 +38,16 @@ const ResizableTableContainer = styled.div<{ $sheetWidth: number }>`
 const FilterBar = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: right;
+    justify-content: space-between;
+`
+
+const Wrapper = styled.div`
+    display: flex;
     align-items: center;
     margin: 15px 0;
     gap: 15px;
 `
+
 interface ActiveTagData {
     description: string;
     tagNo: string;
@@ -98,11 +108,11 @@ function TagComparisonTable({ tags }: Props) {
     }
 
     const newColumns = [...comparisonReviewColumnDefs(),
-        ...comparisonTagsColumnDefs(),
-        ...comparisonTR3111ColumnDefs(),
-        ...comparisonGeneralColumnDefs(),
-        ...comparisonEquipmentConditionsColumnDefs(),
-        ...comparisonOperatingConditionsColumnDefs(),
+    ...comparisonTagsColumnDefs(),
+    ...comparisonTR3111ColumnDefs(),
+    ...comparisonGeneralColumnDefs(),
+    ...comparisonEquipmentConditionsColumnDefs(),
+    ...comparisonOperatingConditionsColumnDefs(),
     ]
 
     const tagRows = tags.map((tag) => ({
@@ -199,17 +209,13 @@ function TagComparisonTable({ tags }: Props) {
         const comparisonColumns = params.columnApi?.getColumns()
         const renderedRowNodes = params.api?.getRenderedNodes()
         comparisonColumns?.forEach((column: any) => {
-          const columnHasNoData = !renderedRowNodes?.some((rowNode: any) => {
-            const nodeValue = params.api?.getValue(column, rowNode)
-            return typeof nodeValue !== "undefined" && nodeValue !== null && nodeValue !== ""
-          })
-          params.columnApi.setColumnVisible(column, !columnHasNoData)
+            const columnHasNoData = !renderedRowNodes?.some((rowNode: any) => {
+                const nodeValue = params.api?.getValue(column, rowNode)
+                return typeof nodeValue !== "undefined" && nodeValue !== null && nodeValue !== ""
+            })
+            params.columnApi.setColumnVisible(column, !columnHasNoData)
         })
     }, [])
-
-    const onGridReady = (params: any) => {
-        hideColumnsWithNoData(params)
-    }
 
     // Opens side sheet when tag is clicked
     useEffect(() => {
@@ -217,6 +223,30 @@ function TagComparisonTable({ tags }: Props) {
             setSideSheetOpen(true)
         }
     }, [activeTagData])
+
+    const [savedFilterModel, setSavedFilterModel] = useState<any>(() => JSON.parse(localStorage.getItem("savedFilters") || "{}"))
+    const [propFilters, setPropFilters] = useState<string[]>([])
+    const [filterButtons, setFilterButtons] = useState<any[]>([])
+    const [hasActiveFilters, setHasActiveFilters] = useState<boolean>(false)
+
+    const onFilterChanged = (params: any) => {
+        saveFilterModel(params, setSavedFilterModel)
+    }
+
+    useEffect(() => {
+        if (propFilters !== Object.keys(savedFilterModel)) {
+            setPropFilters(Object.keys(savedFilterModel))
+        }
+    }, [savedFilterModel])
+
+    useEffect(() => {
+        showActiveFilters(propFilters, setHasActiveFilters, setFilterButtons)
+    }, [propFilters])
+
+    const onGridReady = (params: any) => {
+        hideColumnsWithNoData(params)
+        restoreFilterModel(gridRef, savedFilterModel)
+    }
 
     return (
         <>
@@ -233,22 +263,48 @@ function TagComparisonTable({ tags }: Props) {
             )}
             <ResizableTableContainer $sheetWidth={sheetWidth}>
                 <FilterBar>
-                    <TextInput
-                        icon="search"
-                        size={30}
-                        dense
-                        type="text"
-                        id="filter-text-box"
-                        placeholder="Search all properties"
-                        onInput={onFilterTextBoxChanged}
-                    />
-                    <Button
-                        variant={FilterSidebarIsOpen ? "contained" : "outlined"}
-                        onClick={toggleFilterSidebar}
-                    >
-                        <Icon data={view_column} color={FilterSidebarIsOpen ? "white" : "#007079"} />
-                        Filters
-                    </Button>
+                    <Wrapper>
+                        {hasActiveFilters && (
+                        <>
+                            <Typography>
+                                Active filters:
+                                {" "}
+                                {filterButtons}
+                            </Typography>
+                            <Button
+                                variant="ghost"
+                                style={{ borderRadius: 40, height: 30 }}
+                                onClick={() => resetFilters(
+                                    gridRef,
+                                    setFilterButtons,
+                                    setPropFilters,
+                                    setHasActiveFilters,
+                                )}
+                            >
+                                Clear filters
+                            </Button>
+
+                        </>
+                    )}
+                    </Wrapper>
+                    <Wrapper>
+                        <TextInput
+                            icon="search"
+                            size={30}
+                            dense
+                            type="text"
+                            id="filter-text-box"
+                            placeholder="Search all properties"
+                            onInput={onFilterTextBoxChanged}
+                        />
+                        <Button
+                            variant={FilterSidebarIsOpen ? "contained" : "outlined"}
+                            onClick={toggleFilterSidebar}
+                        >
+                            <Icon data={view_column} color={FilterSidebarIsOpen ? "white" : "#007079"} />
+                            Filters
+                        </Button>
+                    </Wrapper>
                 </FilterBar>
                 <div className={styles.root}>
                     <TableContainer
@@ -270,6 +326,8 @@ function TagComparisonTable({ tags }: Props) {
                             sideBar={toggleSideBar()}
                             onCellClicked={handleCellClicked}
                             onGridReady={onGridReady}
+                            onFilterChanged={onFilterChanged}
+                        // gridOptions={gridOptions}
                         />
                     </TableContainer>
                 </div>
