@@ -1,20 +1,23 @@
 import { Button } from "@equinor/eds-core-react"
 import React from "react"
 
-export const saveFilterModel = (params: any, setSavedFilterModel: any) => {
+export const saveFilterModel = (
+    params: any,
+    setSavedFilterModel: React.Dispatch<React.SetStateAction<object>>,
+) => {
     setSavedFilterModel(params?.api!.getFilterModel())
     localStorage.setItem("savedFilters", JSON.stringify(params?.api!.getFilterModel()))
 }
 
-export const restoreFilterModel = (gridRef: any, savedFilterModel: any) => {
+export const restoreFilterModel = (gridRef: any, savedFilterModel: object) => {
     gridRef.current?.api?.setFilterModel(savedFilterModel)
 }
 
 export const showActiveFilters = (
     propFilters: string[],
-    setHasActiveFilters: any,
-    setFilterButtons: any,
-    ) => {
+    setHasActiveFilters: React.Dispatch<React.SetStateAction<boolean>>,
+    setFilterButtons: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
+) => {
     const filters: any[] = []
     if (propFilters && propFilters.length > 0) {
         setHasActiveFilters(true)
@@ -41,9 +44,9 @@ export const showActiveFilters = (
 
 export const resetFilters = (
     gridRef: any,
-    setFilterButtons: any,
-    setPropFilters: any,
-    setHasActiveFilters: any,
+    setFilterButtons: React.Dispatch<React.SetStateAction<JSX.Element[]>>,
+    setPropFilters: React.Dispatch<React.SetStateAction<string[]>>,
+    setHasActiveFilters: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
     gridRef.current?.api!.setFilterModel(null)
     setFilterButtons([])

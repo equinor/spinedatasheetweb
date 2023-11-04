@@ -224,9 +224,9 @@ function TagComparisonTable({ tags }: Props) {
         }
     }, [activeTagData])
 
-    const [savedFilterModel, setSavedFilterModel] = useState<any>(() => JSON.parse(localStorage.getItem("savedFilters") || "{}"))
+    const [savedFilterModel, setSavedFilterModel] = useState<object>(() => JSON.parse(localStorage.getItem("savedFilters") || "{}"))
     const [propFilters, setPropFilters] = useState<string[]>([])
-    const [filterButtons, setFilterButtons] = useState<any[]>([])
+    const [filterButtons, setFilterButtons] = useState<JSX.Element[]>([])
     const [hasActiveFilters, setHasActiveFilters] = useState<boolean>(false)
 
     const onFilterChanged = (params: any) => {
@@ -327,7 +327,6 @@ function TagComparisonTable({ tags }: Props) {
                             onCellClicked={handleCellClicked}
                             onGridReady={onGridReady}
                             onFilterChanged={onFilterChanged}
-                        // gridOptions={gridOptions}
                         />
                     </TableContainer>
                 </div>
