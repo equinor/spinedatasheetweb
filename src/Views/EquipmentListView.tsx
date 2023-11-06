@@ -2,7 +2,6 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useCurrentContext } from "@equinor/fusion-framework-react-app/context"
 import React, { useEffect, useState, useContext } from "react"
 import styled from "styled-components"
-import { useNavigate, useParams } from "react-router-dom"
 import { GetTagDataService } from "../api/TagDataService"
 import EquipmentListTable from "../Components/EquipmentListView/EquipmentListTable"
 import { TagData } from "../Models/TagData"
@@ -45,9 +44,6 @@ function EquipmentListView() {
     const currentProject = useCurrentContext()
     const { setSideSheetOpen, setActiveTagData } = useContext(ViewContext)
 
-    const navigate = useNavigate()
-
-    // Set externalId to current project's externalId
     useEffect(() => {
         if (currentProject.currentContext?.externalId !== externalId) {
             setExternalId(currentProject.currentContext?.externalId)
@@ -94,18 +90,6 @@ function EquipmentListView() {
         }
     }, [externalId])
 
-    /*
-    useEffect(() => {
-        if (
-            currentProject?.currentContext !== null
-            && currentProject.currentContext !== undefined
-            && (projectId === null || projectId === undefined)
-        ) {
-            navigate(`/${currentProject.currentContext.id}`)
-        }
-    }, [currentProject, projectId, navigate])
-    */
-
     if (!currentProject.currentContext) {
         return <Dialogue type="error" message="No project selected" />
     }
@@ -124,7 +108,6 @@ function EquipmentListView() {
 
     return (
         <Wrapper>
-
             <StyledTabs
                 activeTab={activeTab}
                 onChange={setActiveTab}
