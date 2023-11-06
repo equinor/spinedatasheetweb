@@ -29,7 +29,9 @@ const LandingPage = () => {
 
         if (!pathMatchesActiveTab) {
             const activeTabFromPath = Object.keys(tabPath).find((key) => tabPath[parseInt(key, 10)] === window.location.pathname.split("/")[2])
-            const isOnProjectRoot = window.location.pathname.split("/")[1] === currentProject.currentContext?.id && window.location.pathname.split("/")[2] === undefined
+            const isOnProjectRoot = window.location.pathname.split("/")[1] === currentProject.currentContext?.id
+            && window.location.pathname.split("/")[2] === undefined
+
             if (activeTabFromPath) {
                 setActiveTab(parseInt(activeTabFromPath, 10))
                 if (isOnRoot) navigate(`/${currentProject.currentContext?.id}/${tabPath[parseInt(activeTabFromPath, 10)]}`)

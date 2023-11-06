@@ -71,10 +71,12 @@ interface Draggable {
     status: "Open" | "Closed" | "Implemented" | "To_be_implemented";
 }
 
+const statuses = ["Open", "Closed", "Implemented", "To_be_implemented"] as const
+
 const initialDraggables: Draggable[] = Array.from({ length: 10 }, (_, index) => ({
     id: index + 1,
     title: `Item ${index + 1}`,
-    status: ["Open", "Closed", "Implemented", "To_be_implemented"][Math.floor(Math.random() * 4)] as "Open" | "Closed" | "Implemented" | "To_be_implemented",
+    status: statuses[Math.floor(Math.random() * statuses.length)],
 }))
 
 interface ContainerData {
