@@ -22,10 +22,10 @@ import TagPropertySideSheet from "../SideSheet/TagPropertySideSheet"
 import TagSideSheet from "../SideSheet/TagSideSheet"
 import { ViewContext } from "../../Context/ViewContext"
 import { comparisonReviewColumnDefs } from "./ColumnDefs/ReviewColumnDefs"
-import { GetTagDataReviewService } from "../../api/TagDataReviewService"
 import {
  resetFilters, restoreFilterModel, saveFilterModel, showActiveFilters,
 } from "../../utils/AgGridFilterFunctions"
+import { GetTagReviewerService } from "../../api/TagReviewerService"
 
 const TableContainer = styled.div`
     flex: 1 1 auto;
@@ -69,7 +69,7 @@ function TagComparisonTable({ tags }: Props) {
     } = useContext(ViewContext)
     const [FilterSidebarIsOpen, SetFilterSidebarIsOpen] = useState<boolean>(false)
     const [showTagSideSheet, setShowTagSideSheet] = useState<boolean>(false)
-    const [tagReviews, setTagReviews] = useState<Components.Schemas.TagDataReviewDto[]>()
+    const [tagReviews, setTagReviews] = useState<Components.Schemas.TagReviewerDto[]>()
 
     const toggleFilterSidebar = () => SetFilterSidebarIsOpen(!FilterSidebarIsOpen)
     const defaultColDef = useMemo<ColDef>(
@@ -86,7 +86,7 @@ function TagComparisonTable({ tags }: Props) {
     useEffect(() => {
         (async () => {
             try {
-                const result = await (await GetTagDataReviewService()).getTagDataReviews()
+                const result = await (await GetTagReviewerService()).getTagReviewers()
                 setTagReviews(result.data)
             } catch (error) {
                 console.error(`Couldn't get tag reviews: ${error}`)
@@ -96,13 +96,11 @@ function TagComparisonTable({ tags }: Props) {
 
     const getReviewerNamesFromReviews = (tag: InstrumentTagData) => {
         const reviewers: string[] = []
-        tagReviews?.forEach((tagReview: Components.Schemas.TagDataReviewDto) => {
+        tagReviews?.forEach((tagReview: Components.Schemas.TagReviewerDto) => {
             if (tag.tagNo !== tagReview.tagNo) { return }
-            tagReview?.reviewer?.forEach((tR: Components.Schemas.ReviewerDto) => {
-                if (tR.displayName) {
-                    reviewers.push(tR?.displayName)
-                }
-            })
+            if (tagReview.displayName) {
+                reviewers.push(tagReview?.displayName)
+            }
         })
         return reviewers.toString()
     }
