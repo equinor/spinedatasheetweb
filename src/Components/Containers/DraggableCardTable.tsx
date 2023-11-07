@@ -5,7 +5,8 @@ import { formatCamelCase } from "../../utils/helpers"
 const Wrapper = styled.div`
     box-sizing: border-box;
     display: flex;
-    align-items: center;
+    flex-grow: 1;
+    align-items: stretch;
     justify-content: space-around;
     flex-direction: row;
     gap: 5px;
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
 const DragContainer = styled.div<{ $isOver?: boolean }>`
     box-sizing: border-box;
     width: 100%;
-    height: 450px;
+    flex-grow: 1;
     overflow-y: auto;
     padding: 5px;
     display: flex;
@@ -56,7 +57,6 @@ const DraggableElement = styled.div`
     box-sizing: border-box;
     width:  100%;
     height: 40px;
-    background-color: lightblue;
     display: flex;
     align-items: center;
     justify-content: center;

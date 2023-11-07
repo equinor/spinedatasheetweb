@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from "react"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useNavigate, Link } from "react-router-dom"
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion-framework-react-app/context"
+import { Breadcrumbs } from "@equinor/eds-core-react"
 import LocalNavigation from "../Components/SideSheet/Components/LocalNavigation"
 import Dialogue from "../Components/Dialogue"
 
@@ -70,6 +71,21 @@ const LandingPage = () => {
                     setActiveTab={changeTab}
                     buttons={Navigationbuttons}
                 />
+                {
+                    activeTab === 0 ? (
+                        <Breadcrumbs>
+                            <Breadcrumbs.Breadcrumb as={Link} to={`/${currentProject.currentContext?.id}/tags`}>
+                                Tags
+                            </Breadcrumbs.Breadcrumb>
+                        </Breadcrumbs>
+                    ) : activeTab === 1 ? (
+                        <Breadcrumbs>
+                            <Breadcrumbs.Breadcrumb as={Link} to={`/${currentProject.currentContext?.id}/containers`}>
+                                Containers
+                            </Breadcrumbs.Breadcrumb>
+                        </Breadcrumbs>
+                    ) : null
+                }
             </Wrapper>
             <Outlet />
         </>
