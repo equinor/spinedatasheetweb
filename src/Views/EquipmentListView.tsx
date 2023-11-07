@@ -34,7 +34,10 @@ const StyledTabPanel = styled(Panel)`
 
 function EquipmentListView() {
     const {
- setSideSheetOpen, setActiveTagData, setCurrentUserId, pathSegments,
+        setSideSheetOpen,
+        setActiveTagData,
+        setCurrentUserId,
+        pathSegments,
 } = useContext(ViewContext)
     const currentUser: any = useCurrentUser()
 
@@ -42,9 +45,6 @@ function EquipmentListView() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<boolean>(false)
     const [externalId, setExternalId] = useState<string | undefined>()
-    const [reviewModalOpen, setReviewModalOpen] = useState<boolean>(false)
-    const [tagInReview, setTagInReview] = useState<string | undefined>(undefined)
-    const [revisionInReview, setRevisionInReview] = useState<string | undefined>(undefined)
     const [tagData, setTagData] = useState<TagData[] | undefined>(undefined)
 
     const currentProject = useCurrentContext()
@@ -52,19 +52,7 @@ function EquipmentListView() {
     const location = useLocation()
     const params = useParams()
 
-    // should probably be moved to main nav component
-    useEffect(() => {
-        if (currentUser?._info?.localAccountId) {
-            setCurrentUserId(currentUser?._info?.localAccountId)
-        }
-    }, [currentUser])
 
-    // should probably be moved to main nav component
-    useEffect(() => {
-        if (currentProject.currentContext?.externalId !== externalId) {
-            setExternalId(currentProject.currentContext?.externalId)
-        }
-    }, [currentProject])
 
     useEffect(() => {
         setSideSheetOpen(false)
@@ -137,9 +125,6 @@ return (
                   <StyledTabPanel>
                       <EquipmentListTable
                           tags={tagData}
-                          setReviewModalOpen={setReviewModalOpen}
-                          setTagInReview={setTagInReview}
-                          setRevisionInReview={setRevisionInReview}
                       />
                   </StyledTabPanel>
                   <StyledTabPanel>

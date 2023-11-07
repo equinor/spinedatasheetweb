@@ -5,6 +5,7 @@ import {
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion-framework-react-app/context"
 import { Breadcrumbs, Typography } from "@equinor/eds-core-react"
+import { useCurrentUser } from "@equinor/fusion"
 import LocalNavigation from "../Components/SideSheet/Components/LocalNavigation"
 import Dialogue from "../Components/Dialogue"
 import { ViewContext } from "../Context/ViewContext"
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
 `
 
 const NavigatorHeader = () => {
-        const { setPathSegments, pathSegments } = useContext(ViewContext)
+        const { setPathSegments, pathSegments, setCurrentUserId } = useContext(ViewContext)
         const tabPath: { [index: number]: string } = {
         0: "tags",
         1: "containers",
@@ -22,11 +23,26 @@ const NavigatorHeader = () => {
 
     const [activeTab, setActiveTab] = useState<number>(0)
     const [header, setHeader] = useState<string>("")
+    const [externalId, setExternalId] = useState<string | undefined>()
+
     const Navigationbuttons = ["Tags", "Containers"]
 
     const navigate = useNavigate()
     const currentProject = useCurrentContext()
     const location = useLocation()
+    const currentUser: any = useCurrentUser()
+
+    useEffect(() => {
+        if (currentUser?._info?.localAccountId) {
+            setCurrentUserId(currentUser?._info?.localAccountId)
+        }
+    }, [currentUser])
+
+    useEffect(() => {
+        if (currentProject.currentContext?.externalId !== externalId) {
+            setExternalId(currentProject.currentContext?.externalId)
+        }
+    }, [currentProject])
 
     // setting path segments for keeping track of users location in the app
     useEffect(() => {

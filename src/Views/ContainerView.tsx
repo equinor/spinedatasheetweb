@@ -1,15 +1,18 @@
 
-import React, { useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import styled from "styled-components"
 import {
- Breadcrumbs, Button, Search, Typography, Icon, Chip,
+ Button, Search, Typography, Icon, Chip,
 } from "@equinor/eds-core-react"
 import {
- Link, useLocation, Outlet,
+ Link, Outlet,
 } from "react-router-dom"
 import { search } from "@equinor/eds-icons"
 import { PersonPhoto } from "@equinor/fusion-components"
 import ReviewButton from "../Components/Buttons/ReviewButton"
+import { GetContainerService } from "../api/ContainerService"
+import { GetConversationService } from "../api/ConversationService"
+import { ViewContext } from "../Context/ViewContext"
 
 const Container = styled.div`
     min-height: 100%;
@@ -139,7 +142,40 @@ const initialPeople = [
 ]
 
 const ContainerView = () => {
-    const location = useLocation()
+        const { currentUserId } = useContext(ViewContext)
+
+        const [containers, setContainers] = useState<Components.Schemas.ContainerDto[]>([])
+        const [containerComments, setContainerComments] = useState<Components.Schemas.GetConversationDto[]>([])
+
+        useEffect(() => {
+            console.log("currentUserId: ", currentUserId)
+            let isCancelled = false;
+            (async () => {
+                try {
+                    if (currentUserId) {
+                        const containerResults = await (await GetContainerService()).getContainers()
+                        setContainers(containerResults)
+                        console.log("containerResults: ", containerResults)
+
+                        if (containerResults.length > 0) {
+                            const allConversationsForContainer = await (await GetConversationService())
+                                .getConversationsForContainer(containerResults[0].id)
+
+                            setContainerComments(allConversationsForContainer)
+                            console.log("allConversationsForContainer: ", allConversationsForContainer)
+                        }
+                    }
+                } catch {
+                    if (!isCancelled) {
+                        console.error("Error loading user reviews")
+                    }
+                }
+            })()
+
+            return () => {
+                isCancelled = true
+            }
+        }, [currentUserId])
 
     return (
         <Container>
@@ -196,7 +232,7 @@ const ContainerView = () => {
                 </StyledLink>
 
             </Links>
-            <Outlet />
+            <Outlet context={[containers, containerComments]} />
         </Container>
     )
 }
