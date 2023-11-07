@@ -1,5 +1,5 @@
 import {
- ColDef, SideBarDef,
+    ColDef, SideBarDef,
 } from "@ag-grid-community/core"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -23,7 +23,7 @@ import TagSideSheet from "../SideSheet/TagSideSheet"
 import { ViewContext } from "../../Context/ViewContext"
 import { comparisonReviewColumnDefs } from "./ColumnDefs/ReviewColumnDefs"
 import {
- resetFilters, restoreFilterModel, saveFilterModel, showActiveFilters,
+    resetFilters, restoreFilterModel, saveFilterModel, showActiveFilters,
 } from "../../utils/AgGridFilterFunctions"
 import { GetTagReviewerService } from "../../api/TagReviewerService"
 
@@ -70,6 +70,10 @@ function TagComparisonTable({ tags }: Props) {
     const [FilterSidebarIsOpen, SetFilterSidebarIsOpen] = useState<boolean>(false)
     const [showTagSideSheet, setShowTagSideSheet] = useState<boolean>(false)
     const [tagReviews, setTagReviews] = useState<Components.Schemas.TagReviewerDto[]>()
+    const [savedFilterModel, setSavedFilterModel] = useState<object>(() => JSON.parse(localStorage.getItem("savedFilters") || "{}"))
+    const [propFilters, setPropFilters] = useState<string[]>([])
+    const [filterButtons, setFilterButtons] = useState<JSX.Element[]>([])
+    const [hasActiveFilters, setHasActiveFilters] = useState<boolean>(false)
 
     const toggleFilterSidebar = () => SetFilterSidebarIsOpen(!FilterSidebarIsOpen)
     const defaultColDef = useMemo<ColDef>(
@@ -93,6 +97,23 @@ function TagComparisonTable({ tags }: Props) {
             }
         })()
     }, [])
+
+    // Opens side sheet when tag is clicked
+    useEffect(() => {
+        if (activeTagData !== undefined) {
+            setSideSheetOpen(true)
+        }
+    }, [activeTagData])
+
+    useEffect(() => {
+        if (propFilters !== Object.keys(savedFilterModel)) {
+            setPropFilters(Object.keys(savedFilterModel))
+        }
+    }, [savedFilterModel])
+
+    useEffect(() => {
+        showActiveFilters(propFilters, setHasActiveFilters, setFilterButtons)
+    }, [propFilters])
 
     const getReviewerNamesFromReviews = (tag: InstrumentTagData) => {
         const reviewers: string[] = []
@@ -215,31 +236,9 @@ function TagComparisonTable({ tags }: Props) {
         })
     }, [])
 
-    // Opens side sheet when tag is clicked
-    useEffect(() => {
-        if (activeTagData !== undefined) {
-            setSideSheetOpen(true)
-        }
-    }, [activeTagData])
-
-    const [savedFilterModel, setSavedFilterModel] = useState<object>(() => JSON.parse(localStorage.getItem("savedFilters") || "{}"))
-    const [propFilters, setPropFilters] = useState<string[]>([])
-    const [filterButtons, setFilterButtons] = useState<JSX.Element[]>([])
-    const [hasActiveFilters, setHasActiveFilters] = useState<boolean>(false)
-
     const onFilterChanged = (params: any) => {
         saveFilterModel(params, setSavedFilterModel)
     }
-
-    useEffect(() => {
-        if (propFilters !== Object.keys(savedFilterModel)) {
-            setPropFilters(Object.keys(savedFilterModel))
-        }
-    }, [savedFilterModel])
-
-    useEffect(() => {
-        showActiveFilters(propFilters, setHasActiveFilters, setFilterButtons)
-    }, [propFilters])
 
     const onGridReady = (params: any) => {
         hideColumnsWithNoData(params)
@@ -263,27 +262,27 @@ function TagComparisonTable({ tags }: Props) {
                 <FilterBar>
                     <Wrapper>
                         {hasActiveFilters && (
-                        <>
-                            <Typography>
-                                Active filters:
-                                {" "}
-                                {filterButtons}
-                            </Typography>
-                            <Button
-                                variant="ghost"
-                                style={{ borderRadius: 40, height: 30 }}
-                                onClick={() => resetFilters(
-                                    gridRef,
-                                    setFilterButtons,
-                                    setPropFilters,
-                                    setHasActiveFilters,
-                                )}
-                            >
-                                Clear filters
-                            </Button>
+                            <>
+                                <Typography>
+                                    Active filters:
+                                    {" "}
+                                    {filterButtons}
+                                </Typography>
+                                <Button
+                                    variant="ghost"
+                                    style={{ borderRadius: 40, height: 30 }}
+                                    onClick={() => resetFilters(
+                                        gridRef,
+                                        setFilterButtons,
+                                        setPropFilters,
+                                        setHasActiveFilters,
+                                    )}
+                                >
+                                    Clear filters
+                                </Button>
 
-                        </>
-                    )}
+                            </>
+                        )}
                     </Wrapper>
                     <Wrapper>
                         <TextInput
