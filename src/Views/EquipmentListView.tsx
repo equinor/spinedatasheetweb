@@ -2,7 +2,9 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useCurrentContext } from "@equinor/fusion-framework-react-app/context"
 import React, { useEffect, useState, useContext } from "react"
 import styled from "styled-components"
-import { useNavigate, useParams } from "react-router-dom"
+import {
+ useNavigate, useParams, useLocation, Outlet,
+} from "react-router-dom"
 import { useCurrentUser } from "@equinor/fusion"
 import { GetTagDataService } from "../api/TagDataService"
 import EquipmentListTable from "../Components/EquipmentListView/EquipmentListTable"
@@ -31,26 +33,24 @@ const StyledTabPanel = styled(Panel)`
 `
 
 function EquipmentListView() {
+    const {
+ setSideSheetOpen, setActiveTagData, setCurrentUserId, pathSegments,
+} = useContext(ViewContext)
+    const currentUser: any = useCurrentUser()
+
     const [activeTab, setActiveTab] = useState(() => parseInt(localStorage.getItem("activeTagTab") || "0", 10))
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<boolean>(false)
     const [externalId, setExternalId] = useState<string | undefined>()
     const [reviewModalOpen, setReviewModalOpen] = useState<boolean>(false)
-    const [tagInReview, setTagInReview] = useState<string | undefined>(
-        undefined,
-    )
+    const [tagInReview, setTagInReview] = useState<string | undefined>(undefined)
     const [revisionInReview, setRevisionInReview] = useState<string | undefined>(undefined)
     const [tagData, setTagData] = useState<TagData[] | undefined>(undefined)
 
     const currentProject = useCurrentContext()
-    const { setSideSheetOpen, setActiveTagData } = useContext(ViewContext)
-
     const navigate = useNavigate()
-    const currentUser: any = useCurrentUser()
-
-    const {
-        currentUserId, setCurrentUserId,
-    } = useContext(ViewContext)
+    const location = useLocation()
+    const params = useParams()
 
     // should probably be moved to main nav component
     useEffect(() => {
@@ -120,32 +120,36 @@ function EquipmentListView() {
         return <Dialogue type="error" message="No tags found in this project" />
     }
 
-    return (
-        <Wrapper>
-            <StyledTabs
-                activeTab={activeTab}
-                onChange={setActiveTab}
-            >
-                <List>
-                    <Tab>Tag info</Tab>
-                    <Tab>Tag comparison</Tab>
-                </List>
-                <Panels>
-                    <StyledTabPanel>
-                        <EquipmentListTable
-                            tags={tagData}
-                            setReviewModalOpen={setReviewModalOpen}
-                            setTagInReview={setTagInReview}
-                            setRevisionInReview={setRevisionInReview}
-                        />
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <TagComparisonTable tags={tagData} />
-                    </StyledTabPanel>
-                </Panels>
-            </StyledTabs>
-        </Wrapper>
-    )
+return (
+  pathSegments[2] !== undefined ? (
+      <Outlet />
+  ) : (
+      <Wrapper>
+          <StyledTabs
+              activeTab={activeTab}
+              onChange={setActiveTab}
+          >
+              <List>
+                  <Tab>Tag info</Tab>
+                  <Tab>Tag comparison</Tab>
+              </List>
+              <Panels>
+                  <StyledTabPanel>
+                      <EquipmentListTable
+                          tags={tagData}
+                          setReviewModalOpen={setReviewModalOpen}
+                          setTagInReview={setTagInReview}
+                          setRevisionInReview={setRevisionInReview}
+                      />
+                  </StyledTabPanel>
+                  <StyledTabPanel>
+                      <TagComparisonTable tags={tagData} />
+                  </StyledTabPanel>
+              </Panels>
+          </StyledTabs>
+      </Wrapper>
+  )
+)
 }
 
 export default EquipmentListView

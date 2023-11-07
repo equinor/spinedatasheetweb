@@ -21,7 +21,7 @@ const HeaderRow = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-direction: row;
+    flex-direction: row-reverse;
     margin: 15px;
 `
 
@@ -141,13 +141,15 @@ const initialPeople = [
 const ContainerView = () => {
     const location = useLocation()
 
-    useEffect(() => {
-        console.log(location.pathname)
-    }, [location.pathname])
-
     return (
         <Container>
             <HeaderRow>
+                <FormWrapper>
+                    <Search aria-label="Search for something" />
+                    <Button variant="ghost_icon">
+                        <Icon data={search} />
+                    </Button>
+                </FormWrapper>
                 <HeaderSection $alignment="baseline">
                     <ReviewStatus>
                         <Typography variant="h2">Container A</Typography>
@@ -159,13 +161,6 @@ const ContainerView = () => {
                         <Typography variant="body_short"> - 23. Juni 2023</Typography>
                     </ReviewStatus>
                 </HeaderSection>
-
-                <FormWrapper>
-                    <Search aria-label="Search for something" />
-                    <Button variant="ghost_icon">
-                        <Icon data={search} />
-                    </Button>
-                </FormWrapper>
             </HeaderRow>
             <HeaderRow>
 
