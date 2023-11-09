@@ -144,8 +144,6 @@ const DraggableConversationCard: FC<ConversationCardProps> = ({
     const formattedProperty = formatCamelCase(conversation.property)
     const conversationTitle = `${formattedProperty}: `
 
-    console.log(conversation)
-
     return (
         <ClickableCard
             draggable
