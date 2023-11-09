@@ -59,7 +59,6 @@ function ContainerPicker() {
                         const allConversationsForContainer = await (await GetConversationService())
                             .getConversationsForContainer(pickedContainer.id)
 
-                        console.log("comments in this container: ", allConversationsForContainer)
                         setContainerComments(allConversationsForContainer)
                     }
                 } catch {
