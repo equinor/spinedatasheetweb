@@ -2,10 +2,7 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useCurrentContext } from "@equinor/fusion-framework-react-app/context"
 import React, { useEffect, useState, useContext } from "react"
 import styled from "styled-components"
-import {
- useNavigate, useParams, useLocation, Outlet,
-} from "react-router-dom"
-import { useCurrentUser } from "@equinor/fusion"
+import { Outlet } from "react-router-dom"
 import { GetTagDataService } from "../api/TagDataService"
 import EquipmentListTable from "../Components/EquipmentListView/EquipmentListTable"
 import { TagData } from "../Models/TagData"
@@ -36,10 +33,8 @@ function EquipmentListView() {
     const {
         setSideSheetOpen,
         setActiveTagData,
-        setCurrentUserId,
         pathSegments,
-} = useContext(ViewContext)
-    const currentUser: any = useCurrentUser()
+    } = useContext(ViewContext)
 
     const [activeTab, setActiveTab] = useState(() => parseInt(localStorage.getItem("activeTagTab") || "0", 10))
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -48,11 +43,6 @@ function EquipmentListView() {
     const [tagData, setTagData] = useState<TagData[] | undefined>(undefined)
 
     const currentProject = useCurrentContext()
-    const navigate = useNavigate()
-    const location = useLocation()
-    const params = useParams()
-
-
 
     useEffect(() => {
         setSideSheetOpen(false)
@@ -60,6 +50,12 @@ function EquipmentListView() {
 
         localStorage.setItem("activeTagTab", activeTab.toString())
     }, [activeTab])
+
+        useEffect(() => {
+        if (currentProject.currentContext?.externalId !== externalId) {
+            setExternalId(currentProject.currentContext?.externalId)
+        }
+    }, [currentProject])
 
     // Get all tag data
     useEffect(() => {
@@ -73,7 +69,7 @@ function EquipmentListView() {
                     setIsLoading(true)
 
                     const allTagData = await (await GetTagDataService()).getAllTagData()
-
+                    console.log("all tag data", allTagData)
                     if (!isCancelled) {
                         setTagData(allTagData)
                         setIsLoading(false)
