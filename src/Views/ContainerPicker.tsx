@@ -77,7 +77,6 @@ function ContainerPicker() {
                 const container = containers.find((item) => item.id === params.containerId)
                 if (container) {
                     setPickedContainer(container)
-                    console.log("picked container", container)
                 }
             } else {
                 setPickedContainer(undefined)

@@ -152,9 +152,6 @@ export function formatCamelCase(property: string) {
 }
 
 export function getDueInDays(dateTime: string, days: number): number {
-    console.log("dateTime", dateTime)
-    console.log("due in days", days)
-
     const startDate = new Date(dateTime)
 
     const futureDate = new Date(startDate)
