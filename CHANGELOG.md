@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.9.0](https://github.com/equinor/spinedatasheetweb/compare/v1.8.0...v1.9.0) (2023-11-15)
+
+
+### Features
+
+* Add assigned reviewer to comparison table as hidden property ([43245cf](https://github.com/equinor/spinedatasheetweb/commit/43245cf5538037a69c9ca89ea930eb497c2db11a))
+* Add assigned reviewer to comparison table as hidden property ([#174](https://github.com/equinor/spinedatasheetweb/issues/174)) ([43245cf](https://github.com/equinor/spinedatasheetweb/commit/43245cf5538037a69c9ca89ea930eb497c2db11a))
+* Add function to get tags in a container ([#192](https://github.com/equinor/spinedatasheetweb/issues/192)) ([a439382](https://github.com/equinor/spinedatasheetweb/commit/a439382bdb2647d1efef1a144ad35cf9fa20b97f))
+* Add hardcoded dummydata to datasheet sidesheet ([2a04a94](https://github.com/equinor/spinedatasheetweb/commit/2a04a94c5abc1c4464ef29de7bf2470475098d7b))
+* add icons to authors and mentions tab ([#171](https://github.com/equinor/spinedatasheetweb/issues/171)) ([3b213a8](https://github.com/equinor/spinedatasheetweb/commit/3b213a8818981d5d988577ee36d62a36a2467513))
+* Add tagType to tagData and comparison view ([2bef8f6](https://github.com/equinor/spinedatasheetweb/commit/2bef8f64dcd3591d53fe39990f62e6d7cd09fb26))
+* Added icons to commentsidesheet ([#169](https://github.com/equinor/spinedatasheetweb/issues/169)) ([1444ff4](https://github.com/equinor/spinedatasheetweb/commit/1444ff4e1e1d3da80d47422284e13084843f80a0))
+* Added sub tag type and dummy data to comparison view ([198488a](https://github.com/equinor/spinedatasheetweb/commit/198488a5b5c5224104a7b99e01b78791034cf984))
+* breadcrumbs ([#187](https://github.com/equinor/spinedatasheetweb/issues/187)) ([e8742f4](https://github.com/equinor/spinedatasheetweb/commit/e8742f410b067b8edd24a717c0567d9ea3b7813c))
+* Call api when finishing container review ([#189](https://github.com/equinor/spinedatasheetweb/issues/189)) ([f01386e](https://github.com/equinor/spinedatasheetweb/commit/f01386ed75084c45c245dd2f105678f055f6f6d2))
+* container header ([#183](https://github.com/equinor/spinedatasheetweb/issues/183)) ([8041dad](https://github.com/equinor/spinedatasheetweb/commit/8041dad0db6da6b4130c000f23b511ab5aa95bc3))
+* container info ([09ed4e6](https://github.com/equinor/spinedatasheetweb/commit/09ed4e686eabfb176aa669a83494e440a16f9098))
+* container info ([#193](https://github.com/equinor/spinedatasheetweb/issues/193)) ([09ed4e6](https://github.com/equinor/spinedatasheetweb/commit/09ed4e686eabfb176aa669a83494e440a16f9098))
+* draggable conversation cards ([#188](https://github.com/equinor/spinedatasheetweb/issues/188)) ([93dbe09](https://github.com/equinor/spinedatasheetweb/commit/93dbe09f4aaa4ee40f8d9756403d84b3d78a6bb7))
+* edit messages with tagging ([#161](https://github.com/equinor/spinedatasheetweb/issues/161)) ([9b173ae](https://github.com/equinor/spinedatasheetweb/commit/9b173ae216471442fa53267371a6579056331c47))
+* filter tags based on picked container ([#194](https://github.com/equinor/spinedatasheetweb/issues/194)) ([32ecb01](https://github.com/equinor/spinedatasheetweb/commit/32ecb01c0eb97dd8eb13d132f21859c09a0f8e8e))
+* Frontend for review functionality ([#156](https://github.com/equinor/spinedatasheetweb/issues/156)) ([f5cb4d5](https://github.com/equinor/spinedatasheetweb/commit/f5cb4d5498aa7cf03b815c73bfb8e39c43c3c704))
+* Hide empty columns in comparison view ([5eff020](https://github.com/equinor/spinedatasheetweb/commit/5eff020c0cbbffa0be04928405256db9c9e3cc44))
+* Hide empty columns in comparison view ([#177](https://github.com/equinor/spinedatasheetweb/issues/177)) ([5eff020](https://github.com/equinor/spinedatasheetweb/commit/5eff020c0cbbffa0be04928405256db9c9e3cc44))
+* Icons in comments header ([#170](https://github.com/equinor/spinedatasheetweb/issues/170)) ([bf58f71](https://github.com/equinor/spinedatasheetweb/commit/bf58f71b567bc2aeedc62acd4298d33b9fa044d3))
+* improved sanitation ([59e6b6c](https://github.com/equinor/spinedatasheetweb/commit/59e6b6c47a284bbcf3d449f3655e17a01ec643ec))
+* main navigation bar ([#178](https://github.com/equinor/spinedatasheetweb/issues/178)) ([83e16ac](https://github.com/equinor/spinedatasheetweb/commit/83e16aca6159fd82eaccff0178842c0c8d7a5680))
+* nested nav & draggable cards ([#185](https://github.com/equinor/spinedatasheetweb/issues/185)) ([db21535](https://github.com/equinor/spinedatasheetweb/commit/db2153582781de9cd93d59d940dbc333dc0b0984))
+* overhauled conversation view & cleanup ([94c4a25](https://github.com/equinor/spinedatasheetweb/commit/94c4a25a0cf4fbfcc049be9699454883de5f6127))
+* Save and show active filters in comparison table ([179f0e1](https://github.com/equinor/spinedatasheetweb/commit/179f0e15829a3ab8287c7c10b623e5e021feb364))
+* Save and show active filters in comparison table ([#184](https://github.com/equinor/spinedatasheetweb/issues/184)) ([179f0e1](https://github.com/equinor/spinedatasheetweb/commit/179f0e15829a3ab8287c7c10b623e5e021feb364))
+* tabs and scroll memory ([38e80c9](https://github.com/equinor/spinedatasheetweb/commit/38e80c95b69afec1267ca7c3df43836bedc1d1ae))
+* toast messages ([#155](https://github.com/equinor/spinedatasheetweb/issues/155)) ([25fa34d](https://github.com/equinor/spinedatasheetweb/commit/25fa34d457e797b792074655f41676a51bbdced2))
+* Update data model ([#181](https://github.com/equinor/spinedatasheetweb/issues/181)) ([4aecc3d](https://github.com/equinor/spinedatasheetweb/commit/4aecc3d5923fbfaad7a4256c7907767734022042))
+* Update readme with runbook and more info ([bba5a06](https://github.com/equinor/spinedatasheetweb/commit/bba5a0615e45f00149a4964ce878e5f98ef30a40))
+* Update readme with runbook and more info ([#176](https://github.com/equinor/spinedatasheetweb/issues/176)) ([bba5a06](https://github.com/equinor/spinedatasheetweb/commit/bba5a0615e45f00149a4964ce878e5f98ef30a40))
+
+
+### Bug Fixes
+
+* add dompurify ([#163](https://github.com/equinor/spinedatasheetweb/issues/163)) ([dfdad25](https://github.com/equinor/spinedatasheetweb/commit/dfdad255bf8282d2b66ed23a95819398679e2315))
+* ag-grid icon bug ([#158](https://github.com/equinor/spinedatasheetweb/issues/158)) ([b836352](https://github.com/equinor/spinedatasheetweb/commit/b8363523a260b7efbe0ec7ea2607eb9afd703de0))
+* ag-grid watermark ([#160](https://github.com/equinor/spinedatasheetweb/issues/160)) ([31b413b](https://github.com/equinor/spinedatasheetweb/commit/31b413b0f9845e6917c722ab83bcb06e6a8393a4))
+* comment tab not rendering correctly in tag comparison ([#173](https://github.com/equinor/spinedatasheetweb/issues/173)) ([4f795ab](https://github.com/equinor/spinedatasheetweb/commit/4f795abde10f76b4e764d24a7b7db0b701e0f4ae))
+* first message not displaying edited ([#166](https://github.com/equinor/spinedatasheetweb/issues/166)) ([46892c1](https://github.com/equinor/spinedatasheetweb/commit/46892c10d4c600049f8f42d4801ee947985ff1da))
+* Fix loading of conversation when opening tag ([#162](https://github.com/equinor/spinedatasheetweb/issues/162)) ([efbb1c9](https://github.com/equinor/spinedatasheetweb/commit/efbb1c93ac92c0235dd3d123e07fcf67a511d877))
+* Fix setting state when updating container reviewer ([#195](https://github.com/equinor/spinedatasheetweb/issues/195)) ([f880968](https://github.com/equinor/spinedatasheetweb/commit/f880968359e40fa71303e1d5983f3154e2b5a51a))
+* Personphoto ([#164](https://github.com/equinor/spinedatasheetweb/issues/164)) ([3ec804f](https://github.com/equinor/spinedatasheetweb/commit/3ec804fe7bc6f136c2bb27d9c18e29d2e1302915))
+* Set frontend state when updating conversation state ([#196](https://github.com/equinor/spinedatasheetweb/issues/196)) ([8c04f1e](https://github.com/equinor/spinedatasheetweb/commit/8c04f1e45b8fdbcf1912b674f0fb2238fec00b7f))
+* sidesheet does not open using button ([#153](https://github.com/equinor/spinedatasheetweb/issues/153)) ([6f2b0a9](https://github.com/equinor/spinedatasheetweb/commit/6f2b0a948fbf4d340e4a039b9a3f385727ab5c81))
+* Update frontend after backend changes ([#159](https://github.com/equinor/spinedatasheetweb/issues/159)) ([dd082df](https://github.com/equinor/spinedatasheetweb/commit/dd082df77ac1fb72887f0d150ebdbfaf052b2393))
+
 ## [1.8.0](https://github.com/equinor/spinedatasheetweb/compare/v1.7.0...v1.8.0) (2023-09-29)
 
 
