@@ -42,14 +42,15 @@ The Views folder, a standard in React applications, contains the different views
 Each component file is structured for ease of understanding and navigation. The following list presents the various sections that a typical component includes, in the correct order:
 
 
-* **Imports: **At the top of the file, we include all necessary imports. This includes React itself, hooks, other components, utilities, and any required assets.
+* **Imports:** At the top of the file, we include all necessary imports. This includes React itself, hooks, other components, utilities, and any required assets.
 * **Styled Components Definitions:** Following the imports, we define styled components using styled-components. 
-* **Props Interface: **Next, we define the props interface for the component. This TypeScript interface specifies the type and structure of the props the component expects, ensuring type safety and clarity.
-* **Component Definition: **Finally, the functional component itself is defined. The component adheres to the following internal structure:
+* **Props Interface:**
+Next, we define the props interface for the component. This TypeScript interface specifies the type and structure of the props the component expects, ensuring type safety and clarity.
+* **Component Definition:** Finally, the functional component itself is defined. The component adheres to the following internal structure:
     * **Context Variables:** We start by defining variables derived from Context. This ensures that all context-dependent data is readily available at the beginning of the component's logic.
-    * **States and Constants: **Following this, we declare the component's state variables and constants using React's useState and other hooks for managing local state.
+    * **States and Constants:** Following this, we declare the component's state variables and constants using React's useState and other hooks for managing local state.
     * **useEffect Hooks:** After state declaration, we place any useEffect hooks. These are used for handling side effects, data fetching, and responding to changes in state or props.
-    * **Component Methods: **Next, we define any methods used by the component. These methods encapsulate functionality specific to the component and help keep the JSX clean and focused.
+    * **Component Methods:** Next, we define any methods used by the component. These methods encapsulate functionality specific to the component and help keep the JSX clean and focused.
     * **JSX Return:** At the end, we have the JSX return. This section contains the HTML-like output of the component, utilizing both the defined states and methods.
 
 By adhering to this structured approach, our components maintain a high level of consistency and readability. 
