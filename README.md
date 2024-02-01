@@ -37,7 +37,7 @@ The Utils folder is dedicated to stand-alone helper functions that are used acro
 
 The Views folder, a standard in React applications, contains the different views or pages of the app. Each file in this directory represents a different page or a logically distinct section of the application. 
 
-# Component Structure**
+# Component Structure
 
 Each component file is structured for ease of understanding and navigation. The following list presents the various sections that a typical component includes, in the correct order:
 
