@@ -14,32 +14,32 @@
 The folder structure of our React application follows the typical React structure and naming conventions. Below is a brief overview of each major directory:
 
 
-**API Folder**
+## API Folder
 
 This folder contains all the API functions necessary for interacting with the backend. The API functions are structured to facilitate communication with the server, handling tasks such as fetching data, posting new information, updating existing data, and deleting entries. 
 
 
-**Components**
+## Components
 
 The Components directory is a standard React component directory. It includes reusable components that can be utilized throughout the application. 
 
 
-**Context**
+## Context
 
 The Context folder houses all context-related files. Specifically, it contains ViewContext, which is used for managing and presenting information to the application's view layer, in situations where distribution across various components is necessary to avoid prop-drilling.
 
 
-**Models**
+## Models
 
 In the Models directory, you'll find the TypeScript models. These models define the types and interfaces for the data used throughout the application. It is encouraged to define models for future data definitions to ensure type safety and make the code more predictable and less prone to runtime errors. 
 
 
-**Utils**
+## Utils
 
 The Utils folder is dedicated to stand-alone helper functions that are used across the application. It includes a variety of utility functions that perform common tasks, thereby avoiding code repetition. Generally, if a function is used in more than one component, it should ideally reside in this file. Additionally, this folder contains a dedicated file for agGrid functions, such as handling applied filters.
 
 
-**Views**
+## Views
 
 The Views folder, a standard in React applications, contains the different views or pages of the app. Each file in this directory represents a different page or a logically distinct section of the application. 
 
@@ -69,11 +69,11 @@ By adhering to this structured approach, our components maintain a high level of
 Our React application adheres to a specific structure and set of conventions for developing components, ensuring consistency and readability across the codebase.
 
 
-**Styling with Styled-Components**
+## Styling with Styled-Components
 
 Generally, we rely on EDS components and adhere to their standard styling. However, in situations where custom CSS is necessary, we use styled-components. Inline styling within components is discouraged, as it can lead to inconsistency and difficulties in managing styles. 
 
 
-**Functional Components with Arrow Functions**
+## Functional Components with Arrow Functions
 
 Following Reacts current best practices, our components are exclusively functional, utilizing React's hooks API for state and lifecycle management. We rely on arrow functions to define these functional components.
