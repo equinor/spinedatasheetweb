@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.0](https://github.com/equinor/spinedatasheetweb/compare/v1.9.0...v1.10.0) (2024-11-05)
+
+
+### Features
+
+* improved README ([#199](https://github.com/equinor/spinedatasheetweb/issues/199)) ([4cedf57](https://github.com/equinor/spinedatasheetweb/commit/4cedf5730a1f2fcb4e2f1e3e2ba2e06e3d340330))
+
+
+### For developers
+
+* Add CONTRIBUTING.md and LICENSE files ([ffd4d3d](https://github.com/equinor/spinedatasheetweb/commit/ffd4d3dcf923d28ddef2a2f588286d82f77b589b))
+* Create SECURITY.md ([070156f](https://github.com/equinor/spinedatasheetweb/commit/070156f782a0ae05c003a193dda11e9553b57f4d))
+
 ## [1.9.0](https://github.com/equinor/spinedatasheetweb/compare/v1.8.0...v1.9.0) (2023-11-15)
 
 
